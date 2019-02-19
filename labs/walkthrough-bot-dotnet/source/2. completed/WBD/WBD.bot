@@ -1,0 +1,19 @@
+{
+  "name": "WBD",
+  "description": "",
+  "services": [
+    {
+      "type": "endpoint",
+      "appId": "",
+      "appPassword": "",
+      "endpoint": "http://localhost:3978/api/messages",
+      "id": "546434f0-b465-11e8-bf1e-b98c0ae7c001",
+      "name": "Local"
+    }
+  ],
+  "padlock": "",
+  "version": "2.0",
+  "overrides": null,
+  "path": "C:\\GitHub\\walkthrough-bot-dotnet\\source\\2. completed\\WBD\\WBD.bot",
+  "secretKey": ""
+}
