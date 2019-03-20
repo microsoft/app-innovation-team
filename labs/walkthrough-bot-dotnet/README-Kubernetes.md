@@ -635,6 +635,20 @@ Once we have configured the Azure CLI, its time to open a terminal.
 
     <b>Note:</b> In case you have any problem with the packages, you can use: `helm list` and `helm delete --purge [package]` to delete the package from kubernetes.
 
+    If you have any trouble with the `cert-manager` package:
+
+    ```
+    Error: customresourcedefinitions.apiextensions.k8s.io "certificates.certmanager.k8s.io" already exists
+    ```
+
+    Try purge the packages this way and try again adding the `cert-manager`:
+
+    ```
+    kubectl delete customresourcedefinitions clusterissuers.certmanager.k8s.io issuers.certmanager.k8s.io certificates.certmanager.k8s.io 
+    helm delete --purge cert-manager
+    kubectl delete namespaces cert-manager
+    ```
+
 18. You can see the ingress controllers instances.
 
     ```bash
