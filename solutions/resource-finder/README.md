@@ -12,7 +12,7 @@ The technology stack used in this project:
 - Kubernetes (tentative)
 - Azure Storage
 - Azure CosmosDB
-- Azure Blockchain Quorum
+- Azure Blockchain as a Service
 - Azure Cognitive Search
 - Microservices using .NET Core
 - Azure Mobile features
