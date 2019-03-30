@@ -2,11 +2,11 @@
 
 #### Clone the project from GitHub repo
 
-`git clone https://github.com/rcervantes/walkthrough-bot-dotnet.git`
+`git clone https://github.com/Microsoft/app-innovation-team.git`
 
 #### Using Visual Studio 2017 (any version)
 
-1. Based on the webinar explanation go to `source\1. start\` folder and open the WBD.sln file in Visual Studio 2017.
+1. Based on the webinar explanation go to `walkthrough-bot-dotnet\source\1. start\` folder and open the WBD.sln file in Visual Studio 2017.
 
 2. Wait until nuget packages are being reinstalled.
 
@@ -14,9 +14,9 @@
 
 #### Using Visual Studio Code (any version)
 
-1. Open Visual Studio Code and open the following folder `source\1. start\WBD\`.
+1. Open Visual Studio Code and open the following folder `walkthrough-bot-dotnet\source\1. start\WBD\`.
 
-2. Open a terminal pointing the folder `source\1. start\WBD\` folder and run the following command: <b>dotnet build</b>, wait until nuget packages are being reinstalled and the project finishes the build process (the project should be successfully compiled but is not ready to be executed).
+2. Open a terminal pointing the folder `walkthrough-bot-dotnet\source\1. start\WBD\` folder and run the following command: <b>dotnet build</b>, wait until nuget packages are being reinstalled and the project finishes the build process (the project should be successfully compiled but is not ready to be executed).
 
 #### Translator text configuration
 
@@ -37,7 +37,7 @@ Steps:
 
 1. Go to https://www.luis.ai/ and get successfully sign-in with your Employee or Microsoft account.
 
-2. Once you are signed-in, go to My Apps and click `Import new app`, select the file: Reminders.json located in the folder `source\3. models\` and finally click done.
+2. Once you are signed-in, go to My Apps and click `Import new app`, select the file: Reminders.json located in the folder `walkthrough-bot-dotnet\source\3. models\` and finally click done.
 
 3. A new LUIS application has been created (this application contains three intents: Calendar.Add,Calendar.Find and None, each intent has been filled with a bunch of utterances as an example).
 
@@ -260,4 +260,4 @@ If you have issues with your emulator, verify you have unchecked the option: Byp
 
 #### Master code (complete solution)
 
-In case you want to review your code with the complete solution you can follow the previous configuration steps using the complete solution located in: `source\2. completed\WBD\`.
+In case you want to review your code with the complete solution you can follow the previous configuration steps using the complete solution located in: `walkthrough-bot-dotnet\source\2. completed\WBD\`.

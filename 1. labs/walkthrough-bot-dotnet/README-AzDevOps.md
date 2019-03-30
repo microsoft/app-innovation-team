@@ -37,7 +37,7 @@ Now, we need to perform the following tasks:
 
 - Clone the remote repository in the local repository path.
 - Create a new source folder in the local repository path.
-- Copy to the local repository path your bot's code from `source\1. start\` or `source\2. completed\` depending if you complete or not the laboratory.
+- Copy to the local repository path your bot's code from `walkthrough-bot-dotnet\source\1. start\` or `walkthrough-bot-dotnet\source\2. completed\` depending if you complete or not the laboratory.
 - Commit the changes in the local repository.
 - Push the changes in the remote repository.
 
@@ -53,7 +53,7 @@ Steps:
 
 3. After clone your remote repository you will be able to see the folder WBD inside GitHub.
 
-4. Copy and paste the files from `source\1. start\` or `source\2. completed\` into C:\GitHub\WBD\, the files  depends if you complete or not the laboratory.
+4. Copy and paste the files from `walkthrough-bot-dotnet\source\1. start\` or `walkthrough-bot-dotnet\source\2. completed\` into C:\GitHub\WBD\, the files  depends if you complete or not the laboratory.
 
     <div style="text-align:center">
         <img src="resources/images/walkthrough-bot-dotnet-azuredevops-files.png" />
