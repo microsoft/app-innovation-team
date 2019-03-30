@@ -100,7 +100,7 @@ Once we have configured the Azure CLI, its time to open a terminal.
 
     <b>Why we delete whole settings?</b> We don't want to encapsulate the credentials in the container image, the image MUST be agnostic to every environment.
 
-3. Open a terminal (as Administrator) pointing the folder `source\1. start\WBD\` folder and run the following command:
+3. Open a terminal (as Administrator) pointing the folder `walkthrough-bot-dotnet\source\1. start\WBD\` folder and run the following command:
 
     ```json
     docker image build . --tag "latest"
