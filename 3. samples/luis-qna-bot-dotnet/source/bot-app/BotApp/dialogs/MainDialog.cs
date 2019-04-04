@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.AI.QnA;
 
 namespace BotApp
 {
@@ -13,10 +14,12 @@ namespace BotApp
     {
         private const string dialogId = "MainDialog";
         private BotAccessors accessors = null;
+        private CustomResponseHelper customResponseHelper = null;
 
         public MainDialog(BotAccessors accessors) : base(dialogId)
         {
             this.accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
+            this.customResponseHelper = new CustomResponseHelper();
 
             AddDialog(new WaterfallDialog(dialogId, new WaterfallStep[]
             {
@@ -30,11 +33,31 @@ namespace BotApp
             AddDialog(new ChoicePrompt("AskForExampleValidator", AskForExampleValidator) { Style = ListStyle.List });
         }
 
+        private string FindResponseTypeMetadata(Metadata[] metadata)
+        {
+            string result = string.Empty;
+
+            if (metadata.Length > 0)
+            {
+                foreach (Metadata m in metadata)
+                {
+                    if (m.Name == "responsetype")
+                    {
+                        result = m.Value;
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
         private async Task<bool> QuestionValidator(PromptValidatorContext<string> promptContext, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (promptContext.Recognized.Value == null)
             {
-                await promptContext.Context.SendActivityAsync($"Sorry, please answer correctly");
+                var message = $"Sorry, please answer correctly";
+                await customResponseHelper.SendActivityAsync(promptContext.Context, cancellationToken, "text", message);
             }
             else
             {
@@ -49,7 +72,7 @@ namespace BotApp
             if (promptContext.Recognized.Value == null)
             {
                 var message = $"Sorry, please answer correctly";
-                await promptContext.Context.SendActivityAsync($"{message}");
+                await customResponseHelper.SendActivityAsync(promptContext.Context, cancellationToken, "text", message);
             }
             else
             {
@@ -69,7 +92,7 @@ namespace BotApp
                 else
                 {
                     var message = $"Sorry, please answer correctly";
-                    await promptContext.Context.SendActivityAsync($"{message}");
+                    await customResponseHelper.SendActivityAsync(promptContext.Context, cancellationToken, "text", message);
                 }
             }
 
@@ -99,20 +122,24 @@ namespace BotApp
                 var response = await accessors.QnAServices[Settings.QnAName01].GetAnswersAsync(step.Context);
                 if (response != null && response.Length > 0)
                 {
-                    await step.Context.SendActivityAsync(response[0].Answer, cancellationToken: cancellationToken);
+                    string responseType = string.Empty;
+                    responseType = FindResponseTypeMetadata(response[0].Metadata);
+                    await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, responseType, response[0].Answer);
 
-                    if (!topIntent.Value.intent.EndsWith("_Sample"))
+                    if (!string.IsNullOrEmpty(responseType))
                     {
-                        List<Choice> choices = new List<Choice>();
-                        choices.Add(new Choice { Value = $"Yes" });
-                        choices.Add(new Choice { Value = $"No" });
+                        if (!topIntent.Value.intent.EndsWith("_Sample"))
+                        {
+                            List<Choice> choices = new List<Choice>();
+                            choices.Add(new Choice { Value = $"Yes" });
+                            choices.Add(new Choice { Value = $"No" });
 
-                        var message = $"Would you like to see an example?";
-                        await step.Context.SendActivityAsync(message, cancellationToken: cancellationToken);
+                            var message = $"Would you like to see an example?";
+                            await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, "text", message);
 
-                        PromptOptions options = new PromptOptions { Choices = choices };
-
-                        return await step.PromptAsync("AskForExampleValidator", options, cancellationToken: cancellationToken);
+                            PromptOptions options = new PromptOptions { Choices = choices };
+                            return await step.PromptAsync("AskForExampleValidator", options, cancellationToken: cancellationToken);
+                        }
                     }
                 }
                 else
@@ -121,7 +148,7 @@ namespace BotApp
                     await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                     var message = $"I did not find information to show you";
-                    await step.Context.SendActivityAsync(message, cancellationToken: cancellationToken);
+                    await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, "text", message);
                 }
             }
             else
@@ -130,7 +157,7 @@ namespace BotApp
                 await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                 var message = $"I did not find information to show you";
-                await step.Context.SendActivityAsync(message, cancellationToken: cancellationToken);
+                await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, "text", message);
             }
 
             return await step.NextAsync();
@@ -155,7 +182,9 @@ namespace BotApp
                     var response = await accessors.QnAServices[Settings.QnAName01].GetAnswersAsync(step.Context);
                     if (response != null && response.Length > 0)
                     {
-                        await step.Context.SendActivityAsync(response[0].Answer, cancellationToken: cancellationToken);
+                        string responseType = string.Empty;
+                        responseType = FindResponseTypeMetadata(response[0].Metadata);
+                        await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, responseType, response[0].Answer);
                     }
                     else
                     {
@@ -163,7 +192,7 @@ namespace BotApp
                         await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                         message = $"I did not find information to show you";
-                        await step.Context.SendActivityAsync(message, cancellationToken: cancellationToken);
+                        await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, "text", message);
                     }
                 }
                 else
@@ -172,7 +201,7 @@ namespace BotApp
                     await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                     message = $"I did not find information to show you";
-                    await step.Context.SendActivityAsync(message, cancellationToken: cancellationToken);
+                    await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, "text", message);
                 }
             }
 
@@ -186,6 +215,9 @@ namespace BotApp
 
             await step.EndDialogAsync(step.ActiveDialog.State);
             await step.BeginDialogAsync(dialogId);
+
+            customResponseHelper.Dispose();
+
             return Dialog.EndOfTurn;
         }
     }
