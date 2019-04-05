@@ -14,12 +14,10 @@ namespace BotApp
     {
         private const string dialogId = "MainDialog";
         private BotAccessors accessors = null;
-        private CustomResponseHelper customResponseHelper = null;
 
         public MainDialog(BotAccessors accessors) : base(dialogId)
         {
             this.accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
-            this.customResponseHelper = new CustomResponseHelper();
 
             AddDialog(new WaterfallDialog(dialogId, new WaterfallStep[]
             {
@@ -57,7 +55,7 @@ namespace BotApp
             if (promptContext.Recognized.Value == null)
             {
                 var message = $"Sorry, please answer correctly";
-                await customResponseHelper.SendActivityAsync(promptContext.Context, cancellationToken, "text", message);
+                await promptContext.Context.SendCustomResponseAsync(message);
             }
             else
             {
@@ -72,7 +70,7 @@ namespace BotApp
             if (promptContext.Recognized.Value == null)
             {
                 var message = $"Sorry, please answer correctly";
-                await customResponseHelper.SendActivityAsync(promptContext.Context, cancellationToken, "text", message);
+                await promptContext.Context.SendCustomResponseAsync(message);
             }
             else
             {
@@ -92,7 +90,7 @@ namespace BotApp
                 else
                 {
                     var message = $"Sorry, please answer correctly";
-                    await customResponseHelper.SendActivityAsync(promptContext.Context, cancellationToken, "text", message);
+                    await promptContext.Context.SendCustomResponseAsync(message);
                 }
             }
 
@@ -124,7 +122,7 @@ namespace BotApp
                 {
                     string responseType = string.Empty;
                     responseType = FindResponseTypeMetadata(response[0].Metadata);
-                    await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, responseType, response[0].Answer);
+                    await step.Context.SendCustomResponseAsync(response[0].Answer, responseType);
 
                     if (!string.IsNullOrEmpty(responseType))
                     {
@@ -135,7 +133,7 @@ namespace BotApp
                             choices.Add(new Choice { Value = $"No" });
 
                             var message = $"Would you like to see an example?";
-                            await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, "text", message);
+                            await step.Context.SendCustomResponseAsync(message);
 
                             PromptOptions options = new PromptOptions { Choices = choices };
                             return await step.PromptAsync("AskForExampleValidator", options, cancellationToken: cancellationToken);
@@ -148,7 +146,7 @@ namespace BotApp
                     await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                     var message = $"I did not find information to show you";
-                    await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, "text", message);
+                    await step.Context.SendCustomResponseAsync(message);
                 }
             }
             else
@@ -157,7 +155,7 @@ namespace BotApp
                 await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                 var message = $"I did not find information to show you";
-                await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, "text", message);
+                await step.Context.SendCustomResponseAsync(message);
             }
 
             return await step.NextAsync();
@@ -184,7 +182,7 @@ namespace BotApp
                     {
                         string responseType = string.Empty;
                         responseType = FindResponseTypeMetadata(response[0].Metadata);
-                        await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, responseType, response[0].Answer);
+                        await step.Context.SendCustomResponseAsync(response[0].Answer, responseType);
                     }
                     else
                     {
@@ -192,7 +190,7 @@ namespace BotApp
                         await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                         message = $"I did not find information to show you";
-                        await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, "text", message);
+                        await step.Context.SendCustomResponseAsync(message);
                     }
                 }
                 else
@@ -201,7 +199,7 @@ namespace BotApp
                     await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                     message = $"I did not find information to show you";
-                    await customResponseHelper.SendActivityAsync(step.Context, cancellationToken, "text", message);
+                    await step.Context.SendCustomResponseAsync(message);
                 }
             }
 
@@ -215,8 +213,6 @@ namespace BotApp
 
             await step.EndDialogAsync(step.ActiveDialog.State);
             await step.BeginDialogAsync(dialogId);
-
-            customResponseHelper.Dispose();
 
             return Dialog.EndOfTurn;
         }
