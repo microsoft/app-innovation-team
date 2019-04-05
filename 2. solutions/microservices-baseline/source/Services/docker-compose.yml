@@ -12,8 +12,8 @@ services:
     environment:
         - ASPNETCORE_ENVIRONMENT=Production
         - ASPNETCORE_URLS=https://+;http://+
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=Password.123
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/RF-CERT.pfx
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERTIFICATE_PASSWORD
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/YOUR_CERTIFICATE_NAME.pfx
     volumes:
       - ${HOME}/.aspnet/https:/https/
     build:
@@ -35,9 +35,9 @@ services:
     environment:
         - ASPNETCORE_ENVIRONMENT=Production
         - ASPNETCORE_URLS=https://+;http://+
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=Password.123
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/RF-CERT.pfx
-        - AuthorizationKey=24a406e2-98d3-4093-b123-db22fabc1601
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERTIFICATE_PASSWORD
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/YOUR_CERTIFICATE_NAME.pfx
+        - AuthorizationKey=YOUR_AUTHORIZATION_KEY (e.g. 24a406e2-98d3-4093-b123-db22fabc1601)
         - ConnectionString=YOUR_MONGODB_CONNECTION_STRING
         - DatabaseId=YOUR_MONGODB_DATABASEID
         - UserCollection=user
@@ -105,9 +105,9 @@ services:
     environment:
         - ASPNETCORE_ENVIRONMENT=Production
         - ASPNETCORE_URLS=https://+;http://+
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=Password.123
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/RF-CERT.pfx
-        - AuthorizationKey=24a406e2-98d3-4093-b123-db22fabc1601
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERTIFICATE_PASSWORD
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/YOUR_CERTIFICATE_NAME.pfx
+        - AuthorizationKey=YOUR_AUTHORIZATION_KEY (e.g. 24a406e2-98d3-4093-b123-db22fabc1601)
         - ConnectionString=YOUR_MONGODB_CONNECTION_STRING
         - DatabaseId=YOUR_MONGODB_DATABASEID
         - ContractCollection=contract

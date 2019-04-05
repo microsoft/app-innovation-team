@@ -20,6 +20,7 @@ The solution is splitted in the following services:
 - Azure CosmosDB (MongoDB)
 - Azure KeyVault
 - Ethereum on Azure
+- Nethereum
 - SendGrid on Azure
 - RabbitMQ 
 - Consul
@@ -51,7 +52,7 @@ Docker Compose is a container orchestrator for deployments in one single node, y
 
 ### .NET Core Certificate
 
-Create a certificate in your development or deployment machine with the name: RF-CERT and then specify the password: Password.123, use this link to perform the configuration using net core: https://github.com/dotnet/dotnet-docker/blob/master/samples/aspnetapp/aspnetcore-docker-https.md.
+Create a certificate in your development or deployment machine with the name: YOUR_CERTIFICATE_NAME and then specify the password: YOUR_CERTIFICATE_PASSWORD, use this link to perform the configuration using net core: https://github.com/dotnet/dotnet-docker/blob/master/samples/aspnetapp/aspnetcore-docker-https.md.
  
 ### Database
 
@@ -65,11 +66,27 @@ If it's the first time you are configuring Ethereum on Azure, read this resource
 
 Follow the deployment steps but in the Ethereum Settings add the following admin address: `0xd10c8A96D79618Ab3C38A962db74DFBe47e24300`, it's important you add this address since you will need it's own private key further.
 
+```
+For testing purposes we are going to use the following admin address.
+
+Wallet: 0xd10c8A96D79618Ab3C38A962db74DFBe47e24300
+
+Private Key: 2eeb29d0f32bd47325139a095f88302c3a134cac8125ca029159b148746437cc
+```
+
 Once the Ethereum on Azure resource is deployed you will be able to see the Deployment output -> Ethereum RPC endpoint, you will need this for the Docker Compose configuration.
 
 ### SendGrid 
 
 We need to install and configure SendGrid to allow microservices send emails, if it's the first time you are configuring SendGrid, read this resource: https://docs.microsoft.com/en-us/azure/sendgrid-dotnet-how-to-send-email, you will need the API key for the Docker Compose configuration.
+
+### RabbitMQ
+
+RabbitMQ will be automatically downloaded and configured by Docker, you will be able to access through the portal using: http://localhost:15672, with username: guest, password: guest. For development and testing purposes we are going to use the same predefined username and password, in case you need to change the username and password check this: https://onlinehelp.coveo.com/en/ces/7.0/administrator/changing_the_rabbitmq_administrator_password.htm.
+
+### Consul
+
+Consul will be automatically downloaded and configured by Docker, you will be able to access through the portal using: http://localhost:8500, you will be able to see your microservices nodes. This service is responsible to notify to API Gateway any IP and Port changes in the containers.
 
 ### Docker Compose configuration
 
@@ -90,8 +107,8 @@ services:
     environment:
         - ASPNETCORE_ENVIRONMENT=Production
         - ASPNETCORE_URLS=https://+;http://+
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=Password.123
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/RF-CERT.pfx
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERTIFICATE_PASSWORD
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/YOUR_CERTIFICATE_NAME.pfx
     volumes:
       - ${HOME}/.aspnet/https:/https/
     build:
@@ -113,9 +130,9 @@ services:
     environment:
         - ASPNETCORE_ENVIRONMENT=Production
         - ASPNETCORE_URLS=https://+;http://+
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=Password.123
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/RF-CERT.pfx
-        - AuthorizationKey=24a406e2-98d3-4093-b123-db22fabc1601
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERTIFICATE_PASSWORD
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/YOUR_CERTIFICATE_NAME.pfx
+        - AuthorizationKey=YOUR_AUTHORIZATION_KEY (e.g. 24a406e2-98d3-4093-b123-db22fabc1601)
         - ConnectionString=YOUR_MONGODB_CONNECTION_STRING
         - DatabaseId=YOUR_MONGODB_DATABASEID
         - UserCollection=user
@@ -183,9 +200,9 @@ services:
     environment:
         - ASPNETCORE_ENVIRONMENT=Production
         - ASPNETCORE_URLS=https://+;http://+
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=Password.123
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/RF-CERT.pfx
-        - AuthorizationKey=24a406e2-98d3-4093-b123-db22fabc1601
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=YOUR_CERTIFICATE_PASSWORD
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/YOUR_CERTIFICATE_NAME.pfx
+        - AuthorizationKey=YOUR_AUTHORIZATION_KEY (e.g. 24a406e2-98d3-4093-b123-db22fabc1601)
         - ConnectionString=YOUR_MONGODB_CONNECTION_STRING
         - DatabaseId=YOUR_MONGODB_DATABASEID
         - ContractCollection=contract
@@ -282,4 +299,70 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+```
+
+### Docker Compose commands used
+
+<b>docker-compose stop</b> 
+
+In case you need to stop the containers.
+
+<b>docker-compose rm</b>
+
+In case you need to remove the containers.
+
+<b>docker-compose up --build</b>
+
+In case you need to up and build the services in the docker-compose.yml file.
+
+<b>docker-compose up --build --scale service=NUM_INSTANCES</b>
+
+In case you need to up, build and scale the services in the docker-compose.yml file.
+
+<b>Important: </b> docker-compose commands must be executed in the same path level of the docker-compose.yml file.
+
+### Testing Services
+
+<b>User Registration</b>
+
+```
+curl -X POST \
+  https://localhost:17070/userregistration \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: 5904266b-a72e-4b35-8a2b-cae6c7d8c393' \
+  -H 'cache-control: no-cache' \
+  -d '{
+	"fullname":"Roberto Cervantes",
+	"email":"rcervantes@tutanota.com",
+	"password":"Password.123"
+}'
+```
+
+<b>User Authentication</b>
+
+```
+curl -X POST \
+  https://localhost:17070/userauthentication \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: 4ede9221-7d23-4faa-92d0-53ab64c2f4e6' \
+  -H 'cache-control: no-cache' \
+  -d '{
+	"email":"rcervantes@tutanota.com",
+	"password":"Password.123"
+}'
+```
+
+<b>Contract Deployment</b>
+
+```
+curl -X POST \
+  https://localhost:17070/contractdeployment \
+  -H 'Authorization: Bearer AUTH_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: ad11c1e1-c8c6-4948-9dce-955c8254dd86' \
+  -H 'cache-control: no-cache' \
+  -d '{
+	"name":"Contract 1",
+	"description":"customer #1"
+}'
 ```
