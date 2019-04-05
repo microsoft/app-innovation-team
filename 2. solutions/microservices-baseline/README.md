@@ -88,6 +88,94 @@ RabbitMQ will be automatically downloaded and configured by Docker, you will be 
 
 Consul will be automatically downloaded and configured by Docker, you will be able to access through the portal using: http://localhost:8500, you will be able to see your microservices nodes. This service is responsible to notify to API Gateway any IP and Port changes in the containers.
 
+### Azure Key Vault
+
+Azure Key Vault is one of the most important pieces in the solution, providing storage to the secrets used for encryption, RabbitMQ use an Azure Key Vault secret key to encrypt all messages stored in queues and console apps use the same secret key to decrypt and process messages.
+
+Create a new Azure Key Vault, if you don't know how to create the resource check this: https://docs.microsoft.com/en-us/azure/key-vault/quick-create-portal.
+
+#### Azure Key Vault Certificate
+
+Now it's time to configure the certificate in Key Vault.
+
+Go to your Key Vault resource, click Certificates and Generate/Import, then write the certificate name and subject, finally click create.
+
+<div style="text-align:center">
+    <img src="resources/images/azure-key-vault-add-certificate.png" />
+</div>
+
+You will now be able to see the certificate, this will be your <b>KeyVaultCertificateName</b>.
+
+<div style="text-align:center">
+    <img src="resources/images/azure-key-vault-certificates.png" />
+</div>
+
+#### Azure Key Vault Identifier
+
+Go to your Key Vault resource, click Overview and copy the DNS Name this will be your <b>KeyVaultIdentifier</b>.
+
+#### Azure Key Vault Encryption Key
+
+Once the Azure resource has been created add the <b>KeyVaultEncryptionKey</b> secret.
+
+- Name: YOUR_KEYVAULT_ENCRYPTION_SECRET
+- Value: 33CD7FE44B9BD2070EF8356F069A4647
+
+Yo can use this site to generate a new AES encryption key that will be use as value in the secret: https://asecuritysite.com/encryption/keygen.
+
+<div style="text-align:center">
+    <img src="resources/images/aes-key-generator.png" />
+</div>
+
+#### Azure Key Vault Client App Id
+
+Go to Azure Active Directory resource and click in App Registrations, then click in New application registration, fill the fields and click create.
+
+<div style="text-align:center">
+    <img src="resources/images/azure-active-directory-app-registration.png" width="300" />
+</div>
+
+Take note of Application ID, this will be your <b>KeyVaultClientId</b>.
+
+<div style="text-align:center">
+    <img src="resources/images/azure-active-directory-app-overview.png" width="500" />
+</div>
+
+Now let's configure the Key settings.
+
+Click Settings then Keys, add the following fields and save it.
+
+- DESCRIPTION: CLIENT_SECRET
+- EXPIRES: Never expires 
+
+<div style="text-align:center">
+    <img src="resources/images/azure-active-directory-app-key-setting.png" />
+</div>
+
+Once you save the key a value will appear, take note of this value because we are going to use it later in your  <b>KeyVaultClientSecret</b>.
+
+<div style="text-align:center">
+    <img src="resources/images/azure-active-directory-app-key-setting-value.png" />
+</div>
+
+#### Link Azure Active Directory Application to Azure Key Vault 
+
+Finally, you need to link your Azure Active Directory Application to your Key Vault resource.
+
+Go to your Key Vault resource, click Access policies and add new.
+
+<div style="text-align:center">
+    <img src="resources/images/azure-key-vault-access-policies.png" />
+</div>
+
+Select your Azure Active Directoy Application and click Ok.
+
+<div style="text-align:center">
+    <img src="resources/images/azure-key-vault-new-access-policy.png" />
+</div>
+
+Perfect, now you have configured successfully your Azure Key Vault account to work with the microservices.
+
 ### Docker Compose configuration
 
 Clone the repo and configure the docker-compose.yml file located in: microservices-baseline\source\Services\docker-compose.yml.
