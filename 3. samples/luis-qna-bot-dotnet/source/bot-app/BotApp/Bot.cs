@@ -12,12 +12,10 @@ namespace BotApp
     {
         private DialogSet dialogs = null;
         private BotAccessors accessors = null;
-        private CustomResponseHelper customResponseHelper = null;
 
         public Bot(BotAccessors accessors)
         {
             this.accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
-            this.customResponseHelper = new CustomResponseHelper();
 
             this.dialogs = new DialogSet(accessors.ConversationDialogState);
             this.dialogs.Add(new MainDialog(accessors));
@@ -37,13 +35,13 @@ namespace BotApp
             if ((currentDateTime.Hour >= 0 && currentDateTime.Hour < 6) || currentDateTime.Hour >= 18)
                 message = "Hello, good evening!";
 
-            await customResponseHelper.SendActivityAsync(turnContext, default(CancellationToken), "text", message);
+            await turnContext.SendCustomResponseAsync(message);
 
             message = $"In Microsoft we believe in what people make possible, our mission is to empower every person and every organization on the planet to achieve more";
-            await customResponseHelper.SendActivityAsync(turnContext, default(CancellationToken), "text", message);
+            await turnContext.SendCustomResponseAsync(message);
 
             message = $"I am a trained digital assistant from Microsoft trained to demonstrate how to work with LUIS and QnA simultaneously";
-            await customResponseHelper.SendActivityAsync(turnContext, default(CancellationToken), "text", message);
+            await turnContext.SendCustomResponseAsync(message);
         }
 
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
