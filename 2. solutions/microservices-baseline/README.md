@@ -174,7 +174,7 @@ Select your Azure Active Directoy Application and click Ok.
     <img src="resources/images/azure-key-vault-new-access-policy.png" />
 </div>
 
-Perfect, now you have configured successfully your Azure Key Vault account to work with the microservices.
+You have now successfully configured your Azure Key Vault account to work with the microservices.
 
 ### Docker Compose configuration
 
