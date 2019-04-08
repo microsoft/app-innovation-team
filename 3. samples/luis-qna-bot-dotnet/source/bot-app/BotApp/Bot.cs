@@ -1,6 +1,7 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
@@ -12,10 +13,14 @@ namespace BotApp
     {
         private DialogSet dialogs = null;
         private BotAccessors accessors = null;
+        private readonly ILogger logger;
 
         public Bot(BotAccessors accessors)
         {
             this.accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
+
+            this.logger = accessors.LoggerFactory.CreateLogger<Bot>();
+            this.logger.LogTrace("Starting bot");
 
             this.dialogs = new DialogSet(accessors.ConversationDialogState);
             this.dialogs.Add(new MainDialog(accessors));
