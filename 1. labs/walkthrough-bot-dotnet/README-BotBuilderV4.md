@@ -295,7 +295,7 @@ Before continue please open the WBD.csproj properties and validate the correct p
 
 <b>Note:</b> Both configuration are pointing to localhost and the same port 3978 as default, you can set a new port in both places in case you need it.
 
-Run your bot app and wait the web application be launched then open the Bot Framework Emulator (V4 Preview) and open the WBD.bot file you previously configured.
+Run your bot app and wait the web application be launched then open the Bot Framework Emulator and open the WBD.bot file you previously configured.
 
 In the Bot Framework Emulator you will see an Endpoint called: Local, click it and your bot should be starting with the initial phrase configured in your dialog.
 
