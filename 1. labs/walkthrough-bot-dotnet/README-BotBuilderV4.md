@@ -6,7 +6,7 @@
 
 #### Using Visual Studio 2019 (any version)
 
-1. Go `walkthrough-bot-dotnet\source\1. start\` folder and open the WBD.sln file in Visual Studio 2017.
+1. Go `walkthrough-bot-dotnet\source\1. start\` folder and open the WBD.sln file in Visual Studio 2019.
 
 2. Wait until nuget packages are restored.
 
@@ -98,7 +98,7 @@ Steps:
 
 #### Bot configuration
 
-Return to Visual Studio 2017 or Visual Studio Code open and update the `appsettings.json` file in the root of the bot project.
+Return to Visual Studio 2019 or Visual Studio Code open and update the `appsettings.json` file in the root of the bot project.
 
 Your appsettings.json file should look like this
 ```json
@@ -297,7 +297,7 @@ Before continue please open the WBD.csproj properties and validate the correct p
 
 Run your bot app and wait the web application be launched then open the Bot Framework Emulator (V4 Preview) and open the WBD.bot file you previously configured.
 
-In the Bot Framework Emulator (V4 Preview) you will see an Endpoint called: Local, click it and your bot should be starting with the initial phrase configured in your dialog.
+In the Bot Framework Emulator you will see an Endpoint called: Local, click it and your bot should be starting with the initial phrase configured in your dialog.
 
 <div style="text-align:center">
     <img src="resources/images/walkthrough-bot-dotnet-emulator.png" />
