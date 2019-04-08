@@ -10,6 +10,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,8 @@ namespace BotApp
 {
     public class Startup
     {
+        private ILoggerFactory loggerFactory;
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public Startup(IHostingEnvironment env)
@@ -87,6 +90,16 @@ namespace BotApp
                 // Note: Developers may choose not to add all the state providers to this middleware if save is not required.
                 options.Middleware.Add(new AutoSaveStateMiddleware(userState, conversationState));
                 options.Middleware.Add(new ShowTypingMiddleware());
+
+                // Creates a logger for the application to use.
+                ILogger logger = loggerFactory.CreateLogger<Bot>();
+
+                // Catches any errors that occur during a conversation turn and logs them.
+                options.OnTurnError = async (context, exception) =>
+                {
+                    logger.LogError($"Exception caught : {exception}");
+                    await context.SendActivityAsync("Sorry, it looks like something went wrong.");
+                };
             });
 
             services.AddSingleton(sp =>
@@ -121,7 +134,7 @@ namespace BotApp
 
                 // Create the custom state accessor.
                 // State accessors enable other components to read and write individual properties of state.
-                var accessors = new BotAccessors(conversationState, userState, luisServices, qnaServices)
+                var accessors = new BotAccessors(loggerFactory, conversationState, userState, luisServices, qnaServices)
                 {
                     ConversationDialogState = conversationState.CreateProperty<DialogState>("DialogState"),
                     AskForExamplePreference = conversationState.CreateProperty<bool>("AskForExamplePreference")
@@ -132,8 +145,10 @@ namespace BotApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory log)
         {
+            loggerFactory = log;
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
