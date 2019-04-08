@@ -4,23 +4,23 @@
 
 `git clone https://github.com/Microsoft/app-innovation-team.git`
 
-#### Using Visual Studio 2017 (any version)
+#### Using Visual Studio 2019 (any version)
 
-1. Based on the webinar explanation go to `walkthrough-bot-dotnet\source\1. start\` folder and open the WBD.sln file in Visual Studio 2017.
+1. Go `walkthrough-bot-dotnet\source\1. start\` folder and open the WBD.sln file in Visual Studio 2017.
 
-2. Wait until nuget packages are being reinstalled.
+2. Wait until nuget packages are restored.
 
-3. Build the WBD project (the project should be successfully compiled but is not ready to be executed).
+3. Build the WBD project (the project should be successfully compiled, but is not ready to be executed).
 
 #### Using Visual Studio Code (any version)
 
 1. Open Visual Studio Code and open the following folder `walkthrough-bot-dotnet\source\1. start\WBD\`.
 
-2. Open a terminal pointing the folder `walkthrough-bot-dotnet\source\1. start\WBD\` folder and run the following command: <b>dotnet build</b>, wait until nuget packages are being reinstalled and the project finishes the build process (the project should be successfully compiled but is not ready to be executed).
+2. Open a terminal, navigate to the folder `walkthrough-bot-dotnet\source\1. start\WBD\` and run the following command: <b>dotnet build</b>, wait until nuget packages are restored and the project finishes the build process (the project should be successfully compiled but is not ready to be executed).
 
 #### Translator text configuration
 
-Go to https://portal.azure.com/ and get successfully sign-in with your Employee or Microsoft account.
+Go to https://portal.azure.com/ and sign-in with your Employee or Microsoft account.
 
 Steps:
 
@@ -29,21 +29,70 @@ Steps:
     - Name: translator(uniqueid) e.g. translator017.
     - Subscription: your subscription.
     - Pricing tier: S1 (Pay as you go).
-    - Resource Group: Create new with the same resource name, e.g. translator017.
+    - Resource Group: Create new with the same resource name, e.g. translator017-RG.
+
+    <div style="text-align:left">
+        <img src="resources/images/walkthrough-bot-dotnet-translator-template1.png" />
+        <br />
+        <img src="resources/images/walkthrough-bot-dotnet-translator-template2.png" />
+        <br />
+    </div>
 
 2. Once the resource has been deployed go to the resource and click in <b>Resource Management->Keys</b> and take note of the `Key 1` in a notepad (we are going to use this information later to configure the bot).
+
+    <div style="text-align:left">
+        <img src="resources/images/walkthrough-bot-dotnet-translator-template3.png" />
+        <br />
+    </div>
 
 #### LUIS configuration
 
 1. Go to https://www.luis.ai/ and get successfully sign-in with your Employee or Microsoft account.
 
+    <div style="text-align:left">
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template1.png" />
+        <br />
+    </div>
+
 2. Once you are signed-in, go to My Apps and click `Import new app`, select the file: Reminders.json located in the folder `walkthrough-bot-dotnet\source\3. models\` and finally click done.
+
+    <div style="text-align:left">
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template2.png" />
+        <br />
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template3.png" />
+        <br />
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template4.png" />
+        <br />
+    </div>
 
 3. A new LUIS application has been created (this application contains three intents: Calendar.Add,Calendar.Find and None, each intent has been filled with a bunch of utterances as an example).
 
-4. Go to Reminders app and click on Train button, once you have trained the model click Publish to make public the API service.
+    <div style="text-align:left">
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template5.png" />
+        <br />
+    </div>
+
+4. Go to Reminders app and click on Train button, once you have trained the model click Publish to make public the API service. Select a Production environment value.
+
+    <div style="text-align:left">
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template6.png" />
+        <br />
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template7.png" />
+        <br />
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template8.png" />
+        <br />
+    </div>
 
 5. Once the service has been trained and published go to manage and take note of the `Application ID (from Application Information tab)`, `Authoring Key (from Keys and Endpoints tab)`, `Endpoint (from Keys and Endpoints tab)` in a notepad (we are going to use this information later to configure the bot).
+
+    <div style="text-align:left">
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template9.png" />
+        <br />
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template10.png" />
+        <br />
+        <img src="resources/images/walkthrough-bot-dotnet-luis-template11.png" />
+        <br />
+    </div>
 
 6. Everytime you add, remove or update utterances a new train and publish process is required to train and expose the latest version.
 
