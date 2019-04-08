@@ -297,10 +297,14 @@ Before continue please open the WBD.csproj properties and validate the correct p
 
 Run your bot app and wait the web application be launched then open the Bot Framework Emulator and open the WBD.bot file you previously configured.
 
+<div style="text-align:center">
+    <img src="resources/images/walkthrough-bot-dotnet-bot-running1.png" />
+</div>
+
 In the Bot Framework Emulator you will see an Endpoint called: Local, click it and your bot should be starting with the initial phrase configured in your dialog.
 
 <div style="text-align:center">
-    <img src="resources/images/walkthrough-bot-dotnet-emulator.png" />
+    <img src="resources/images/walkthrough-bot-dotnet-bot-running2.png" />
 </div>
 
 #### Troubleshooting
