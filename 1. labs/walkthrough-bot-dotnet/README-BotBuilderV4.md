@@ -299,12 +299,16 @@ Run your bot app and wait the web application be launched then open the Bot Fram
 
 <div style="text-align:center">
     <img src="resources/images/walkthrough-bot-dotnet-bot-running1.png" />
+    <br />
+    <img src="resources/images/walkthrough-bot-dotnet-bot-running2.png" />
+    <br />
 </div>
 
 In the Bot Framework Emulator you will see an Endpoint called: Local, click it and your bot should be starting with the initial phrase configured in your dialog.
 
 <div style="text-align:center">
-    <img src="resources/images/walkthrough-bot-dotnet-bot-running2.png" />
+    <img src="resources/images/walkthrough-bot-dotnet-bot-running3.png" />
+    <br />
 </div>
 
 #### Troubleshooting
