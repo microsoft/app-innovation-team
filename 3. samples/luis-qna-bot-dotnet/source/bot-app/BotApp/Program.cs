@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace BotApp
 {
@@ -12,6 +13,17 @@ namespace BotApp
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+            .ConfigureLogging((hostingContext, logging) =>
+                {
+                    // Add Azure Logging
+                    logging.AddAzureWebAppDiagnostics();
+
+                    // Logging Options.
+                    // There are other logging options available:
+                    // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-2.1
+                    //logging.AddDebug();
+                    //logging.AddConsole();
+                })
                 .UseStartup<Startup>()
                 .Build();
     }
