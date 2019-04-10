@@ -1,10 +1,10 @@
-## Adding CI/CD pipelines to the Bot using Azure DevOps
+    ## Adding CI/CD pipelines to the Bot using Azure DevOps
 
 #### Creating Azure DevOps account and project
 
 1. Go to https://dev.azure.com and get successfully sign-in with your Employee or Microsoft account.
 
-2. If it's the first time you join to Azure DevOps you will need to create an organization, if it's for personal usage you can keep your username as organization.
+2. If it's the first time you join to Azure DevOps you will need to [create an organizationt](https://azure.microsoft.com/en-us/free/), if it's for personal usage you can keep your username as organization.
 
 3. Once you have been configured your organization a new project has been created as default, let's ignore that project and let's create a new one with the following attributes:
 
@@ -43,7 +43,13 @@ Now, we need to perform the following tasks:
 
 Steps:
 
-1. Open a terminal in the local repository path.
+1. Copy the git repo url
+
+    <div style="text-align:center">
+        <img src="resources/images/walkthrough-bot-dotnet-azuredevops-copy-gitrepo-url.png" />
+    </div>
+
+2. Open a terminal in the local repository path, execute the <b>git clone</b> command passing the copied url as paremeter.
 
     ```bash
     C:/GitHub>git clone https://technical-poets@dev.azure.com/technical-poets/WBD/_git/WBD
@@ -51,7 +57,7 @@ Steps:
 
 2. Introduce your Azure DevOps credentials or your Git credentials.
 
-3. After clone your remote repository you will be able to see the folder WBD inside GitHub.
+3. After clone your remote repository you will be able to see the folder WBD inside the local repository path.
 
 4. Copy and paste the files from `walkthrough-bot-dotnet\source\1. start\` or `walkthrough-bot-dotnet\source\2. completed\` into C:\GitHub\WBD\, the files  depends if you complete or not the laboratory.
 
@@ -99,9 +105,17 @@ Steps:
 
 Now, it's time to configure the continuous integration pipeline. To perform this action click in <b>Pipelines->Builds</b> and then click `New pipeline`.
 
+<div style="text-align:center">
+    <img src="resources/images/walkthrough-bot-dotnet-azuredevops-build-newpipeline.png" />
+</div>
+
 Steps:
 
-1. Select the option: `Use the visual designer to create a pipeline without YAML`.
+1. Select the option: `Use the classic editor to create a pipeline without YAML`.
+
+    <div style="text-align:center">
+        <img src="resources/images/walkthrough-bot-dotnet-azuredevops-buildtemplate1.png" />
+    </div>
 
 2. Select the current Azure Repos Git, the WBD team project, WBD repository and master branch then click continue.
 
@@ -160,6 +174,9 @@ Steps:
 #### Creating the CD pipeline
 
 Now, it's time to configure the continuous deployment pipeline. To perform this action click in <b>Pipelines->Releases</b> and then click `New pipeline`.
+    <div style="text-align:center">
+        <img src="resources/images/walkthrough-bot-dotnet-azuredevops-cdtemplate1.png" />
+    </div>
 
 Steps:
 
