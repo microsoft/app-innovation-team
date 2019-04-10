@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RF.Contracts.Api.Domain.Enums;
+using RF.Contracts.Api.Domain.Requests;
+using RF.Contracts.Api.Domain.Responses;
+using RF.Contracts.Api.Domain.Settings;
 using RF.Contracts.Api.Helpers.Queue;
-using RF.Contracts.Domain.Entities.Contracts_Api;
 using RF.Contracts.Domain.Entities.KeyVault;
 using RF.Contracts.Domain.Entities.Queue;
 using RF.Contracts.Domain.Enums;
-using RF.Contracts.Domain.Enums.Contracts_Api;
 using RF.Contracts.Domain.Exceptions;
 using System;
 using System.Threading.Tasks;
@@ -24,14 +26,15 @@ namespace RF.Contracts.Api.Controllers
             this.logger = logger;
         }
 
-        [HttpPost, Authorize]
+        [HttpPost]
+        [Authorize(Policy = "RF-Users")]
         public async Task<IActionResult> Post([FromBody]ContractDeploymentRequest model)
         {
             // non-forced-to-disposal
-            ContractDeploymentResult result = new ContractDeploymentResult
+            ContractDeploymentResponse result = new ContractDeploymentResponse
             {
                 IsSucceded = true,
-                ResultId = (int)ContractDeploymentResultEnum.Success
+                ResultId = (int)ContractDeploymentResponseEnum.Success
             };
 
             // forced-to-disposal
@@ -40,17 +43,17 @@ namespace RF.Contracts.Api.Controllers
             try
             {
                 if (string.IsNullOrEmpty(model.Name))
-                    throw new BusinessException((int)ContractDeploymentResultEnum.FailedEmptyName);
+                    throw new BusinessException((int)ContractDeploymentResponseEnum.FailedEmptyName);
 
                 if (string.IsNullOrEmpty(model.Description))
-                    throw new BusinessException((int)ContractDeploymentResultEnum.FailedEmptyDescription);
+                    throw new BusinessException((int)ContractDeploymentResponseEnum.FailedEmptyDescription);
 
                 keyVaultConnectionInfo = new KeyVaultConnectionInfo()
                 {
-                    CertificateName = Settings.KeyVaultCertificateName,
-                    ClientId = Settings.KeyVaultClientId,
-                    ClientSecret = Settings.KeyVaultClientSecret,
-                    KeyVaultIdentifier = Settings.KeyVaultIdentifier
+                    CertificateName = ApplicationSettings.KeyVaultCertificateName,
+                    ClientId = ApplicationSettings.KeyVaultClientId,
+                    ClientSecret = ApplicationSettings.KeyVaultClientSecret,
+                    KeyVaultIdentifier = ApplicationSettings.KeyVaultIdentifier
                 };
 
                 using (MessageQueueHelper messageQueueHelper = new MessageQueueHelper())
@@ -61,7 +64,7 @@ namespace RF.Contracts.Api.Controllers
                         description = model.Description
                     };
 
-                    await messageQueueHelper.QueueMessageAsync(contractDeploymentMessage, Settings.ContractDeploymentQueueName, keyVaultConnectionInfo);
+                    await messageQueueHelper.QueueMessageAsync(contractDeploymentMessage, ApplicationSettings.ContractDeploymentQueueName, keyVaultConnectionInfo);
                 }
             }
             catch (Exception ex)
@@ -74,7 +77,7 @@ namespace RF.Contracts.Api.Controllers
                 }
                 else
                 {
-                    result.ResultId = (int)ContractDeploymentResultEnum.Failed;
+                    result.ResultId = (int)ContractDeploymentResponseEnum.Failed;
 
                     this.logger.LogError($">> Exception: {ex.Message}, StackTrace: {ex.StackTrace}");
 
@@ -91,7 +94,7 @@ namespace RF.Contracts.Api.Controllers
                 GC.Collect();
             }
 
-            string message = EnumDescription.GetEnumDescription((ContractDeploymentResultEnum)result.ResultId);
+            string message = EnumDescription.GetEnumDescription((ContractDeploymentResponseEnum)result.ResultId);
             this.logger.LogInformation($">> Message information: {message}");
 
             return (result.IsSucceded) ? (ActionResult)new OkObjectResult(new { message = message }) : (ActionResult)new BadRequestObjectResult(new { message = message });

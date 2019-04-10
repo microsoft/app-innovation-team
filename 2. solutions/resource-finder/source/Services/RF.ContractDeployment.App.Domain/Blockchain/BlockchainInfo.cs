@@ -1,4 +1,4 @@
-﻿namespace RF.Contracts.Domain.Entities.Blockchain
+﻿namespace RF.ContractDeployment.App.Domain.Blockchain
 {
     public class BlockchainInfo
     {

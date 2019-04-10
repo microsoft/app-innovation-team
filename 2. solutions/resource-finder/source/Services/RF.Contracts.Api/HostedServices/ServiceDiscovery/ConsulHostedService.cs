@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using RF.Contracts.Domain.Entities.ServiceDiscovery;
+using RF.Contracts.Api.Domain.ServiceDiscovery;
 using System;
 using System.Linq;
 using System.Net;
@@ -12,7 +12,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RF.Contracts.Api.HostedService.ServiceDiscovery
+namespace RF.Contracts.Api.HostedServices.ServiceDiscovery
 {
     public class ConsulHostedService : IHostedService
     {

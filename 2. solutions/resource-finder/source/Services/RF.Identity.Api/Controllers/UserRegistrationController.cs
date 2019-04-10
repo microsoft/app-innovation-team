@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RF.Identity.Api.Domain.Enums;
 using RF.Identity.Api.Domain.Requests;
-using RF.Identity.Api.Domain.Results;
+using RF.Identity.Api.Domain.Responses;
 using RF.Identity.Api.Domain.Settings;
 using RF.Identity.Api.Helpers.Data;
 using RF.Identity.Api.Helpers.Queue;
@@ -33,10 +33,10 @@ namespace RF.Identity.Api.Controllers
         public async Task<IActionResult> Post()
         {
             // non-forced-to-disposal
-            UserRegistrationResult result = new UserRegistrationResult
+            UserRegistrationResponse response = new UserRegistrationResponse
             {
                 IsSucceded = true,
-                ResultId = (int)UserRegistrationResultEnum.Success
+                ResultId = (int)UserRegistrationResponseEnum.Success
             };
 
             // forced-to-disposal
@@ -52,7 +52,7 @@ namespace RF.Identity.Api.Controllers
                 userRegistrationRequest.Fullname = ((HttpContext.User.FindFirst("name") != null) ? HttpContext.User.FindFirst("name").Value : string.Empty);
 
                 if (string.IsNullOrEmpty(userRegistrationRequest.Fullname))
-                    throw new BusinessException((int)UserRegistrationResultEnum.FailedEmptyFullname);
+                    throw new BusinessException((int)UserRegistrationResponseEnum.FailedEmptyFullname);
 
                 mongoDBConnectionInfo = new MongoDBConnectionInfo()
                 {
@@ -89,20 +89,20 @@ namespace RF.Identity.Api.Controllers
                 }
                 else
                 {
-                    result.ResultId = (int)UserRegistrationResultEnum.SuccessAlreadyExists;
+                    response.ResultId = (int)UserRegistrationResponseEnum.SuccessAlreadyExists;
                 }
             }
             catch (Exception ex)
             {
-                result.IsSucceded = false;
+                response.IsSucceded = false;
 
                 if (ex is BusinessException)
                 {
-                    result.ResultId = ((BusinessException)ex).ResultId;
+                    response.ResultId = ((BusinessException)ex).ResultId;
                 }
                 else
                 {
-                    result.ResultId = (int)UserRegistrationResultEnum.Failed;
+                    response.ResultId = (int)UserRegistrationResponseEnum.Failed;
 
                     this.logger.LogError($">> Exception: {ex.Message}, StackTrace: {ex.StackTrace}");
 
@@ -122,10 +122,10 @@ namespace RF.Identity.Api.Controllers
                 GC.Collect();
             }
 
-            string message = EnumDescription.GetEnumDescription((UserRegistrationResultEnum)result.ResultId);
+            string message = EnumDescription.GetEnumDescription((UserRegistrationResponseEnum)response.ResultId);
             this.logger.LogInformation($">> Message information: {message}");
 
-            return (result.IsSucceded) ? (ActionResult)new OkObjectResult(new { message = message }) : (ActionResult)new BadRequestObjectResult(new { message = message });
+            return (response.IsSucceded) ? (ActionResult)new OkObjectResult(new { message = message }) : (ActionResult)new BadRequestObjectResult(new { message = message });
         }
     }
 }

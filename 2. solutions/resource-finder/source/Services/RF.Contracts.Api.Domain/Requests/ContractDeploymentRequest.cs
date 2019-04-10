@@ -1,4 +1,4 @@
-namespace RF.Contracts.Domain.Entities.Contracts_Api
+namespace RF.Contracts.Api.Domain.Requests
 {
     public class ContractDeploymentRequest
     {

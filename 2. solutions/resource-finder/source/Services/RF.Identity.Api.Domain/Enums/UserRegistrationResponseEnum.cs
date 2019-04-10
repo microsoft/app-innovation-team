@@ -2,7 +2,7 @@
 
 namespace RF.Identity.Api.Domain.Enums
 {
-    public enum UserRegistrationResultEnum
+    public enum UserRegistrationResponseEnum
     {
         [Description("Registration request completed successfully, please wait the activation confirmation email.")]
         Success,

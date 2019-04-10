@@ -7,15 +7,16 @@ using Nethereum.Web3.Accounts;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RF.ContractDeployment.App.Domain.Blockchain;
+using RF.ContractDeployment.App.Domain.Enums;
+using RF.ContractDeployment.App.Domain.Responses;
+using RF.ContractDeployment.App.Domain.Settings;
 using RF.ContractDeployment.App.Helpers.Data;
 using RF.ContractDeployment.App.Helpers.KeyVault;
-using RF.Contracts.Domain.Entities.Blockchain;
-using RF.Contracts.Domain.Entities.ContractDeployment_App;
 using RF.Contracts.Domain.Entities.Data;
 using RF.Contracts.Domain.Entities.KeyVault;
 using RF.Contracts.Domain.Entities.Queue;
 using RF.Contracts.Domain.Enums;
-using RF.Contracts.Domain.Enums.ContractDeployment_App;
 using RF.Contracts.Domain.Exceptions;
 using System;
 using System.Net.Http;
@@ -40,59 +41,62 @@ namespace RF.ContractDeployment.App
 
         private static void Init()
         {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            Console.WriteLine($"Environment: {environment}");
+
             var builder = new ConfigurationBuilder()
-            .AddJsonFile($"appsettings.json", true, true)
+            .AddJsonFile($"appsettings.{environment}.json", true, true)
             .AddEnvironmentVariables();
 
             IConfigurationRoot Configuration = builder.Build();
 
             // Retrieve configuration from sections
-            Settings.ConnectionString = Configuration.GetSection("ConnectionString")?.Value;
-            Settings.DatabaseId = Configuration.GetSection("DatabaseId")?.Value;
-            Settings.ContractCollection = Configuration.GetSection("ContractCollection")?.Value;
-            Settings.RabbitMQUsername = Configuration.GetSection("RabbitMQUsername")?.Value;
-            Settings.RabbitMQPassword = Configuration.GetSection("RabbitMQPassword")?.Value;
-            Settings.RabbitMQHostname = Configuration.GetSection("RabbitMQHostname")?.Value;
-            Settings.RabbitMQPort = Convert.ToInt16(Configuration.GetSection("RabbitMQPort")?.Value);
-            Settings.ContractDeploymentQueueName = Configuration.GetSection("ContractDeploymentQueueName")?.Value;
-            Settings.KeyVaultCertificateName = Configuration.GetSection("KeyVaultCertificateName")?.Value;
-            Settings.KeyVaultClientId = Configuration.GetSection("KeyVaultClientId")?.Value;
-            Settings.KeyVaultClientSecret = Configuration.GetSection("KeyVaultClientSecret")?.Value;
-            Settings.KeyVaultIdentifier = Configuration.GetSection("KeyVaultIdentifier")?.Value;
-            Settings.KeyVaultEncryptionKey = Configuration.GetSection("KeyVaultEncryptionKey")?.Value;
-            Settings.BlockchainRPCUrl = Configuration.GetSection("BlockchainRPCUrl")?.Value;
-            Settings.BlockchainMasterAddress = Configuration.GetSection("BlockchainMasterAddress")?.Value;
-            Settings.BlockchainMasterPrivateKey = Configuration.GetSection("BlockchainMasterPrivateKey")?.Value;
-            Settings.BlockchainContractABI = Configuration.GetSection("BlockchainContractABI")?.Value;
-            Settings.BlockchainContractByteCode = Configuration.GetSection("BlockchainContractByteCode")?.Value;
+            ApplicationSettings.ConnectionString = Configuration.GetSection("ApplicationSettings:ConnectionString")?.Value;
+            ApplicationSettings.DatabaseId = Configuration.GetSection("ApplicationSettings:DatabaseId")?.Value;
+            ApplicationSettings.ContractCollection = Configuration.GetSection("ApplicationSettings:ContractCollection")?.Value;
+            ApplicationSettings.RabbitMQUsername = Configuration.GetSection("ApplicationSettings:RabbitMQUsername")?.Value;
+            ApplicationSettings.RabbitMQPassword = Configuration.GetSection("ApplicationSettings:RabbitMQPassword")?.Value;
+            ApplicationSettings.RabbitMQHostname = Configuration.GetSection("ApplicationSettings:RabbitMQHostname")?.Value;
+            ApplicationSettings.RabbitMQPort = Convert.ToInt16(Configuration.GetSection("ApplicationSettings:RabbitMQPort")?.Value);
+            ApplicationSettings.ContractDeploymentQueueName = Configuration.GetSection("ApplicationSettings:ContractDeploymentQueueName")?.Value;
+            ApplicationSettings.KeyVaultCertificateName = Configuration.GetSection("ApplicationSettings:KeyVaultCertificateName")?.Value;
+            ApplicationSettings.KeyVaultClientId = Configuration.GetSection("ApplicationSettings:KeyVaultClientId")?.Value;
+            ApplicationSettings.KeyVaultClientSecret = Configuration.GetSection("ApplicationSettings:KeyVaultClientSecret")?.Value;
+            ApplicationSettings.KeyVaultIdentifier = Configuration.GetSection("ApplicationSettings:KeyVaultIdentifier")?.Value;
+            ApplicationSettings.KeyVaultEncryptionKey = Configuration.GetSection("ApplicationSettings:KeyVaultEncryptionKey")?.Value;
+            ApplicationSettings.BlockchainRPCUrl = Configuration.GetSection("ApplicationSettings:BlockchainRPCUrl")?.Value;
+            ApplicationSettings.BlockchainMasterAddress = Configuration.GetSection("ApplicationSettings:BlockchainMasterAddress")?.Value;
+            ApplicationSettings.BlockchainMasterPrivateKey = Configuration.GetSection("ApplicationSettings:BlockchainMasterPrivateKey")?.Value;
+            ApplicationSettings.BlockchainContractABI = Configuration.GetSection("ApplicationSettings:BlockchainContractABI")?.Value;
+            ApplicationSettings.BlockchainContractByteCode = Configuration.GetSection("ApplicationSettings:BlockchainContractByteCode")?.Value;
 
             mongoDBConnectionInfo = new MongoDBConnectionInfo()
             {
-                ConnectionString = Settings.ConnectionString,
-                DatabaseId = Settings.DatabaseId,
-                ContractCollection = Settings.ContractCollection
+                ConnectionString = ApplicationSettings.ConnectionString,
+                DatabaseId = ApplicationSettings.DatabaseId,
+                ContractCollection = ApplicationSettings.ContractCollection
             };
 
             keyVaultConnectionInfo = new KeyVaultConnectionInfo()
             {
-                CertificateName = Settings.KeyVaultCertificateName,
-                ClientId = Settings.KeyVaultClientId,
-                ClientSecret = Settings.KeyVaultClientSecret,
-                KeyVaultIdentifier = Settings.KeyVaultIdentifier
+                CertificateName = ApplicationSettings.KeyVaultCertificateName,
+                ClientId = ApplicationSettings.KeyVaultClientId,
+                ClientSecret = ApplicationSettings.KeyVaultClientSecret,
+                KeyVaultIdentifier = ApplicationSettings.KeyVaultIdentifier
             };
 
             blockchainInfo = new BlockchainInfo()
             {
-                RPCUrl = Settings.BlockchainRPCUrl,
-                MasterAddress = Settings.BlockchainMasterAddress,
-                MasterPrivateKey = Settings.BlockchainMasterPrivateKey,
-                ContractABI = Settings.BlockchainContractABI,
-                ContractByteCode = Settings.BlockchainContractByteCode
+                RPCUrl = ApplicationSettings.BlockchainRPCUrl,
+                MasterAddress = ApplicationSettings.BlockchainMasterAddress,
+                MasterPrivateKey = ApplicationSettings.BlockchainMasterPrivateKey,
+                ContractABI = ApplicationSettings.BlockchainContractABI,
+                ContractByteCode = ApplicationSettings.BlockchainContractByteCode
             };
 
             using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(keyVaultConnectionInfo))
             {
-                secret = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
+                secret = keyVaultHelper.GetVaultKeyAsync(ApplicationSettings.KeyVaultEncryptionKey).Result;
             }
 
             account = new Account(blockchainInfo.MasterPrivateKey);
@@ -111,17 +115,17 @@ namespace RF.ContractDeployment.App
                     Console.WriteLine($"Take it easy, the console will display important messages, actually, it's running!! :)");
 
                     ConnectionFactory factory = new ConnectionFactory();
-                    factory.UserName = Settings.RabbitMQUsername;
-                    factory.Password = Settings.RabbitMQPassword;
-                    factory.HostName = Settings.RabbitMQHostname;
-                    factory.Port = Settings.RabbitMQPort;
+                    factory.UserName = ApplicationSettings.RabbitMQUsername;
+                    factory.Password = ApplicationSettings.RabbitMQPassword;
+                    factory.HostName = ApplicationSettings.RabbitMQHostname;
+                    factory.Port = ApplicationSettings.RabbitMQPort;
                     factory.RequestedHeartbeat = 60;
                     factory.DispatchConsumersAsync = true;
 
                     var connection = factory.CreateConnection();
                     var channel = connection.CreateModel();
 
-                    channel.QueueDeclare(queue: Settings.ContractDeploymentQueueName,
+                    channel.QueueDeclare(queue: ApplicationSettings.ContractDeploymentQueueName,
                                     durable: true,
                                     exclusive: false,
                                     autoDelete: false,
@@ -132,10 +136,10 @@ namespace RF.ContractDeployment.App
                     var consumer = new AsyncEventingBasicConsumer(channel);
                     consumer.Received += async (model, ea) =>
                     {
-                        ContractDeploymentResult result = new ContractDeploymentResult
+                        ContractDeploymentResponse result = new ContractDeploymentResponse
                         {
                             IsSucceded = true,
-                            ResultId = (int)ContractDeploymentResultEnum.Success
+                            ResultId = (int)ContractDeploymentResponseEnum.Success
                         };
 
                         // forced-to-disposal
@@ -154,9 +158,9 @@ namespace RF.ContractDeployment.App
 
                             var obj_decrypted = JsonConvert.DeserializeObject<ContractDeploymentMessage>(decrypted);
 
-                            Console.WriteLine($">> Contract ABI: {blockchainInfo.ContractABI}");
-                            Console.WriteLine($">> Contract ByteCode: {blockchainInfo.ContractByteCode}");
-                            Console.WriteLine($">> Master Address: {blockchainInfo.MasterAddress}");
+                            //Console.WriteLine($">> Contract ABI: {blockchainInfo.ContractABI}");
+                            //Console.WriteLine($">> Contract ByteCode: {blockchainInfo.ContractByteCode}");
+                            //Console.WriteLine($">> Master Address: {blockchainInfo.MasterAddress}");
 
                             var gasDeploy = await web3.Eth.DeployContract.EstimateGasAsync(blockchainInfo.ContractABI, blockchainInfo.ContractByteCode, blockchainInfo.MasterAddress, new object[] { });
                             Console.WriteLine($">> Deploying contract using: {gasDeploy.Value} gas");
@@ -210,7 +214,7 @@ namespace RF.ContractDeployment.App
                                 result.IsSucceded = false;
                                 result.ResultId = ((BusinessException)ex).ResultId;
 
-                                string message = EnumDescription.GetEnumDescription((ContractDeploymentResultEnum)result.ResultId);
+                                string message = EnumDescription.GetEnumDescription((ContractDeploymentResponseEnum)result.ResultId);
                                 Console.WriteLine($">> Message information: {message}");
                             }
                             else
@@ -233,7 +237,7 @@ namespace RF.ContractDeployment.App
                         }
                     };
 
-                    String consumerTag = channel.BasicConsume(Settings.ContractDeploymentQueueName, false, consumer);
+                    String consumerTag = channel.BasicConsume(ApplicationSettings.ContractDeploymentQueueName, false, consumer);
                 }
                 catch (Exception ex)
                 {

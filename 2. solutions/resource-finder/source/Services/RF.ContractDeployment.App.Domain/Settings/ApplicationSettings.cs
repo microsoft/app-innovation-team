@@ -1,6 +1,6 @@
-﻿namespace RF.ContractDeployment.App
+﻿namespace RF.ContractDeployment.App.Domain.Settings
 {
-    public class Settings
+    public class ApplicationSettings
     {
         public static string ConnectionString { get; set; }
         public static string DatabaseId { get; set; }

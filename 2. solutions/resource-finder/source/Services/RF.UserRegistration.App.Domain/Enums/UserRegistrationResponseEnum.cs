@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel;
 
-namespace RF.Contracts.Domain.Enums.ContractDeployment_App
+namespace RF.UserRegistration.App.Domain.Enums
 {
-    public enum ContractDeploymentResultEnum
+    public enum UserRegistrationResponseEnum
     {
         [Description("User activation successfully.")]
         Success,
 
-        [Description("The user not exists in the database.")]
-        FailedUserNotExists,
+        [Description("The email already exists.")]
+        FailedEmailAlreadyExists,
 
         [Description("There was a problem in the user activation.")]
         Failed
