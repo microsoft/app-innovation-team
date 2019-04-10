@@ -6,6 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Consul" Version="0.7.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="2.2.0" />
@@ -16,6 +17,8 @@
     <PackageReference Include="NETCore.Encrypt" Version="2.0.7" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Identity.Web\Microsoft.Identity.Web.csproj" />
+    <ProjectReference Include="..\RF.Identity.Api.Domain\RF.Identity.Api.Domain.csproj" />
     <ProjectReference Include="..\RF.Identity.Domain\RF.Identity.Domain.csproj" />
   </ItemGroup>
 </Project>

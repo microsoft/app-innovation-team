@@ -1,4 +1,5 @@
 using RabbitMQ.Client;
+using RF.Identity.Api.Domain.Settings;
 using RF.Identity.Api.Helpers.Base;
 using RF.Identity.Api.Helpers.KeyVault;
 using RF.Identity.Domain.Entities.KeyVault;
@@ -13,17 +14,17 @@ namespace RF.Identity.Api.Helpers.Queue
         public async Task QueueMessageAsync<T>(T model, string queue, KeyVaultConnectionInfo keyVaultConnection)
         {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.UserName = Settings.RabbitMQUsername;
-            factory.Password = Settings.RabbitMQPassword;
-            factory.HostName = Settings.RabbitMQHostname;
-            factory.Port = Settings.RabbitMQPort;
+            factory.UserName = ApplicationSettings.RabbitMQUsername;
+            factory.Password = ApplicationSettings.RabbitMQPassword;
+            factory.HostName = ApplicationSettings.RabbitMQHostname;
+            factory.Port = ApplicationSettings.RabbitMQPort;
 
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(model);
             var encrypted = string.Empty;
 
             using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(keyVaultConnection))
             {
-                string secret = await keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey);
+                string secret = await keyVaultHelper.GetVaultKeyAsync(ApplicationSettings.KeyVaultEncryptionKey);
                 encrypted = NETCore.Encrypt.EncryptProvider.AESEncrypt(json, secret);
             }
 
