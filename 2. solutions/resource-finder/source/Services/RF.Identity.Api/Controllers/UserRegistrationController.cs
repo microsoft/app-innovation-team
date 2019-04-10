@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using RF.Identity.Api.Domain.Enums;
+using RF.Identity.Api.Domain.Requests;
+using RF.Identity.Api.Domain.Results;
+using RF.Identity.Api.Domain.Settings;
 using RF.Identity.Api.Helpers.Data;
-using RF.Identity.Api.Helpers.Hashing;
 using RF.Identity.Api.Helpers.Queue;
-using RF.Identity.Api.Helpers.Validation;
 using RF.Identity.Domain.Entities.Data;
-using RF.Identity.Domain.Entities.Identity_Api;
 using RF.Identity.Domain.Entities.KeyVault;
 using RF.Identity.Domain.Entities.Queue;
 using RF.Identity.Domain.Enums;
-using RF.Identity.Domain.Enums.Identity_Api;
 using RF.Identity.Domain.Exceptions;
 using System;
 using System.Threading.Tasks;
@@ -28,7 +29,8 @@ namespace RF.Identity.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]UserRegistrationRequest model)
+        [Authorize(Policy = "RF-Users")]
+        public async Task<IActionResult> Post()
         {
             // non-forced-to-disposal
             UserRegistrationResult result = new UserRegistrationResult
@@ -38,68 +40,56 @@ namespace RF.Identity.Api.Controllers
             };
 
             // forced-to-disposal
+            UserRegistrationRequest userRegistrationRequest = null;
             MongoDBConnectionInfo mongoDBConnectionInfo = null;
             KeyVaultConnectionInfo keyVaultConnectionInfo = null;
             User user = null;
 
             try
             {
-                if (string.IsNullOrEmpty(model.Fullname))
+                userRegistrationRequest = new UserRegistrationRequest();
+                userRegistrationRequest.Email = HttpContext.User.FindFirst("preferred_username").Value;
+                userRegistrationRequest.Fullname = ((HttpContext.User.FindFirst("name") != null) ? HttpContext.User.FindFirst("name").Value : string.Empty);
+
+                if (string.IsNullOrEmpty(userRegistrationRequest.Fullname))
                     throw new BusinessException((int)UserRegistrationResultEnum.FailedEmptyFullname);
-
-                if (string.IsNullOrEmpty(model.Email))
-                    throw new BusinessException((int)UserRegistrationResultEnum.FailedEmptyEmail);
-
-                if (string.IsNullOrEmpty(model.Password))
-                    throw new BusinessException((int)UserRegistrationResultEnum.FailedEmptyPassword);
-
-                using (ValidationHelper validationHelper = new ValidationHelper())
-                {
-                    bool validationEmail = validationHelper.IsValidEmail(model.Email);
-
-                    if (!validationEmail)
-                        throw new BusinessException((int)UserRegistrationResultEnum.FailedNotValidEmail);
-                }
 
                 mongoDBConnectionInfo = new MongoDBConnectionInfo()
                 {
-                    ConnectionString = Settings.ConnectionString,
-                    DatabaseId = Settings.DatabaseId,
-                    UserCollection = Settings.UserCollection
+                    ConnectionString = ApplicationSettings.ConnectionString,
+                    DatabaseId = ApplicationSettings.DatabaseId,
+                    UserCollection = ApplicationSettings.UserCollection
                 };
 
                 using (UserRegistrationDataHelper userRegistrationDataHelper = new UserRegistrationDataHelper(mongoDBConnectionInfo))
                 {
-                    user = userRegistrationDataHelper.GetUser(model.Email);
+                    user = userRegistrationDataHelper.GetUser(userRegistrationRequest.Email);
                 }
 
-                if (user != null)
-                    throw new BusinessException((int)UserRegistrationResultEnum.FailedEmailAlreadyExists);
-
-                string password = string.Empty;
-                using (HashHelper hashHelper = new HashHelper())
+                if (user == null)
                 {
-                    password = hashHelper.GetSha256Hash(model.Password);
-                }
-
-                keyVaultConnectionInfo = new KeyVaultConnectionInfo()
-                {
-                    CertificateName = Settings.KeyVaultCertificateName,
-                    ClientId = Settings.KeyVaultClientId,
-                    ClientSecret = Settings.KeyVaultClientSecret,
-                    KeyVaultIdentifier = Settings.KeyVaultIdentifier
-                };
-
-                using (MessageQueueHelper messageQueueHelper = new MessageQueueHelper())
-                {
-                    UserRegistrationMessage userRegistrationMessage = new UserRegistrationMessage()
+                    keyVaultConnectionInfo = new KeyVaultConnectionInfo()
                     {
-                        fullname = model.Fullname,
-                        email = model.Email,
-                        password = password
+                        CertificateName = ApplicationSettings.KeyVaultCertificateName,
+                        ClientId = ApplicationSettings.KeyVaultClientId,
+                        ClientSecret = ApplicationSettings.KeyVaultClientSecret,
+                        KeyVaultIdentifier = ApplicationSettings.KeyVaultIdentifier
                     };
 
-                    await messageQueueHelper.QueueMessageAsync(userRegistrationMessage, Settings.UserRegistrationQueueName, keyVaultConnectionInfo);
+                    using (MessageQueueHelper messageQueueHelper = new MessageQueueHelper())
+                    {
+                        UserRegistrationMessage userRegistrationMessage = new UserRegistrationMessage()
+                        {
+                            fullname = userRegistrationRequest.Fullname,
+                            email = userRegistrationRequest.Email
+                        };
+
+                        await messageQueueHelper.QueueMessageAsync(userRegistrationMessage, ApplicationSettings.UserRegistrationQueueName, keyVaultConnectionInfo);
+                    }
+                }
+                else
+                {
+                    result.ResultId = (int)UserRegistrationResultEnum.SuccessAlreadyExists;
                 }
             }
             catch (Exception ex)
@@ -124,6 +114,7 @@ namespace RF.Identity.Api.Controllers
             }
             finally
             {
+                userRegistrationRequest = null;
                 mongoDBConnectionInfo = null;
                 keyVaultConnectionInfo = null;
                 user = null;

@@ -1,4 +1,5 @@
-﻿using RF.UserRegistration.App.Helpers.Base;
+﻿using RF.UserRegistration.App.Domain.Settings;
+using RF.UserRegistration.App.Helpers.Base;
 using SendGrid.Helpers.Mail;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace RF.UserRegistration.App.Helpers.Mail
             string emailTo, string emailToFullname)
         {
             //configure sendergrid api.
-            string apiKey = Settings.SendGridAPIKey;
+            string apiKey = ApplicationSettings.SendGridAPIKey;
             var client = new SendGrid.SendGridClient(apiKey);
 
             //build mail.
