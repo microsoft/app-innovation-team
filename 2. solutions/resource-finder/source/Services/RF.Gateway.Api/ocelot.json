@@ -12,17 +12,6 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/userauthentication",
-      "DownstreamScheme": "https",
-      "DangerousAcceptAnyServerCertificateValidator": "true",
-      "UpstreamPathTemplate": "/userauthentication",
-      "ServiceName": "identity-api",
-      "UpstreamHttpMethod": [ "Get", "Post" ],
-      "LoadBalancerOptions": {
-        "Type": "RoundRobin"
-      }
-    },
-    {
       "DownstreamPathTemplate": "/api/contractdeployment",
       "DownstreamScheme": "https",
       "DangerousAcceptAnyServerCertificateValidator": "true",
