@@ -3,14 +3,15 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using RF.Identity.Domain.Entities.Blockchain;
 using RF.Identity.Domain.Entities.Data;
 using RF.Identity.Domain.Entities.KeyVault;
 using RF.Identity.Domain.Entities.Queue;
-using RF.Identity.Domain.Entities.UserRegistration_App;
 using RF.Identity.Domain.Enums;
-using RF.Identity.Domain.Enums.UserRegistration_App;
 using RF.Identity.Domain.Exceptions;
+using RF.UserRegistration.App.Domain.Blockchain;
+using RF.UserRegistration.App.Domain.Enums;
+using RF.UserRegistration.App.Domain.Results;
+using RF.UserRegistration.App.Domain.Settings;
 using RF.UserRegistration.App.Helpers.Blockchain;
 using RF.UserRegistration.App.Helpers.Data;
 using RF.UserRegistration.App.Helpers.KeyVault;
@@ -35,46 +36,49 @@ namespace RF.UserRegistration.App
 
         private static void Init()
         {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            Console.WriteLine($"Environment: {environment}");
+
             var builder = new ConfigurationBuilder()
-            .AddJsonFile($"appsettings.json", true, true)
+            .AddJsonFile($"appsettings.{environment}.json", true, true)
             .AddEnvironmentVariables();
 
             IConfigurationRoot Configuration = builder.Build();
 
             // Retrieve configuration from sections
-            Settings.ConnectionString = Configuration.GetSection("ConnectionString")?.Value;
-            Settings.DatabaseId = Configuration.GetSection("DatabaseId")?.Value;
-            Settings.UserCollection = Configuration.GetSection("UserCollection")?.Value;
-            Settings.RabbitMQUsername = Configuration.GetSection("RabbitMQUsername")?.Value;
-            Settings.RabbitMQPassword = Configuration.GetSection("RabbitMQPassword")?.Value;
-            Settings.RabbitMQHostname = Configuration.GetSection("RabbitMQHostname")?.Value;
-            Settings.RabbitMQPort = Convert.ToInt16(Configuration.GetSection("RabbitMQPort")?.Value);
-            Settings.UserRegistrationQueueName = Configuration.GetSection("UserRegistrationQueueName")?.Value;
-            Settings.KeyVaultCertificateName = Configuration.GetSection("KeyVaultCertificateName")?.Value;
-            Settings.KeyVaultClientId = Configuration.GetSection("KeyVaultClientId")?.Value;
-            Settings.KeyVaultClientSecret = Configuration.GetSection("KeyVaultClientSecret")?.Value;
-            Settings.KeyVaultIdentifier = Configuration.GetSection("KeyVaultIdentifier")?.Value;
-            Settings.KeyVaultEncryptionKey = Configuration.GetSection("KeyVaultEncryptionKey")?.Value;
-            Settings.SendGridAPIKey = Configuration.GetSection("SendGridAPIKey")?.Value;
+            ApplicationSettings.ConnectionString = Configuration.GetSection("ApplicationSettings:ConnectionString")?.Value;
+            ApplicationSettings.DatabaseId = Configuration.GetSection("ApplicationSettings:DatabaseId")?.Value;
+            ApplicationSettings.UserCollection = Configuration.GetSection("ApplicationSettings:UserCollection")?.Value;
+            ApplicationSettings.RabbitMQUsername = Configuration.GetSection("ApplicationSettings:RabbitMQUsername")?.Value;
+            ApplicationSettings.RabbitMQPassword = Configuration.GetSection("ApplicationSettings:RabbitMQPassword")?.Value;
+            ApplicationSettings.RabbitMQHostname = Configuration.GetSection("ApplicationSettings:RabbitMQHostname")?.Value;
+            ApplicationSettings.RabbitMQPort = Convert.ToInt16(Configuration.GetSection("ApplicationSettings:RabbitMQPort")?.Value);
+            ApplicationSettings.UserRegistrationQueueName = Configuration.GetSection("ApplicationSettings:UserRegistrationQueueName")?.Value;
+            ApplicationSettings.KeyVaultCertificateName = Configuration.GetSection("ApplicationSettings:KeyVaultCertificateName")?.Value;
+            ApplicationSettings.KeyVaultClientId = Configuration.GetSection("ApplicationSettings:KeyVaultClientId")?.Value;
+            ApplicationSettings.KeyVaultClientSecret = Configuration.GetSection("ApplicationSettings:KeyVaultClientSecret")?.Value;
+            ApplicationSettings.KeyVaultIdentifier = Configuration.GetSection("ApplicationSettings:KeyVaultIdentifier")?.Value;
+            ApplicationSettings.KeyVaultEncryptionKey = Configuration.GetSection("ApplicationSettings:KeyVaultEncryptionKey")?.Value;
+            ApplicationSettings.SendGridAPIKey = Configuration.GetSection("ApplicationSettings:SendGridAPIKey")?.Value;
 
             mongoDBConnectionInfo = new MongoDBConnectionInfo()
             {
-                ConnectionString = Settings.ConnectionString,
-                DatabaseId = Settings.DatabaseId,
-                UserCollection = Settings.UserCollection
+                ConnectionString = ApplicationSettings.ConnectionString,
+                DatabaseId = ApplicationSettings.DatabaseId,
+                UserCollection = ApplicationSettings.UserCollection
             };
 
             keyVaultConnectionInfo = new KeyVaultConnectionInfo()
             {
-                CertificateName = Settings.KeyVaultCertificateName,
-                ClientId = Settings.KeyVaultClientId,
-                ClientSecret = Settings.KeyVaultClientSecret,
-                KeyVaultIdentifier = Settings.KeyVaultIdentifier
+                CertificateName = ApplicationSettings.KeyVaultCertificateName,
+                ClientId = ApplicationSettings.KeyVaultClientId,
+                ClientSecret = ApplicationSettings.KeyVaultClientSecret,
+                KeyVaultIdentifier = ApplicationSettings.KeyVaultIdentifier
             };
 
             using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(keyVaultConnectionInfo))
             {
-                secret = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
+                secret = keyVaultHelper.GetVaultKeyAsync(ApplicationSettings.KeyVaultEncryptionKey).Result;
             }
 
             using (BlockchainHelper blockchainHelper = new BlockchainHelper())
@@ -95,17 +99,17 @@ namespace RF.UserRegistration.App
                     Console.WriteLine($"Take it easy, the console will display important messages, actually, it's running!! :)");
 
                     ConnectionFactory factory = new ConnectionFactory();
-                    factory.UserName = Settings.RabbitMQUsername;
-                    factory.Password = Settings.RabbitMQPassword;
-                    factory.HostName = Settings.RabbitMQHostname;
-                    factory.Port = Settings.RabbitMQPort;
+                    factory.UserName = ApplicationSettings.RabbitMQUsername;
+                    factory.Password = ApplicationSettings.RabbitMQPassword;
+                    factory.HostName = ApplicationSettings.RabbitMQHostname;
+                    factory.Port = ApplicationSettings.RabbitMQPort;
                     factory.RequestedHeartbeat = 60;
                     factory.DispatchConsumersAsync = true;
 
                     var connection = factory.CreateConnection();
                     var channel = connection.CreateModel();
 
-                    channel.QueueDeclare(queue: Settings.UserRegistrationQueueName,
+                    channel.QueueDeclare(queue: ApplicationSettings.UserRegistrationQueueName,
                                     durable: true,
                                     exclusive: false,
                                     autoDelete: false,
@@ -200,8 +204,6 @@ namespace RF.UserRegistration.App
                             user = new User();
                             user.fullname = obj_decrypted.fullname;
                             user.email = obj_decrypted.email;
-                            user.password = obj_decrypted.password;
-                            user.role = "user";
                             user.address = account.Address;
                             user.dataenc = jsonEncrypted;
                             user.datakey = key_data;
@@ -253,7 +255,7 @@ namespace RF.UserRegistration.App
                         }
                     };
 
-                    String consumerTag = channel.BasicConsume(Settings.UserRegistrationQueueName, false, consumer);
+                    String consumerTag = channel.BasicConsume(ApplicationSettings.UserRegistrationQueueName, false, consumer);
                 }
                 catch (Exception ex)
                 {
