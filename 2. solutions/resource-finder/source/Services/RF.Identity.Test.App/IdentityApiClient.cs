@@ -1,8 +1,10 @@
 ﻿using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RF.Identity.Test.App
@@ -30,9 +32,45 @@ namespace RF.Identity.Test.App
                         ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
                         using (HttpResponseMessage res = await client.SendAsync(req))
                         {
-                            res.EnsureSuccessStatusCode();
-                            string json = await res.Content.ReadAsStringAsync();
-                            Console.WriteLine($"Json result: {json}");
+                            Console.WriteLine($"Console Status Code: {res.StatusCode} - {res.ReasonPhrase}");
+                            
+                            if (res.StatusCode == HttpStatusCode.OK)
+                            {
+                                string json = await res.Content.ReadAsStringAsync();
+                                Console.WriteLine($"Json result: {json}");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task ContractDeploymentnAsync()
+        {
+            ContractDeploymentRequest cdeployment = new ContractDeploymentRequest();
+            cdeployment.Name = $"Contract-{Guid.NewGuid().ToString()}";
+            cdeployment.Description = $"Some description related with {cdeployment.Name}";
+
+            using (HttpClientHandler handler = new HttpClientHandler())
+            {
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
+                using (HttpClient client = new HttpClient(handler))
+                {
+                    using (var req = new HttpRequestMessage(HttpMethod.Post, $"{_settings.ApiBaseUrl}/contractdeployment"))
+                    {
+                        string accessToken = await GetAccessTokenAsync();
+                        req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                        req.Content = new StringContent(JsonConvert.SerializeObject(cdeployment), Encoding.UTF8, "application/json");
+                        ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                        using (HttpResponseMessage res = await client.SendAsync(req))
+                        {
+                            Console.WriteLine($"Console Status Code: {res.StatusCode} - {res.ReasonPhrase}");
+
+                            if (res.StatusCode == HttpStatusCode.OK)
+                            {
+                                string json = await res.Content.ReadAsStringAsync();
+                                Console.WriteLine($"Json result: {json}");
+                            }
                         }
                     }
                 }

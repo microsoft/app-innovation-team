@@ -43,10 +43,10 @@ namespace RF.Identity.Api
             ApplicationSettings.KeyVaultEncryptionKey = Configuration.GetSection("ApplicationSettings:KeyVaultEncryptionKey")?.Value;
 
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, ConsulHostedService>();
-            services.Configure<ConsulConfig>(Configuration.GetSection("consulConfig"));
+            services.Configure<ConsulConfig>(Configuration.GetSection("ConsulConfig"));
             services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
             {
-                var address = Configuration["consulConfig:address"];
+                var address = Configuration["ConsulConfig:address"];
                 consulConfig.Address = new Uri(address);
             }));
 
@@ -105,7 +105,7 @@ namespace RF.Identity.Api
         {
             ConsulClient client = new ConsulClient(consulConfig =>
             {
-                consulConfig.Address = new Uri(Configuration["consulConfig:address"]);
+                consulConfig.Address = new Uri(Configuration["ConsulConfig:address"]);
             });
 
             await client.Agent.ServiceDeregister(ConsulHostedService.RegistrationID);

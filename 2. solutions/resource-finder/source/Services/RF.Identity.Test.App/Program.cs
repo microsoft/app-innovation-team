@@ -10,10 +10,15 @@ namespace RF.Identity.Test.App
         {
             IConfiguration config = CreateConfig();
             ClientSettings settings = config.Get<ClientSettings>();
-            var todoApiClient = new IdentityApiClient(settings);
-            await todoApiClient.UserRegistrationAsync();
-            Console.WriteLine("Press Enter to quit");
-            Console.ReadLine();
+            var identityApiClient = new IdentityApiClient(settings);
+
+            while(true)
+            {
+                //await identityApiClient.UserRegistrationAsync();
+                await identityApiClient.ContractDeploymentnAsync();
+                Console.WriteLine("Press Enter to execute it again or close the window if you want to exit");
+                Console.ReadLine();
+            }
         }
 
         private static IConfiguration CreateConfig() =>

@@ -10,7 +10,7 @@ using RF.Identity.Domain.Enums;
 using RF.Identity.Domain.Exceptions;
 using RF.UserRegistration.App.Domain.Blockchain;
 using RF.UserRegistration.App.Domain.Enums;
-using RF.UserRegistration.App.Domain.Results;
+using RF.UserRegistration.App.Domain.Responses;
 using RF.UserRegistration.App.Domain.Settings;
 using RF.UserRegistration.App.Helpers.Blockchain;
 using RF.UserRegistration.App.Helpers.Data;
@@ -120,10 +120,10 @@ namespace RF.UserRegistration.App
                     var consumer = new AsyncEventingBasicConsumer(channel);
                     consumer.Received += async (model, ea) =>
                     {
-                        UserRegistrationResult result = new UserRegistrationResult
+                        UserRegistrationResponse response = new UserRegistrationResponse
                         {
                             IsSucceded = true,
-                            ResultId = (int)UserRegistrationResultEnum.Success
+                            ResultId = (int)UserRegistrationResponseEnum.Success
                         };
 
                         // forced-to-disposal
@@ -199,7 +199,7 @@ namespace RF.UserRegistration.App
                             user = userActivationDataHelper.GetUser(obj_decrypted.email);
 
                             if (user != null)
-                                throw new BusinessException((int)UserRegistrationResultEnum.FailedEmailAlreadyExists);
+                                throw new BusinessException((int)UserRegistrationResponseEnum.FailedEmailAlreadyExists);
 
                             user = new User();
                             user.fullname = obj_decrypted.fullname;
@@ -225,10 +225,10 @@ namespace RF.UserRegistration.App
                         {
                             if (ex is BusinessException)
                             {
-                                result.IsSucceded = false;
-                                result.ResultId = ((BusinessException)ex).ResultId;
+                                response.IsSucceded = false;
+                                response.ResultId = ((BusinessException)ex).ResultId;
 
-                                string message = EnumDescription.GetEnumDescription((UserRegistrationResultEnum)result.ResultId);
+                                string message = EnumDescription.GetEnumDescription((UserRegistrationResponseEnum)response.ResultId);
                                 Console.WriteLine($">> Message information: {message}");
                             }
                             else

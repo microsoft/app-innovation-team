@@ -1,6 +1,6 @@
-﻿namespace RF.Identity.Api.Domain.Results
+﻿namespace RF.Contracts.Api.Domain.Responses
 {
-    public class UserRegistrationResult
+    public class ContractDeploymentResponse
     {
         public bool IsSucceded { get; set; }
         public int ResultId { get; set; }

@@ -1,8 +1,7 @@
-namespace RF.Contracts.Api
+namespace RF.Contracts.Api.Domain.Settings
 {
-    public class Settings
+    public class ApplicationSettings
     {
-        public static string AuthorizationKey { get; set; }
         public static string ConnectionString { get; set; }
         public static string DatabaseId { get; set; }
         public static string ContractCollection { get; set; }

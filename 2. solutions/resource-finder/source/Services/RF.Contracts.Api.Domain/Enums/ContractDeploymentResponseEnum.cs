@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 
-namespace RF.Contracts.Domain.Enums.Contracts_Api
+namespace RF.Contracts.Api.Domain.Enums
 {
-    public enum ContractDeploymentResultEnum
+    public enum ContractDeploymentResponseEnum
     {
-        [Description("Contract deployment successfully.")]
+        [Description("Contract deployment queued successfully.")]
         Success,
 
         [Description("The name can not be empty.")]

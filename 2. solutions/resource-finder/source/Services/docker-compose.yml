@@ -66,6 +66,48 @@ services:
     depends_on:
       rabbit:
         condition: service_healthy
+  contracts-api:
+    image: rf.contracts.api:1.0
+    mem_limit: 250M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: contracts-api
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=https://+;http://+
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=Password.123
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/RF-CERT.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+    build:
+      context: .
+      dockerfile: RF.Contracts.Api/Dockerfile
+    ports:
+      - "443"
+    restart: always
+    depends_on:
+      - consul
+  contractdeployment-app:
+    image: rf.contractdeployment.app:1.0
+    mem_limit: 200M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: contractdeployment-app
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+    build:
+      context: .
+      dockerfile: RF.ContractDeployment.App/Dockerfile
+    restart: always
+    depends_on:
+      rabbit:
+        condition: service_healthy
   consul:
     image: consul:1.4.3
     mem_limit: 250M

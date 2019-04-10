@@ -1,4 +1,4 @@
-﻿namespace RF.Contracts.Domain.Entities.ServiceDiscovery
+﻿namespace RF.Contracts.Api.Domain.ServiceDiscovery
 {
     public class ConsulConfig
     {
