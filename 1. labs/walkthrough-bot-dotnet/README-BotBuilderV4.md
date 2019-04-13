@@ -144,13 +144,13 @@ Your appsettings.json file should look like this
             throw new InvalidOperationException("BotFrameworkOptions must be configured prior to setting up the State Accessors");
         }
 
-        var conversationState = options.State.OfType<ConversationState>().FirstOrDefault();
+        conversationState = options.Middleware.OfType<AutoSaveStateMiddleware>().FirstOrDefault().BotStateSet.BotStates.OfType<ConversationState>().FirstOrDefault();
         if (conversationState == null)
         {
             throw new InvalidOperationException("ConversationState must be defined and added before adding conversation-scoped state accessors.");
         }
 
-        var userState = options.State.OfType<UserState>().FirstOrDefault();
+        userState = options.Middleware.OfType<AutoSaveStateMiddleware>().FirstOrDefault().BotStateSet.BotStates.OfType<UserState>().FirstOrDefault();
         if (userState == null)
         {
             throw new InvalidOperationException("UserState must be defined and added before adding user-scoped state accessors.");
