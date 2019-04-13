@@ -66,6 +66,10 @@ namespace RF.Contracts.Api.Controllers
 
                     await messageQueueHelper.QueueMessageAsync(contractDeploymentMessage, ApplicationSettings.ContractDeploymentQueueName, keyVaultConnectionInfo);
                 }
+
+                //TODO: Make a call into the Quorum Helper and create the contract
+
+
             }
             catch (Exception ex)
             {

@@ -1,0 +1,2353 @@
+{
+    "contracts": {
+        "/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/ApprovedFile.sol": {
+            "ApprovedFile": {
+                "abi": [
+                    {
+                        "constant": false,
+                        "inputs": [
+                            {
+                                "name": "id",
+                                "type": "bytes32"
+                            },
+                            {
+                                "name": "description",
+                                "type": "string"
+                            },
+                            {
+                                "name": "hash",
+                                "type": "bytes32"
+                            }
+                        ],
+                        "name": "Register",
+                        "outputs": [],
+                        "payable": false,
+                        "stateMutability": "nonpayable",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [
+                            {
+                                "name": "id",
+                                "type": "bytes32"
+                            }
+                        ],
+                        "name": "GetRecord",
+                        "outputs": [
+                            {
+                                "name": "",
+                                "type": "bytes32"
+                            },
+                            {
+                                "name": "",
+                                "type": "string"
+                            },
+                            {
+                                "name": "",
+                                "type": "bytes32"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [
+                            {
+                                "name": "",
+                                "type": "bytes32"
+                            }
+                        ],
+                        "name": "Documents",
+                        "outputs": [
+                            {
+                                "name": "id",
+                                "type": "bytes32"
+                            },
+                            {
+                                "name": "description",
+                                "type": "string"
+                            },
+                            {
+                                "name": "hash",
+                                "type": "bytes32"
+                            },
+                            {
+                                "name": "registered",
+                                "type": "bool"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "anonymous": false,
+                        "inputs": [
+                            {
+                                "indexed": false,
+                                "name": "id",
+                                "type": "bytes32"
+                            },
+                            {
+                                "indexed": false,
+                                "name": "description",
+                                "type": "string"
+                            },
+                            {
+                                "indexed": false,
+                                "name": "hash",
+                                "type": "bytes32"
+                            },
+                            {
+                                "indexed": false,
+                                "name": "sender",
+                                "type": "address"
+                            }
+                        ],
+                        "name": "NewDocumentRegistered",
+                        "type": "event"
+                    }
+                ],
+                "devdoc": {
+                    "methods": {}
+                },
+                "evm": {
+                    "bytecode": {
+                        "linkReferences": {},
+                        "object": "6080604052600080546001600160a01b031916331790556105e9806100256000396000f3fe608060405234801561001057600080fd5b50600436106100415760003560e01c80631f324e3c1461004657806343e491c3146100f7578063b16ec5cd1461019a575b600080fd5b6100f56004803603606081101561005c57600080fd5b8135919081019060408101602082013564010000000081111561007e57600080fd5b82018360208201111561009057600080fd5b803590602001918460018302840111640100000000831117156100b257600080fd5b91908080601f0160208091040260200160405190810160405280939291908181526020018383808284376000920191909152509295505091359250610245915050565b005b6101146004803603602081101561010d57600080fd5b503561038c565b6040518084815260200180602001838152602001828103825284818151815260200191508051906020019080838360005b8381101561015d578181015183820152602001610145565b50505050905090810190601f16801561018a5780820380516001836020036101000a031916815260200191505b5094505050505060405180910390f35b6101b7600480360360208110156101b057600080fd5b5035610459565b60408051858152908101839052811515606082015260806020808301828152865192840192909252855160a084019187019080838360005b838110156102075781810151838201526020016101ef565b50505050905090810190601f1680156102345780820380516001836020036101000a031916815260200191505b509550505050505060405180910390f35b61024e3361050e565b61025757600080fd5b60008381526002602052604090206003015460ff161561027657600080fd5b6000838152600260209081526040909120848155835161029e92600190920191850190610522565b5060008381526002602081815260408084209283018590556003909201805460ff1916600117905581518681529182018490523360608301819052608083830181815287519185019190915286517fd39c50a1647d1de58e15e1603164745f8e8014f1dd575c7a40e7f09f428d433095899589958995949193919260a085019291880191908190849084905b8381101561034257818101518382015260200161032a565b50505050905090810190601f16801561036f5780820380516001836020036101000a031916815260200191505b509550505050505060405180910390a15050600180548101905550565b60006060600061039b3361050e565b6103a457600080fd5b6000848152600260208181526040928390208054818401546001808401805488519281161561010002600019011696909604601f8101869004860282018601909752868152929591949390929184918301828280156104445780601f1061041957610100808354040283529160200191610444565b820191906000526020600020905b81548152906001019060200180831161042757829003601f168201915b50505050509150935093509350509193909250565b60026020818152600092835260409283902080546001808301805487519281161561010002600019011695909504601f81018590048502820185019096528581529094919390929091908301828280156104f45780601f106104c9576101008083540402835291602001916104f4565b820191906000526020600020905b8154815290600101906020018083116104d757829003601f168201915b50505050600283015460039093015491929160ff16905084565b6000546001600160a01b0390811691161490565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061056357805160ff1916838001178555610590565b82800160010185558215610590579182015b82811115610590578251825591602001919060010190610575565b5061059c9291506105a0565b5090565b6105ba91905b8082111561059c57600081556001016105a6565b9056fea165627a7a723058201d9aa8b1f80621bd6c1b193e66efd7c0f95ddd069a1d3c60b8f598eb939c811c0029",
+                        "opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 SLOAD PUSH1 0x1 PUSH1 0x1 PUSH1 0xA0 SHL SUB NOT AND CALLER OR SWAP1 SSTORE PUSH2 0x5E9 DUP1 PUSH2 0x25 PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN INVALID PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH2 0x10 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x4 CALLDATASIZE LT PUSH2 0x41 JUMPI PUSH1 0x0 CALLDATALOAD PUSH1 0xE0 SHR DUP1 PUSH4 0x1F324E3C EQ PUSH2 0x46 JUMPI DUP1 PUSH4 0x43E491C3 EQ PUSH2 0xF7 JUMPI DUP1 PUSH4 0xB16EC5CD EQ PUSH2 0x19A JUMPI JUMPDEST PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH2 0xF5 PUSH1 0x4 DUP1 CALLDATASIZE SUB PUSH1 0x60 DUP2 LT ISZERO PUSH2 0x5C JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST DUP2 CALLDATALOAD SWAP2 SWAP1 DUP2 ADD SWAP1 PUSH1 0x40 DUP2 ADD PUSH1 0x20 DUP3 ADD CALLDATALOAD PUSH5 0x100000000 DUP2 GT ISZERO PUSH2 0x7E JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST DUP3 ADD DUP4 PUSH1 0x20 DUP3 ADD GT ISZERO PUSH2 0x90 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST DUP1 CALLDATALOAD SWAP1 PUSH1 0x20 ADD SWAP2 DUP5 PUSH1 0x1 DUP4 MUL DUP5 ADD GT PUSH5 0x100000000 DUP4 GT OR ISZERO PUSH2 0xB2 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST SWAP2 SWAP1 DUP1 DUP1 PUSH1 0x1F ADD PUSH1 0x20 DUP1 SWAP2 DIV MUL PUSH1 0x20 ADD PUSH1 0x40 MLOAD SWAP1 DUP2 ADD PUSH1 0x40 MSTORE DUP1 SWAP4 SWAP3 SWAP2 SWAP1 DUP2 DUP2 MSTORE PUSH1 0x20 ADD DUP4 DUP4 DUP1 DUP3 DUP5 CALLDATACOPY PUSH1 0x0 SWAP3 ADD SWAP2 SWAP1 SWAP2 MSTORE POP SWAP3 SWAP6 POP POP SWAP2 CALLDATALOAD SWAP3 POP PUSH2 0x245 SWAP2 POP POP JUMP JUMPDEST STOP JUMPDEST PUSH2 0x114 PUSH1 0x4 DUP1 CALLDATASIZE SUB PUSH1 0x20 DUP2 LT ISZERO PUSH2 0x10D JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP CALLDATALOAD PUSH2 0x38C JUMP JUMPDEST PUSH1 0x40 MLOAD DUP1 DUP5 DUP2 MSTORE PUSH1 0x20 ADD DUP1 PUSH1 0x20 ADD DUP4 DUP2 MSTORE PUSH1 0x20 ADD DUP3 DUP2 SUB DUP3 MSTORE DUP5 DUP2 DUP2 MLOAD DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP DUP1 MLOAD SWAP1 PUSH1 0x20 ADD SWAP1 DUP1 DUP4 DUP4 PUSH1 0x0 JUMPDEST DUP4 DUP2 LT ISZERO PUSH2 0x15D JUMPI DUP2 DUP2 ADD MLOAD DUP4 DUP3 ADD MSTORE PUSH1 0x20 ADD PUSH2 0x145 JUMP JUMPDEST POP POP POP POP SWAP1 POP SWAP1 DUP2 ADD SWAP1 PUSH1 0x1F AND DUP1 ISZERO PUSH2 0x18A JUMPI DUP1 DUP3 SUB DUP1 MLOAD PUSH1 0x1 DUP4 PUSH1 0x20 SUB PUSH2 0x100 EXP SUB NOT AND DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP JUMPDEST POP SWAP5 POP POP POP POP POP PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 RETURN JUMPDEST PUSH2 0x1B7 PUSH1 0x4 DUP1 CALLDATASIZE SUB PUSH1 0x20 DUP2 LT ISZERO PUSH2 0x1B0 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP CALLDATALOAD PUSH2 0x459 JUMP JUMPDEST PUSH1 0x40 DUP1 MLOAD DUP6 DUP2 MSTORE SWAP1 DUP2 ADD DUP4 SWAP1 MSTORE DUP2 ISZERO ISZERO PUSH1 0x60 DUP3 ADD MSTORE PUSH1 0x80 PUSH1 0x20 DUP1 DUP4 ADD DUP3 DUP2 MSTORE DUP7 MLOAD SWAP3 DUP5 ADD SWAP3 SWAP1 SWAP3 MSTORE DUP6 MLOAD PUSH1 0xA0 DUP5 ADD SWAP2 DUP8 ADD SWAP1 DUP1 DUP4 DUP4 PUSH1 0x0 JUMPDEST DUP4 DUP2 LT ISZERO PUSH2 0x207 JUMPI DUP2 DUP2 ADD MLOAD DUP4 DUP3 ADD MSTORE PUSH1 0x20 ADD PUSH2 0x1EF JUMP JUMPDEST POP POP POP POP SWAP1 POP SWAP1 DUP2 ADD SWAP1 PUSH1 0x1F AND DUP1 ISZERO PUSH2 0x234 JUMPI DUP1 DUP3 SUB DUP1 MLOAD PUSH1 0x1 DUP4 PUSH1 0x20 SUB PUSH2 0x100 EXP SUB NOT AND DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP JUMPDEST POP SWAP6 POP POP POP POP POP POP PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 RETURN JUMPDEST PUSH2 0x24E CALLER PUSH2 0x50E JUMP JUMPDEST PUSH2 0x257 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH1 0x0 DUP4 DUP2 MSTORE PUSH1 0x2 PUSH1 0x20 MSTORE PUSH1 0x40 SWAP1 KECCAK256 PUSH1 0x3 ADD SLOAD PUSH1 0xFF AND ISZERO PUSH2 0x276 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH1 0x0 DUP4 DUP2 MSTORE PUSH1 0x2 PUSH1 0x20 SWAP1 DUP2 MSTORE PUSH1 0x40 SWAP1 SWAP2 KECCAK256 DUP5 DUP2 SSTORE DUP4 MLOAD PUSH2 0x29E SWAP3 PUSH1 0x1 SWAP1 SWAP3 ADD SWAP2 DUP6 ADD SWAP1 PUSH2 0x522 JUMP JUMPDEST POP PUSH1 0x0 DUP4 DUP2 MSTORE PUSH1 0x2 PUSH1 0x20 DUP2 DUP2 MSTORE PUSH1 0x40 DUP1 DUP5 KECCAK256 SWAP3 DUP4 ADD DUP6 SWAP1 SSTORE PUSH1 0x3 SWAP1 SWAP3 ADD DUP1 SLOAD PUSH1 0xFF NOT AND PUSH1 0x1 OR SWAP1 SSTORE DUP2 MLOAD DUP7 DUP2 MSTORE SWAP2 DUP3 ADD DUP5 SWAP1 MSTORE CALLER PUSH1 0x60 DUP4 ADD DUP2 SWAP1 MSTORE PUSH1 0x80 DUP4 DUP4 ADD DUP2 DUP2 MSTORE DUP8 MLOAD SWAP2 DUP6 ADD SWAP2 SWAP1 SWAP2 MSTORE DUP7 MLOAD PUSH32 0xD39C50A1647D1DE58E15E1603164745F8E8014F1DD575C7A40E7F09F428D4330 SWAP6 DUP10 SWAP6 DUP10 SWAP6 DUP10 SWAP6 SWAP5 SWAP2 SWAP4 SWAP2 SWAP3 PUSH1 0xA0 DUP6 ADD SWAP3 SWAP2 DUP9 ADD SWAP2 SWAP1 DUP2 SWAP1 DUP5 SWAP1 DUP5 SWAP1 JUMPDEST DUP4 DUP2 LT ISZERO PUSH2 0x342 JUMPI DUP2 DUP2 ADD MLOAD DUP4 DUP3 ADD MSTORE PUSH1 0x20 ADD PUSH2 0x32A JUMP JUMPDEST POP POP POP POP SWAP1 POP SWAP1 DUP2 ADD SWAP1 PUSH1 0x1F AND DUP1 ISZERO PUSH2 0x36F JUMPI DUP1 DUP3 SUB DUP1 MLOAD PUSH1 0x1 DUP4 PUSH1 0x20 SUB PUSH2 0x100 EXP SUB NOT AND DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP JUMPDEST POP SWAP6 POP POP POP POP POP POP PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 LOG1 POP POP PUSH1 0x1 DUP1 SLOAD DUP2 ADD SWAP1 SSTORE POP JUMP JUMPDEST PUSH1 0x0 PUSH1 0x60 PUSH1 0x0 PUSH2 0x39B CALLER PUSH2 0x50E JUMP JUMPDEST PUSH2 0x3A4 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST PUSH1 0x0 DUP5 DUP2 MSTORE PUSH1 0x2 PUSH1 0x20 DUP2 DUP2 MSTORE PUSH1 0x40 SWAP3 DUP4 SWAP1 KECCAK256 DUP1 SLOAD DUP2 DUP5 ADD SLOAD PUSH1 0x1 DUP1 DUP5 ADD DUP1 SLOAD DUP9 MLOAD SWAP3 DUP2 AND ISZERO PUSH2 0x100 MUL PUSH1 0x0 NOT ADD AND SWAP7 SWAP1 SWAP7 DIV PUSH1 0x1F DUP2 ADD DUP7 SWAP1 DIV DUP7 MUL DUP3 ADD DUP7 ADD SWAP1 SWAP8 MSTORE DUP7 DUP2 MSTORE SWAP3 SWAP6 SWAP2 SWAP5 SWAP4 SWAP1 SWAP3 SWAP2 DUP5 SWAP2 DUP4 ADD DUP3 DUP3 DUP1 ISZERO PUSH2 0x444 JUMPI DUP1 PUSH1 0x1F LT PUSH2 0x419 JUMPI PUSH2 0x100 DUP1 DUP4 SLOAD DIV MUL DUP4 MSTORE SWAP2 PUSH1 0x20 ADD SWAP2 PUSH2 0x444 JUMP JUMPDEST DUP3 ADD SWAP2 SWAP1 PUSH1 0x0 MSTORE PUSH1 0x20 PUSH1 0x0 KECCAK256 SWAP1 JUMPDEST DUP2 SLOAD DUP2 MSTORE SWAP1 PUSH1 0x1 ADD SWAP1 PUSH1 0x20 ADD DUP1 DUP4 GT PUSH2 0x427 JUMPI DUP3 SWAP1 SUB PUSH1 0x1F AND DUP3 ADD SWAP2 JUMPDEST POP POP POP POP POP SWAP2 POP SWAP4 POP SWAP4 POP SWAP4 POP POP SWAP2 SWAP4 SWAP1 SWAP3 POP JUMP JUMPDEST PUSH1 0x2 PUSH1 0x20 DUP2 DUP2 MSTORE PUSH1 0x0 SWAP3 DUP4 MSTORE PUSH1 0x40 SWAP3 DUP4 SWAP1 KECCAK256 DUP1 SLOAD PUSH1 0x1 DUP1 DUP4 ADD DUP1 SLOAD DUP8 MLOAD SWAP3 DUP2 AND ISZERO PUSH2 0x100 MUL PUSH1 0x0 NOT ADD AND SWAP6 SWAP1 SWAP6 DIV PUSH1 0x1F DUP2 ADD DUP6 SWAP1 DIV DUP6 MUL DUP3 ADD DUP6 ADD SWAP1 SWAP7 MSTORE DUP6 DUP2 MSTORE SWAP1 SWAP5 SWAP2 SWAP4 SWAP1 SWAP3 SWAP1 SWAP2 SWAP1 DUP4 ADD DUP3 DUP3 DUP1 ISZERO PUSH2 0x4F4 JUMPI DUP1 PUSH1 0x1F LT PUSH2 0x4C9 JUMPI PUSH2 0x100 DUP1 DUP4 SLOAD DIV MUL DUP4 MSTORE SWAP2 PUSH1 0x20 ADD SWAP2 PUSH2 0x4F4 JUMP JUMPDEST DUP3 ADD SWAP2 SWAP1 PUSH1 0x0 MSTORE PUSH1 0x20 PUSH1 0x0 KECCAK256 SWAP1 JUMPDEST DUP2 SLOAD DUP2 MSTORE SWAP1 PUSH1 0x1 ADD SWAP1 PUSH1 0x20 ADD DUP1 DUP4 GT PUSH2 0x4D7 JUMPI DUP3 SWAP1 SUB PUSH1 0x1F AND DUP3 ADD SWAP2 JUMPDEST POP POP POP POP PUSH1 0x2 DUP4 ADD SLOAD PUSH1 0x3 SWAP1 SWAP4 ADD SLOAD SWAP2 SWAP3 SWAP2 PUSH1 0xFF AND SWAP1 POP DUP5 JUMP JUMPDEST PUSH1 0x0 SLOAD PUSH1 0x1 PUSH1 0x1 PUSH1 0xA0 SHL SUB SWAP1 DUP2 AND SWAP2 AND EQ SWAP1 JUMP JUMPDEST DUP3 DUP1 SLOAD PUSH1 0x1 DUP2 PUSH1 0x1 AND ISZERO PUSH2 0x100 MUL SUB AND PUSH1 0x2 SWAP1 DIV SWAP1 PUSH1 0x0 MSTORE PUSH1 0x20 PUSH1 0x0 KECCAK256 SWAP1 PUSH1 0x1F ADD PUSH1 0x20 SWAP1 DIV DUP2 ADD SWAP3 DUP3 PUSH1 0x1F LT PUSH2 0x563 JUMPI DUP1 MLOAD PUSH1 0xFF NOT AND DUP4 DUP1 ADD OR DUP6 SSTORE PUSH2 0x590 JUMP JUMPDEST DUP3 DUP1 ADD PUSH1 0x1 ADD DUP6 SSTORE DUP3 ISZERO PUSH2 0x590 JUMPI SWAP2 DUP3 ADD JUMPDEST DUP3 DUP2 GT ISZERO PUSH2 0x590 JUMPI DUP3 MLOAD DUP3 SSTORE SWAP2 PUSH1 0x20 ADD SWAP2 SWAP1 PUSH1 0x1 ADD SWAP1 PUSH2 0x575 JUMP JUMPDEST POP PUSH2 0x59C SWAP3 SWAP2 POP PUSH2 0x5A0 JUMP JUMPDEST POP SWAP1 JUMP JUMPDEST PUSH2 0x5BA SWAP2 SWAP1 JUMPDEST DUP1 DUP3 GT ISZERO PUSH2 0x59C JUMPI PUSH1 0x0 DUP2 SSTORE PUSH1 0x1 ADD PUSH2 0x5A6 JUMP JUMPDEST SWAP1 JUMP INVALID LOG1 PUSH6 0x627A7A723058 KECCAK256 SAR SWAP11 0xa8 0xb1 0xf8 MOD 0x21 0xbd PUSH13 0x1B193E66EFD7C0F95DDD069A1D EXTCODECOPY PUSH1 0xB8 CREATE2 SWAP9 0xeb SWAP4 SWAP13 DUP2 SHR STOP 0x29 ",
+                        "sourceMap": "49:1261:0:-;;;195:5:1;:18;;-1:-1:-1;;;;;;195:18:1;203:10;195:18;;;49:1261:0;;;;;;"
+                    },
+                    "gasEstimates": {
+                        "creation": {
+                            "codeDepositCost": "302600",
+                            "executionCost": "20554",
+                            "totalCost": "323154"
+                        },
+                        "external": {
+                            "Documents(bytes32)": "infinite",
+                            "GetRecord(bytes32)": "infinite",
+                            "Register(bytes32,string,bytes32)": "infinite"
+                        }
+                    },
+                    "methodIdentifiers": {
+                        "Documents(bytes32)": "b16ec5cd",
+                        "GetRecord(bytes32)": "43e491c3",
+                        "Register(bytes32,string,bytes32)": "1f324e3c"
+                    }
+                },
+                "metadata": "{\"compiler\":{\"version\":\"0.5.7+commit.6da8b019\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"name\":\"id\",\"type\":\"bytes32\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"hash\",\"type\":\"bytes32\"}],\"name\":\"Register\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"id\",\"type\":\"bytes32\"}],\"name\":\"GetRecord\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"},{\"name\":\"\",\"type\":\"string\"},{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"Documents\",\"outputs\":[{\"name\":\"id\",\"type\":\"bytes32\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"hash\",\"type\":\"bytes32\"},{\"name\":\"registered\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"id\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"description\",\"type\":\"string\"},{\"indexed\":false,\"name\":\"hash\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"NewDocumentRegistered\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/ApprovedFile.sol\":\"ApprovedFile\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/ApprovedFile.sol\":{\"keccak256\":\"0x2d54122bcbd265f6700420740be855ec4475506ff1b2fc13f27a06e2cae032b5\",\"urls\":[\"bzzr://bf896af3986326316f8a06ca3704f36609e26457a32ea0c2693b2d0af8fa6fb4\"]},\"/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/Ownable.sol\":{\"keccak256\":\"0x8d8b99678c675104b66aa6d450aee7f203442179113504ec524a245d1271d9f5\",\"urls\":[\"bzzr://d5193d052bed7ac976244a9ccdcb40987d5f624d3aaad7703a5b361ad041465b\"]}},\"version\":1}",
+                "userdoc": {
+                    "methods": {}
+                }
+            }
+        },
+        "/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/Ownable.sol": {
+            "Ownable": {
+                "abi": [
+                    {
+                        "inputs": [],
+                        "payable": false,
+                        "stateMutability": "nonpayable",
+                        "type": "constructor"
+                    }
+                ],
+                "devdoc": {
+                    "methods": {}
+                },
+                "evm": {
+                    "bytecode": {
+                        "linkReferences": {},
+                        "object": "6080604052348015600f57600080fd5b50600080546001600160a01b03191633179055603580602f6000396000f3fe6080604052600080fdfea165627a7a72305820d460fc096a0c7538ce80f30a92b0422101a81e2421f69ba4957a77057671856f0029",
+                        "opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH1 0xF JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x0 DUP1 SLOAD PUSH1 0x1 PUSH1 0x1 PUSH1 0xA0 SHL SUB NOT AND CALLER OR SWAP1 SSTORE PUSH1 0x35 DUP1 PUSH1 0x2F PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN INVALID PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG1 PUSH6 0x627A7A723058 KECCAK256 0xd4 PUSH1 0xFC MULMOD PUSH11 0xC7538CE80F30A92B04221 ADD 0xa8 0x1e 0x24 0x21 0xf6 SWAP12 LOG4 SWAP6 PUSH27 0x77057671856F002900000000000000000000000000000000000000 ",
+                        "sourceMap": "25:461:1:-;;;164:56;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;195:5:1;:18;;-1:-1:-1;;;;;;195:18:1;203:10;195:18;;;25:461;;;;;;"
+                    },
+                    "gasEstimates": {
+                        "creation": {
+                            "codeDepositCost": "10600",
+                            "executionCost": "20301",
+                            "totalCost": "30901"
+                        },
+                        "internal": {
+                            "isOwner(address)": "infinite",
+                            "transferOwnership(address)": "infinite"
+                        }
+                    },
+                    "methodIdentifiers": {}
+                },
+                "metadata": "{\"compiler\":{\"version\":\"0.5.7+commit.6da8b019\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/Ownable.sol\":\"Ownable\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/Ownable.sol\":{\"keccak256\":\"0x8d8b99678c675104b66aa6d450aee7f203442179113504ec524a245d1271d9f5\",\"urls\":[\"bzzr://d5193d052bed7ac976244a9ccdcb40987d5f624d3aaad7703a5b361ad041465b\"]}},\"version\":1}",
+                "userdoc": {
+                    "methods": {}
+                }
+            }
+        }
+    },
+    "sources": {
+        "/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/ApprovedFile.sol": {
+            "ast": {
+                "absolutePath": "/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/ApprovedFile.sol",
+                "exportedSymbols": {
+                    "ApprovedFile": [
+                        117
+                    ]
+                },
+                "id": 118,
+                "nodeType": "SourceUnit",
+                "nodes": [
+                    {
+                        "id": 1,
+                        "literals": [
+                            "solidity",
+                            "^",
+                            "0.5",
+                            ".1"
+                        ],
+                        "nodeType": "PragmaDirective",
+                        "src": "0:23:0"
+                    },
+                    {
+                        "absolutePath": "/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/Ownable.sol",
+                        "file": "./Ownable.sol",
+                        "id": 2,
+                        "nodeType": "ImportDirective",
+                        "scope": 118,
+                        "sourceUnit": 174,
+                        "src": "24:23:0",
+                        "symbolAliases": [],
+                        "unitAlias": ""
+                    },
+                    {
+                        "baseContracts": [
+                            {
+                                "arguments": null,
+                                "baseName": {
+                                    "contractScope": null,
+                                    "id": 3,
+                                    "name": "Ownable",
+                                    "nodeType": "UserDefinedTypeName",
+                                    "referencedDeclaration": 173,
+                                    "src": "74:7:0",
+                                    "typeDescriptions": {
+                                        "typeIdentifier": "t_contract$_Ownable_$173",
+                                        "typeString": "contract Ownable"
+                                    }
+                                },
+                                "id": 4,
+                                "nodeType": "InheritanceSpecifier",
+                                "src": "74:7:0"
+                            }
+                        ],
+                        "contractDependencies": [
+                            173
+                        ],
+                        "contractKind": "contract",
+                        "documentation": null,
+                        "fullyImplemented": true,
+                        "id": 117,
+                        "linearizedBaseContracts": [
+                            117,
+                            173
+                        ],
+                        "name": "ApprovedFile",
+                        "nodeType": "ContractDefinition",
+                        "nodes": [
+                            {
+                                "constant": false,
+                                "id": 6,
+                                "name": "documents",
+                                "nodeType": "VariableDeclaration",
+                                "scope": 117,
+                                "src": "88:14:0",
+                                "stateVariable": true,
+                                "storageLocation": "default",
+                                "typeDescriptions": {
+                                    "typeIdentifier": "t_uint256",
+                                    "typeString": "uint256"
+                                },
+                                "typeName": {
+                                    "id": 5,
+                                    "name": "uint",
+                                    "nodeType": "ElementaryTypeName",
+                                    "src": "88:4:0",
+                                    "typeDescriptions": {
+                                        "typeIdentifier": "t_uint256",
+                                        "typeString": "uint256"
+                                    }
+                                },
+                                "value": null,
+                                "visibility": "internal"
+                            },
+                            {
+                                "anonymous": false,
+                                "documentation": null,
+                                "id": 16,
+                                "name": "NewDocumentRegistered",
+                                "nodeType": "EventDefinition",
+                                "parameters": {
+                                    "id": 15,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [
+                                        {
+                                            "constant": false,
+                                            "id": 8,
+                                            "indexed": false,
+                                            "name": "id",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 16,
+                                            "src": "140:10:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bytes32",
+                                                "typeString": "bytes32"
+                                            },
+                                            "typeName": {
+                                                "id": 7,
+                                                "name": "bytes32",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "140:7:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bytes32",
+                                                    "typeString": "bytes32"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        },
+                                        {
+                                            "constant": false,
+                                            "id": 10,
+                                            "indexed": false,
+                                            "name": "description",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 16,
+                                            "src": "152:18:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_string_memory_ptr",
+                                                "typeString": "string"
+                                            },
+                                            "typeName": {
+                                                "id": 9,
+                                                "name": "string",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "152:6:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_string_storage_ptr",
+                                                    "typeString": "string"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        },
+                                        {
+                                            "constant": false,
+                                            "id": 12,
+                                            "indexed": false,
+                                            "name": "hash",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 16,
+                                            "src": "172:12:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bytes32",
+                                                "typeString": "bytes32"
+                                            },
+                                            "typeName": {
+                                                "id": 11,
+                                                "name": "bytes32",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "172:7:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bytes32",
+                                                    "typeString": "bytes32"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        },
+                                        {
+                                            "constant": false,
+                                            "id": 14,
+                                            "indexed": false,
+                                            "name": "sender",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 16,
+                                            "src": "186:14:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_address",
+                                                "typeString": "address"
+                                            },
+                                            "typeName": {
+                                                "id": 13,
+                                                "name": "address",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "186:7:0",
+                                                "stateMutability": "nonpayable",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_address",
+                                                    "typeString": "address"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        }
+                                    ],
+                                    "src": "139:62:0"
+                                },
+                                "src": "112:90:0"
+                            },
+                            {
+                                "canonicalName": "ApprovedFile.Document",
+                                "id": 25,
+                                "members": [
+                                    {
+                                        "constant": false,
+                                        "id": 18,
+                                        "name": "id",
+                                        "nodeType": "VariableDeclaration",
+                                        "scope": 25,
+                                        "src": "273:10:0",
+                                        "stateVariable": false,
+                                        "storageLocation": "default",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_bytes32",
+                                            "typeString": "bytes32"
+                                        },
+                                        "typeName": {
+                                            "id": 17,
+                                            "name": "bytes32",
+                                            "nodeType": "ElementaryTypeName",
+                                            "src": "273:7:0",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bytes32",
+                                                "typeString": "bytes32"
+                                            }
+                                        },
+                                        "value": null,
+                                        "visibility": "internal"
+                                    },
+                                    {
+                                        "constant": false,
+                                        "id": 20,
+                                        "name": "description",
+                                        "nodeType": "VariableDeclaration",
+                                        "scope": 25,
+                                        "src": "293:18:0",
+                                        "stateVariable": false,
+                                        "storageLocation": "default",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_string_storage_ptr",
+                                            "typeString": "string"
+                                        },
+                                        "typeName": {
+                                            "id": 19,
+                                            "name": "string",
+                                            "nodeType": "ElementaryTypeName",
+                                            "src": "293:6:0",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_string_storage_ptr",
+                                                "typeString": "string"
+                                            }
+                                        },
+                                        "value": null,
+                                        "visibility": "internal"
+                                    },
+                                    {
+                                        "constant": false,
+                                        "id": 22,
+                                        "name": "hash",
+                                        "nodeType": "VariableDeclaration",
+                                        "scope": 25,
+                                        "src": "321:12:0",
+                                        "stateVariable": false,
+                                        "storageLocation": "default",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_bytes32",
+                                            "typeString": "bytes32"
+                                        },
+                                        "typeName": {
+                                            "id": 21,
+                                            "name": "bytes32",
+                                            "nodeType": "ElementaryTypeName",
+                                            "src": "321:7:0",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bytes32",
+                                                "typeString": "bytes32"
+                                            }
+                                        },
+                                        "value": null,
+                                        "visibility": "internal"
+                                    },
+                                    {
+                                        "constant": false,
+                                        "id": 24,
+                                        "name": "registered",
+                                        "nodeType": "VariableDeclaration",
+                                        "scope": 25,
+                                        "src": "416:15:0",
+                                        "stateVariable": false,
+                                        "storageLocation": "default",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_bool",
+                                            "typeString": "bool"
+                                        },
+                                        "typeName": {
+                                            "id": 23,
+                                            "name": "bool",
+                                            "nodeType": "ElementaryTypeName",
+                                            "src": "416:4:0",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bool",
+                                                "typeString": "bool"
+                                            }
+                                        },
+                                        "value": null,
+                                        "visibility": "internal"
+                                    }
+                                ],
+                                "name": "Document",
+                                "nodeType": "StructDefinition",
+                                "scope": 117,
+                                "src": "208:230:0",
+                                "visibility": "public"
+                            },
+                            {
+                                "constant": false,
+                                "id": 29,
+                                "name": "Documents",
+                                "nodeType": "VariableDeclaration",
+                                "scope": 117,
+                                "src": "444:45:0",
+                                "stateVariable": true,
+                                "storageLocation": "default",
+                                "typeDescriptions": {
+                                    "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Document_$25_storage_$",
+                                    "typeString": "mapping(bytes32 => struct ApprovedFile.Document)"
+                                },
+                                "typeName": {
+                                    "id": 28,
+                                    "keyType": {
+                                        "id": 26,
+                                        "name": "bytes32",
+                                        "nodeType": "ElementaryTypeName",
+                                        "src": "452:7:0",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_bytes32",
+                                            "typeString": "bytes32"
+                                        }
+                                    },
+                                    "nodeType": "Mapping",
+                                    "src": "444:28:0",
+                                    "typeDescriptions": {
+                                        "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Document_$25_storage_$",
+                                        "typeString": "mapping(bytes32 => struct ApprovedFile.Document)"
+                                    },
+                                    "valueType": {
+                                        "contractScope": null,
+                                        "id": 27,
+                                        "name": "Document",
+                                        "nodeType": "UserDefinedTypeName",
+                                        "referencedDeclaration": 25,
+                                        "src": "463:8:0",
+                                        "typeDescriptions": {
+                                            "typeIdentifier": "t_struct$_Document_$25_storage_ptr",
+                                            "typeString": "struct ApprovedFile.Document"
+                                        }
+                                    }
+                                },
+                                "value": null,
+                                "visibility": "public"
+                            },
+                            {
+                                "body": {
+                                    "id": 87,
+                                    "nodeType": "Block",
+                                    "src": "588:505:0",
+                                    "statements": [
+                                        {
+                                            "expression": {
+                                                "argumentTypes": null,
+                                                "arguments": [
+                                                    {
+                                                        "argumentTypes": null,
+                                                        "id": 45,
+                                                        "isConstant": false,
+                                                        "isLValue": false,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "nodeType": "UnaryOperation",
+                                                        "operator": "!",
+                                                        "prefix": true,
+                                                        "src": "671:25:0",
+                                                        "subExpression": {
+                                                            "argumentTypes": null,
+                                                            "expression": {
+                                                                "argumentTypes": null,
+                                                                "baseExpression": {
+                                                                    "argumentTypes": null,
+                                                                    "id": 41,
+                                                                    "name": "Documents",
+                                                                    "nodeType": "Identifier",
+                                                                    "overloadedDeclarations": [],
+                                                                    "referencedDeclaration": 29,
+                                                                    "src": "672:9:0",
+                                                                    "typeDescriptions": {
+                                                                        "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Document_$25_storage_$",
+                                                                        "typeString": "mapping(bytes32 => struct ApprovedFile.Document storage ref)"
+                                                                    }
+                                                                },
+                                                                "id": 43,
+                                                                "indexExpression": {
+                                                                    "argumentTypes": null,
+                                                                    "id": 42,
+                                                                    "name": "id",
+                                                                    "nodeType": "Identifier",
+                                                                    "overloadedDeclarations": [],
+                                                                    "referencedDeclaration": 31,
+                                                                    "src": "682:2:0",
+                                                                    "typeDescriptions": {
+                                                                        "typeIdentifier": "t_bytes32",
+                                                                        "typeString": "bytes32"
+                                                                    }
+                                                                },
+                                                                "isConstant": false,
+                                                                "isLValue": true,
+                                                                "isPure": false,
+                                                                "lValueRequested": false,
+                                                                "nodeType": "IndexAccess",
+                                                                "src": "672:13:0",
+                                                                "typeDescriptions": {
+                                                                    "typeIdentifier": "t_struct$_Document_$25_storage",
+                                                                    "typeString": "struct ApprovedFile.Document storage ref"
+                                                                }
+                                                            },
+                                                            "id": 44,
+                                                            "isConstant": false,
+                                                            "isLValue": true,
+                                                            "isPure": false,
+                                                            "lValueRequested": false,
+                                                            "memberName": "registered",
+                                                            "nodeType": "MemberAccess",
+                                                            "referencedDeclaration": 24,
+                                                            "src": "672:24:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_bool",
+                                                                "typeString": "bool"
+                                                            }
+                                                        },
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_bool",
+                                                            "typeString": "bool"
+                                                        }
+                                                    }
+                                                ],
+                                                "expression": {
+                                                    "argumentTypes": [
+                                                        {
+                                                            "typeIdentifier": "t_bool",
+                                                            "typeString": "bool"
+                                                        }
+                                                    ],
+                                                    "id": 40,
+                                                    "name": "require",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [
+                                                        191,
+                                                        192
+                                                    ],
+                                                    "referencedDeclaration": 191,
+                                                    "src": "663:7:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                                                        "typeString": "function (bool) pure"
+                                                    }
+                                                },
+                                                "id": 46,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "kind": "functionCall",
+                                                "lValueRequested": false,
+                                                "names": [],
+                                                "nodeType": "FunctionCall",
+                                                "src": "663:34:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_tuple$__$",
+                                                    "typeString": "tuple()"
+                                                }
+                                            },
+                                            "id": 47,
+                                            "nodeType": "ExpressionStatement",
+                                            "src": "663:34:0"
+                                        },
+                                        {
+                                            "expression": {
+                                                "argumentTypes": null,
+                                                "id": 53,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "leftHandSide": {
+                                                    "argumentTypes": null,
+                                                    "expression": {
+                                                        "argumentTypes": null,
+                                                        "baseExpression": {
+                                                            "argumentTypes": null,
+                                                            "id": 48,
+                                                            "name": "Documents",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 29,
+                                                            "src": "753:9:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Document_$25_storage_$",
+                                                                "typeString": "mapping(bytes32 => struct ApprovedFile.Document storage ref)"
+                                                            }
+                                                        },
+                                                        "id": 50,
+                                                        "indexExpression": {
+                                                            "argumentTypes": null,
+                                                            "id": 49,
+                                                            "name": "id",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 31,
+                                                            "src": "763:2:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_bytes32",
+                                                                "typeString": "bytes32"
+                                                            }
+                                                        },
+                                                        "isConstant": false,
+                                                        "isLValue": true,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "nodeType": "IndexAccess",
+                                                        "src": "753:13:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_struct$_Document_$25_storage",
+                                                            "typeString": "struct ApprovedFile.Document storage ref"
+                                                        }
+                                                    },
+                                                    "id": 51,
+                                                    "isConstant": false,
+                                                    "isLValue": true,
+                                                    "isPure": false,
+                                                    "lValueRequested": true,
+                                                    "memberName": "id",
+                                                    "nodeType": "MemberAccess",
+                                                    "referencedDeclaration": 18,
+                                                    "src": "753:16:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_bytes32",
+                                                        "typeString": "bytes32"
+                                                    }
+                                                },
+                                                "nodeType": "Assignment",
+                                                "operator": "=",
+                                                "rightHandSide": {
+                                                    "argumentTypes": null,
+                                                    "id": 52,
+                                                    "name": "id",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 31,
+                                                    "src": "772:2:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_bytes32",
+                                                        "typeString": "bytes32"
+                                                    }
+                                                },
+                                                "src": "753:21:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bytes32",
+                                                    "typeString": "bytes32"
+                                                }
+                                            },
+                                            "id": 54,
+                                            "nodeType": "ExpressionStatement",
+                                            "src": "753:21:0"
+                                        },
+                                        {
+                                            "expression": {
+                                                "argumentTypes": null,
+                                                "id": 60,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "leftHandSide": {
+                                                    "argumentTypes": null,
+                                                    "expression": {
+                                                        "argumentTypes": null,
+                                                        "baseExpression": {
+                                                            "argumentTypes": null,
+                                                            "id": 55,
+                                                            "name": "Documents",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 29,
+                                                            "src": "784:9:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Document_$25_storage_$",
+                                                                "typeString": "mapping(bytes32 => struct ApprovedFile.Document storage ref)"
+                                                            }
+                                                        },
+                                                        "id": 57,
+                                                        "indexExpression": {
+                                                            "argumentTypes": null,
+                                                            "id": 56,
+                                                            "name": "id",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 31,
+                                                            "src": "794:2:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_bytes32",
+                                                                "typeString": "bytes32"
+                                                            }
+                                                        },
+                                                        "isConstant": false,
+                                                        "isLValue": true,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "nodeType": "IndexAccess",
+                                                        "src": "784:13:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_struct$_Document_$25_storage",
+                                                            "typeString": "struct ApprovedFile.Document storage ref"
+                                                        }
+                                                    },
+                                                    "id": 58,
+                                                    "isConstant": false,
+                                                    "isLValue": true,
+                                                    "isPure": false,
+                                                    "lValueRequested": true,
+                                                    "memberName": "description",
+                                                    "nodeType": "MemberAccess",
+                                                    "referencedDeclaration": 20,
+                                                    "src": "784:25:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_string_storage",
+                                                        "typeString": "string storage ref"
+                                                    }
+                                                },
+                                                "nodeType": "Assignment",
+                                                "operator": "=",
+                                                "rightHandSide": {
+                                                    "argumentTypes": null,
+                                                    "id": 59,
+                                                    "name": "description",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 33,
+                                                    "src": "812:11:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_string_memory_ptr",
+                                                        "typeString": "string memory"
+                                                    }
+                                                },
+                                                "src": "784:39:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_string_storage",
+                                                    "typeString": "string storage ref"
+                                                }
+                                            },
+                                            "id": 61,
+                                            "nodeType": "ExpressionStatement",
+                                            "src": "784:39:0"
+                                        },
+                                        {
+                                            "expression": {
+                                                "argumentTypes": null,
+                                                "id": 67,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "leftHandSide": {
+                                                    "argumentTypes": null,
+                                                    "expression": {
+                                                        "argumentTypes": null,
+                                                        "baseExpression": {
+                                                            "argumentTypes": null,
+                                                            "id": 62,
+                                                            "name": "Documents",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 29,
+                                                            "src": "833:9:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Document_$25_storage_$",
+                                                                "typeString": "mapping(bytes32 => struct ApprovedFile.Document storage ref)"
+                                                            }
+                                                        },
+                                                        "id": 64,
+                                                        "indexExpression": {
+                                                            "argumentTypes": null,
+                                                            "id": 63,
+                                                            "name": "id",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 31,
+                                                            "src": "843:2:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_bytes32",
+                                                                "typeString": "bytes32"
+                                                            }
+                                                        },
+                                                        "isConstant": false,
+                                                        "isLValue": true,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "nodeType": "IndexAccess",
+                                                        "src": "833:13:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_struct$_Document_$25_storage",
+                                                            "typeString": "struct ApprovedFile.Document storage ref"
+                                                        }
+                                                    },
+                                                    "id": 65,
+                                                    "isConstant": false,
+                                                    "isLValue": true,
+                                                    "isPure": false,
+                                                    "lValueRequested": true,
+                                                    "memberName": "hash",
+                                                    "nodeType": "MemberAccess",
+                                                    "referencedDeclaration": 22,
+                                                    "src": "833:18:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_bytes32",
+                                                        "typeString": "bytes32"
+                                                    }
+                                                },
+                                                "nodeType": "Assignment",
+                                                "operator": "=",
+                                                "rightHandSide": {
+                                                    "argumentTypes": null,
+                                                    "id": 66,
+                                                    "name": "hash",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 35,
+                                                    "src": "854:4:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_bytes32",
+                                                        "typeString": "bytes32"
+                                                    }
+                                                },
+                                                "src": "833:25:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bytes32",
+                                                    "typeString": "bytes32"
+                                                }
+                                            },
+                                            "id": 68,
+                                            "nodeType": "ExpressionStatement",
+                                            "src": "833:25:0"
+                                        },
+                                        {
+                                            "expression": {
+                                                "argumentTypes": null,
+                                                "id": 74,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "leftHandSide": {
+                                                    "argumentTypes": null,
+                                                    "expression": {
+                                                        "argumentTypes": null,
+                                                        "baseExpression": {
+                                                            "argumentTypes": null,
+                                                            "id": 69,
+                                                            "name": "Documents",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 29,
+                                                            "src": "922:9:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Document_$25_storage_$",
+                                                                "typeString": "mapping(bytes32 => struct ApprovedFile.Document storage ref)"
+                                                            }
+                                                        },
+                                                        "id": 71,
+                                                        "indexExpression": {
+                                                            "argumentTypes": null,
+                                                            "id": 70,
+                                                            "name": "id",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 31,
+                                                            "src": "932:2:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_bytes32",
+                                                                "typeString": "bytes32"
+                                                            }
+                                                        },
+                                                        "isConstant": false,
+                                                        "isLValue": true,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "nodeType": "IndexAccess",
+                                                        "src": "922:13:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_struct$_Document_$25_storage",
+                                                            "typeString": "struct ApprovedFile.Document storage ref"
+                                                        }
+                                                    },
+                                                    "id": 72,
+                                                    "isConstant": false,
+                                                    "isLValue": true,
+                                                    "isPure": false,
+                                                    "lValueRequested": true,
+                                                    "memberName": "registered",
+                                                    "nodeType": "MemberAccess",
+                                                    "referencedDeclaration": 24,
+                                                    "src": "922:24:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_bool",
+                                                        "typeString": "bool"
+                                                    }
+                                                },
+                                                "nodeType": "Assignment",
+                                                "operator": "=",
+                                                "rightHandSide": {
+                                                    "argumentTypes": null,
+                                                    "hexValue": "74727565",
+                                                    "id": 73,
+                                                    "isConstant": false,
+                                                    "isLValue": false,
+                                                    "isPure": true,
+                                                    "kind": "bool",
+                                                    "lValueRequested": false,
+                                                    "nodeType": "Literal",
+                                                    "src": "949:4:0",
+                                                    "subdenomination": null,
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_bool",
+                                                        "typeString": "bool"
+                                                    },
+                                                    "value": "true"
+                                                },
+                                                "src": "922:31:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bool",
+                                                    "typeString": "bool"
+                                                }
+                                            },
+                                            "id": 75,
+                                            "nodeType": "ExpressionStatement",
+                                            "src": "922:31:0"
+                                        },
+                                        {
+                                            "eventCall": {
+                                                "argumentTypes": null,
+                                                "arguments": [
+                                                    {
+                                                        "argumentTypes": null,
+                                                        "id": 77,
+                                                        "name": "id",
+                                                        "nodeType": "Identifier",
+                                                        "overloadedDeclarations": [],
+                                                        "referencedDeclaration": 31,
+                                                        "src": "999:2:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_bytes32",
+                                                            "typeString": "bytes32"
+                                                        }
+                                                    },
+                                                    {
+                                                        "argumentTypes": null,
+                                                        "id": 78,
+                                                        "name": "description",
+                                                        "nodeType": "Identifier",
+                                                        "overloadedDeclarations": [],
+                                                        "referencedDeclaration": 33,
+                                                        "src": "1002:11:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_string_memory_ptr",
+                                                            "typeString": "string memory"
+                                                        }
+                                                    },
+                                                    {
+                                                        "argumentTypes": null,
+                                                        "id": 79,
+                                                        "name": "hash",
+                                                        "nodeType": "Identifier",
+                                                        "overloadedDeclarations": [],
+                                                        "referencedDeclaration": 35,
+                                                        "src": "1014:4:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_bytes32",
+                                                            "typeString": "bytes32"
+                                                        }
+                                                    },
+                                                    {
+                                                        "argumentTypes": null,
+                                                        "expression": {
+                                                            "argumentTypes": null,
+                                                            "id": 80,
+                                                            "name": "msg",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 188,
+                                                            "src": "1019:3:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_magic_message",
+                                                                "typeString": "msg"
+                                                            }
+                                                        },
+                                                        "id": 81,
+                                                        "isConstant": false,
+                                                        "isLValue": false,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "memberName": "sender",
+                                                        "nodeType": "MemberAccess",
+                                                        "referencedDeclaration": null,
+                                                        "src": "1019:10:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_address_payable",
+                                                            "typeString": "address payable"
+                                                        }
+                                                    }
+                                                ],
+                                                "expression": {
+                                                    "argumentTypes": [
+                                                        {
+                                                            "typeIdentifier": "t_bytes32",
+                                                            "typeString": "bytes32"
+                                                        },
+                                                        {
+                                                            "typeIdentifier": "t_string_memory_ptr",
+                                                            "typeString": "string memory"
+                                                        },
+                                                        {
+                                                            "typeIdentifier": "t_bytes32",
+                                                            "typeString": "bytes32"
+                                                        },
+                                                        {
+                                                            "typeIdentifier": "t_address_payable",
+                                                            "typeString": "address payable"
+                                                        }
+                                                    ],
+                                                    "id": 76,
+                                                    "name": "NewDocumentRegistered",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 16,
+                                                    "src": "977:21:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_function_event_nonpayable$_t_bytes32_$_t_string_memory_ptr_$_t_bytes32_$_t_address_$returns$__$",
+                                                        "typeString": "function (bytes32,string memory,bytes32,address)"
+                                                    }
+                                                },
+                                                "id": 82,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "kind": "functionCall",
+                                                "lValueRequested": false,
+                                                "names": [],
+                                                "nodeType": "FunctionCall",
+                                                "src": "977:53:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_tuple$__$",
+                                                    "typeString": "tuple()"
+                                                }
+                                            },
+                                            "id": 83,
+                                            "nodeType": "EmitStatement",
+                                            "src": "972:58:0"
+                                        },
+                                        {
+                                            "expression": {
+                                                "argumentTypes": null,
+                                                "id": 85,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "nodeType": "UnaryOperation",
+                                                "operator": "++",
+                                                "prefix": false,
+                                                "src": "1078:11:0",
+                                                "subExpression": {
+                                                    "argumentTypes": null,
+                                                    "id": 84,
+                                                    "name": "documents",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 6,
+                                                    "src": "1078:9:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_uint256",
+                                                        "typeString": "uint256"
+                                                    }
+                                                },
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_uint256",
+                                                    "typeString": "uint256"
+                                                }
+                                            },
+                                            "id": 86,
+                                            "nodeType": "ExpressionStatement",
+                                            "src": "1078:11:0"
+                                        }
+                                    ]
+                                },
+                                "documentation": null,
+                                "id": 88,
+                                "implemented": true,
+                                "kind": "function",
+                                "modifiers": [
+                                    {
+                                        "arguments": null,
+                                        "id": 38,
+                                        "modifierName": {
+                                            "argumentTypes": null,
+                                            "id": 37,
+                                            "name": "onlyOwner",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [],
+                                            "referencedDeclaration": 132,
+                                            "src": "578:9:0",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_modifier$__$",
+                                                "typeString": "modifier ()"
+                                            }
+                                        },
+                                        "nodeType": "ModifierInvocation",
+                                        "src": "578:9:0"
+                                    }
+                                ],
+                                "name": "Register",
+                                "nodeType": "FunctionDefinition",
+                                "parameters": {
+                                    "id": 36,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [
+                                        {
+                                            "constant": false,
+                                            "id": 31,
+                                            "name": "id",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 88,
+                                            "src": "518:10:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bytes32",
+                                                "typeString": "bytes32"
+                                            },
+                                            "typeName": {
+                                                "id": 30,
+                                                "name": "bytes32",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "518:7:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bytes32",
+                                                    "typeString": "bytes32"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        },
+                                        {
+                                            "constant": false,
+                                            "id": 33,
+                                            "name": "description",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 88,
+                                            "src": "530:25:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "memory",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_string_memory_ptr",
+                                                "typeString": "string"
+                                            },
+                                            "typeName": {
+                                                "id": 32,
+                                                "name": "string",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "530:6:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_string_storage_ptr",
+                                                    "typeString": "string"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        },
+                                        {
+                                            "constant": false,
+                                            "id": 35,
+                                            "name": "hash",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 88,
+                                            "src": "557:12:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bytes32",
+                                                "typeString": "bytes32"
+                                            },
+                                            "typeName": {
+                                                "id": 34,
+                                                "name": "bytes32",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "557:7:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bytes32",
+                                                    "typeString": "bytes32"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        }
+                                    ],
+                                    "src": "517:53:0"
+                                },
+                                "returnParameters": {
+                                    "id": 39,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [],
+                                    "src": "588:0:0"
+                                },
+                                "scope": 117,
+                                "src": "500:593:0",
+                                "stateMutability": "nonpayable",
+                                "superFunction": null,
+                                "visibility": "public"
+                            },
+                            {
+                                "body": {
+                                    "id": 115,
+                                    "nodeType": "Block",
+                                    "src": "1192:116:0",
+                                    "statements": [
+                                        {
+                                            "assignments": [
+                                                102
+                                            ],
+                                            "declarations": [
+                                                {
+                                                    "constant": false,
+                                                    "id": 102,
+                                                    "name": "document",
+                                                    "nodeType": "VariableDeclaration",
+                                                    "scope": 115,
+                                                    "src": "1199:25:0",
+                                                    "stateVariable": false,
+                                                    "storageLocation": "storage",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_struct$_Document_$25_storage_ptr",
+                                                        "typeString": "struct ApprovedFile.Document"
+                                                    },
+                                                    "typeName": {
+                                                        "contractScope": null,
+                                                        "id": 101,
+                                                        "name": "Document",
+                                                        "nodeType": "UserDefinedTypeName",
+                                                        "referencedDeclaration": 25,
+                                                        "src": "1199:8:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_struct$_Document_$25_storage_ptr",
+                                                            "typeString": "struct ApprovedFile.Document"
+                                                        }
+                                                    },
+                                                    "value": null,
+                                                    "visibility": "internal"
+                                                }
+                                            ],
+                                            "id": 106,
+                                            "initialValue": {
+                                                "argumentTypes": null,
+                                                "baseExpression": {
+                                                    "argumentTypes": null,
+                                                    "id": 103,
+                                                    "name": "Documents",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 29,
+                                                    "src": "1227:9:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Document_$25_storage_$",
+                                                        "typeString": "mapping(bytes32 => struct ApprovedFile.Document storage ref)"
+                                                    }
+                                                },
+                                                "id": 105,
+                                                "indexExpression": {
+                                                    "argumentTypes": null,
+                                                    "id": 104,
+                                                    "name": "id",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 90,
+                                                    "src": "1237:2:0",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_bytes32",
+                                                        "typeString": "bytes32"
+                                                    }
+                                                },
+                                                "isConstant": false,
+                                                "isLValue": true,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "nodeType": "IndexAccess",
+                                                "src": "1227:13:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_struct$_Document_$25_storage",
+                                                    "typeString": "struct ApprovedFile.Document storage ref"
+                                                }
+                                            },
+                                            "nodeType": "VariableDeclarationStatement",
+                                            "src": "1199:41:0"
+                                        },
+                                        {
+                                            "expression": {
+                                                "argumentTypes": null,
+                                                "components": [
+                                                    {
+                                                        "argumentTypes": null,
+                                                        "expression": {
+                                                            "argumentTypes": null,
+                                                            "id": 107,
+                                                            "name": "document",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 102,
+                                                            "src": "1255:8:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_struct$_Document_$25_storage_ptr",
+                                                                "typeString": "struct ApprovedFile.Document storage pointer"
+                                                            }
+                                                        },
+                                                        "id": 108,
+                                                        "isConstant": false,
+                                                        "isLValue": true,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "memberName": "id",
+                                                        "nodeType": "MemberAccess",
+                                                        "referencedDeclaration": 18,
+                                                        "src": "1255:11:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_bytes32",
+                                                            "typeString": "bytes32"
+                                                        }
+                                                    },
+                                                    {
+                                                        "argumentTypes": null,
+                                                        "expression": {
+                                                            "argumentTypes": null,
+                                                            "id": 109,
+                                                            "name": "document",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 102,
+                                                            "src": "1268:8:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_struct$_Document_$25_storage_ptr",
+                                                                "typeString": "struct ApprovedFile.Document storage pointer"
+                                                            }
+                                                        },
+                                                        "id": 110,
+                                                        "isConstant": false,
+                                                        "isLValue": true,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "memberName": "description",
+                                                        "nodeType": "MemberAccess",
+                                                        "referencedDeclaration": 20,
+                                                        "src": "1268:20:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_string_storage",
+                                                            "typeString": "string storage ref"
+                                                        }
+                                                    },
+                                                    {
+                                                        "argumentTypes": null,
+                                                        "expression": {
+                                                            "argumentTypes": null,
+                                                            "id": 111,
+                                                            "name": "document",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 102,
+                                                            "src": "1290:8:0",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_struct$_Document_$25_storage_ptr",
+                                                                "typeString": "struct ApprovedFile.Document storage pointer"
+                                                            }
+                                                        },
+                                                        "id": 112,
+                                                        "isConstant": false,
+                                                        "isLValue": true,
+                                                        "isPure": false,
+                                                        "lValueRequested": false,
+                                                        "memberName": "hash",
+                                                        "nodeType": "MemberAccess",
+                                                        "referencedDeclaration": 22,
+                                                        "src": "1290:13:0",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_bytes32",
+                                                            "typeString": "bytes32"
+                                                        }
+                                                    }
+                                                ],
+                                                "id": 113,
+                                                "isConstant": false,
+                                                "isInlineArray": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "nodeType": "TupleExpression",
+                                                "src": "1254:50:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_tuple$_t_bytes32_$_t_string_storage_$_t_bytes32_$",
+                                                    "typeString": "tuple(bytes32,string storage ref,bytes32)"
+                                                }
+                                            },
+                                            "functionReturnParameters": 100,
+                                            "id": 114,
+                                            "nodeType": "Return",
+                                            "src": "1247:57:0"
+                                        }
+                                    ]
+                                },
+                                "documentation": null,
+                                "id": 116,
+                                "implemented": true,
+                                "kind": "function",
+                                "modifiers": [
+                                    {
+                                        "arguments": null,
+                                        "id": 93,
+                                        "modifierName": {
+                                            "argumentTypes": null,
+                                            "id": 92,
+                                            "name": "onlyOwner",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [],
+                                            "referencedDeclaration": 132,
+                                            "src": "1140:9:0",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_modifier$__$",
+                                                "typeString": "modifier ()"
+                                            }
+                                        },
+                                        "nodeType": "ModifierInvocation",
+                                        "src": "1140:9:0"
+                                    }
+                                ],
+                                "name": "GetRecord",
+                                "nodeType": "FunctionDefinition",
+                                "parameters": {
+                                    "id": 91,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [
+                                        {
+                                            "constant": false,
+                                            "id": 90,
+                                            "name": "id",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 116,
+                                            "src": "1116:10:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bytes32",
+                                                "typeString": "bytes32"
+                                            },
+                                            "typeName": {
+                                                "id": 89,
+                                                "name": "bytes32",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "1116:7:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bytes32",
+                                                    "typeString": "bytes32"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        }
+                                    ],
+                                    "src": "1115:12:0"
+                                },
+                                "returnParameters": {
+                                    "id": 100,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [
+                                        {
+                                            "constant": false,
+                                            "id": 95,
+                                            "name": "",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 116,
+                                            "src": "1159:7:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bytes32",
+                                                "typeString": "bytes32"
+                                            },
+                                            "typeName": {
+                                                "id": 94,
+                                                "name": "bytes32",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "1159:7:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bytes32",
+                                                    "typeString": "bytes32"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        },
+                                        {
+                                            "constant": false,
+                                            "id": 97,
+                                            "name": "",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 116,
+                                            "src": "1168:13:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "memory",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_string_memory_ptr",
+                                                "typeString": "string"
+                                            },
+                                            "typeName": {
+                                                "id": 96,
+                                                "name": "string",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "1168:6:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_string_storage_ptr",
+                                                    "typeString": "string"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        },
+                                        {
+                                            "constant": false,
+                                            "id": 99,
+                                            "name": "",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 116,
+                                            "src": "1183:7:0",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bytes32",
+                                                "typeString": "bytes32"
+                                            },
+                                            "typeName": {
+                                                "id": 98,
+                                                "name": "bytes32",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "1183:7:0",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bytes32",
+                                                    "typeString": "bytes32"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        }
+                                    ],
+                                    "src": "1158:33:0"
+                                },
+                                "scope": 117,
+                                "src": "1097:211:0",
+                                "stateMutability": "view",
+                                "superFunction": null,
+                                "visibility": "public"
+                            }
+                        ],
+                        "scope": 118,
+                        "src": "49:1261:0"
+                    }
+                ],
+                "src": "0:1310:0"
+            },
+            "id": 0
+        },
+        "/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/Ownable.sol": {
+            "ast": {
+                "absolutePath": "/Users/mahdi/Documents/GitHubVisualStudio/blockchainproject/app-innovation-team/2. solutions/resource-finder/source/Contracts/Ownable.sol",
+                "exportedSymbols": {
+                    "Ownable": [
+                        173
+                    ]
+                },
+                "id": 174,
+                "nodeType": "SourceUnit",
+                "nodes": [
+                    {
+                        "id": 119,
+                        "literals": [
+                            "solidity",
+                            "^",
+                            "0.5",
+                            ".1"
+                        ],
+                        "nodeType": "PragmaDirective",
+                        "src": "0:23:1"
+                    },
+                    {
+                        "baseContracts": [],
+                        "contractDependencies": [],
+                        "contractKind": "contract",
+                        "documentation": null,
+                        "fullyImplemented": true,
+                        "id": 173,
+                        "linearizedBaseContracts": [
+                            173
+                        ],
+                        "name": "Ownable",
+                        "nodeType": "ContractDefinition",
+                        "nodes": [
+                            {
+                                "constant": false,
+                                "id": 121,
+                                "name": "owner",
+                                "nodeType": "VariableDeclaration",
+                                "scope": 173,
+                                "src": "48:22:1",
+                                "stateVariable": true,
+                                "storageLocation": "default",
+                                "typeDescriptions": {
+                                    "typeIdentifier": "t_address",
+                                    "typeString": "address"
+                                },
+                                "typeName": {
+                                    "id": 120,
+                                    "name": "address",
+                                    "nodeType": "ElementaryTypeName",
+                                    "src": "48:7:1",
+                                    "stateMutability": "nonpayable",
+                                    "typeDescriptions": {
+                                        "typeIdentifier": "t_address",
+                                        "typeString": "address"
+                                    }
+                                },
+                                "value": null,
+                                "visibility": "internal"
+                            },
+                            {
+                                "body": {
+                                    "id": 131,
+                                    "nodeType": "Block",
+                                    "src": "102:56:1",
+                                    "statements": [
+                                        {
+                                            "expression": {
+                                                "argumentTypes": null,
+                                                "arguments": [
+                                                    {
+                                                        "argumentTypes": null,
+                                                        "arguments": [
+                                                            {
+                                                                "argumentTypes": null,
+                                                                "expression": {
+                                                                    "argumentTypes": null,
+                                                                    "id": 125,
+                                                                    "name": "msg",
+                                                                    "nodeType": "Identifier",
+                                                                    "overloadedDeclarations": [],
+                                                                    "referencedDeclaration": 188,
+                                                                    "src": "128:3:1",
+                                                                    "typeDescriptions": {
+                                                                        "typeIdentifier": "t_magic_message",
+                                                                        "typeString": "msg"
+                                                                    }
+                                                                },
+                                                                "id": 126,
+                                                                "isConstant": false,
+                                                                "isLValue": false,
+                                                                "isPure": false,
+                                                                "lValueRequested": false,
+                                                                "memberName": "sender",
+                                                                "nodeType": "MemberAccess",
+                                                                "referencedDeclaration": null,
+                                                                "src": "128:10:1",
+                                                                "typeDescriptions": {
+                                                                    "typeIdentifier": "t_address_payable",
+                                                                    "typeString": "address payable"
+                                                                }
+                                                            }
+                                                        ],
+                                                        "expression": {
+                                                            "argumentTypes": [
+                                                                {
+                                                                    "typeIdentifier": "t_address_payable",
+                                                                    "typeString": "address payable"
+                                                                }
+                                                            ],
+                                                            "id": 124,
+                                                            "name": "isOwner",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 153,
+                                                            "src": "120:7:1",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_function_internal_view$_t_address_$returns$_t_bool_$",
+                                                                "typeString": "function (address) view returns (bool)"
+                                                            }
+                                                        },
+                                                        "id": 127,
+                                                        "isConstant": false,
+                                                        "isLValue": false,
+                                                        "isPure": false,
+                                                        "kind": "functionCall",
+                                                        "lValueRequested": false,
+                                                        "names": [],
+                                                        "nodeType": "FunctionCall",
+                                                        "src": "120:19:1",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_bool",
+                                                            "typeString": "bool"
+                                                        }
+                                                    }
+                                                ],
+                                                "expression": {
+                                                    "argumentTypes": [
+                                                        {
+                                                            "typeIdentifier": "t_bool",
+                                                            "typeString": "bool"
+                                                        }
+                                                    ],
+                                                    "id": 123,
+                                                    "name": "require",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [
+                                                        191,
+                                                        192
+                                                    ],
+                                                    "referencedDeclaration": 191,
+                                                    "src": "112:7:1",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
+                                                        "typeString": "function (bool) pure"
+                                                    }
+                                                },
+                                                "id": 128,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "kind": "functionCall",
+                                                "lValueRequested": false,
+                                                "names": [],
+                                                "nodeType": "FunctionCall",
+                                                "src": "112:28:1",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_tuple$__$",
+                                                    "typeString": "tuple()"
+                                                }
+                                            },
+                                            "id": 129,
+                                            "nodeType": "ExpressionStatement",
+                                            "src": "112:28:1"
+                                        },
+                                        {
+                                            "id": 130,
+                                            "nodeType": "PlaceholderStatement",
+                                            "src": "150:1:1"
+                                        }
+                                    ]
+                                },
+                                "documentation": null,
+                                "id": 132,
+                                "name": "onlyOwner",
+                                "nodeType": "ModifierDefinition",
+                                "parameters": {
+                                    "id": 122,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [],
+                                    "src": "99:2:1"
+                                },
+                                "src": "81:77:1",
+                                "visibility": "internal"
+                            },
+                            {
+                                "body": {
+                                    "id": 140,
+                                    "nodeType": "Block",
+                                    "src": "185:35:1",
+                                    "statements": [
+                                        {
+                                            "expression": {
+                                                "argumentTypes": null,
+                                                "id": 138,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "leftHandSide": {
+                                                    "argumentTypes": null,
+                                                    "id": 135,
+                                                    "name": "owner",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 121,
+                                                    "src": "195:5:1",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_address",
+                                                        "typeString": "address"
+                                                    }
+                                                },
+                                                "nodeType": "Assignment",
+                                                "operator": "=",
+                                                "rightHandSide": {
+                                                    "argumentTypes": null,
+                                                    "expression": {
+                                                        "argumentTypes": null,
+                                                        "id": 136,
+                                                        "name": "msg",
+                                                        "nodeType": "Identifier",
+                                                        "overloadedDeclarations": [],
+                                                        "referencedDeclaration": 188,
+                                                        "src": "203:3:1",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_magic_message",
+                                                            "typeString": "msg"
+                                                        }
+                                                    },
+                                                    "id": 137,
+                                                    "isConstant": false,
+                                                    "isLValue": false,
+                                                    "isPure": false,
+                                                    "lValueRequested": false,
+                                                    "memberName": "sender",
+                                                    "nodeType": "MemberAccess",
+                                                    "referencedDeclaration": null,
+                                                    "src": "203:10:1",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_address_payable",
+                                                        "typeString": "address payable"
+                                                    }
+                                                },
+                                                "src": "195:18:1",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_address",
+                                                    "typeString": "address"
+                                                }
+                                            },
+                                            "id": 139,
+                                            "nodeType": "ExpressionStatement",
+                                            "src": "195:18:1"
+                                        }
+                                    ]
+                                },
+                                "documentation": null,
+                                "id": 141,
+                                "implemented": true,
+                                "kind": "constructor",
+                                "modifiers": [],
+                                "name": "",
+                                "nodeType": "FunctionDefinition",
+                                "parameters": {
+                                    "id": 133,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [],
+                                    "src": "175:2:1"
+                                },
+                                "returnParameters": {
+                                    "id": 134,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [],
+                                    "src": "185:0:1"
+                                },
+                                "scope": 173,
+                                "src": "164:56:1",
+                                "stateMutability": "nonpayable",
+                                "superFunction": null,
+                                "visibility": "public"
+                            },
+                            {
+                                "body": {
+                                    "id": 152,
+                                    "nodeType": "Block",
+                                    "src": "289:37:1",
+                                    "statements": [
+                                        {
+                                            "expression": {
+                                                "argumentTypes": null,
+                                                "commonType": {
+                                                    "typeIdentifier": "t_address",
+                                                    "typeString": "address"
+                                                },
+                                                "id": 150,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "leftExpression": {
+                                                    "argumentTypes": null,
+                                                    "id": 148,
+                                                    "name": "addr",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 143,
+                                                    "src": "306:4:1",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_address",
+                                                        "typeString": "address"
+                                                    }
+                                                },
+                                                "nodeType": "BinaryOperation",
+                                                "operator": "==",
+                                                "rightExpression": {
+                                                    "argumentTypes": null,
+                                                    "id": 149,
+                                                    "name": "owner",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 121,
+                                                    "src": "314:5:1",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_address",
+                                                        "typeString": "address"
+                                                    }
+                                                },
+                                                "src": "306:13:1",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bool",
+                                                    "typeString": "bool"
+                                                }
+                                            },
+                                            "functionReturnParameters": 147,
+                                            "id": 151,
+                                            "nodeType": "Return",
+                                            "src": "299:20:1"
+                                        }
+                                    ]
+                                },
+                                "documentation": null,
+                                "id": 153,
+                                "implemented": true,
+                                "kind": "function",
+                                "modifiers": [],
+                                "name": "isOwner",
+                                "nodeType": "FunctionDefinition",
+                                "parameters": {
+                                    "id": 144,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [
+                                        {
+                                            "constant": false,
+                                            "id": 143,
+                                            "name": "addr",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 153,
+                                            "src": "247:12:1",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_address",
+                                                "typeString": "address"
+                                            },
+                                            "typeName": {
+                                                "id": 142,
+                                                "name": "address",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "247:7:1",
+                                                "stateMutability": "nonpayable",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_address",
+                                                    "typeString": "address"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        }
+                                    ],
+                                    "src": "246:14:1"
+                                },
+                                "returnParameters": {
+                                    "id": 147,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [
+                                        {
+                                            "constant": false,
+                                            "id": 146,
+                                            "name": "",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 153,
+                                            "src": "283:4:1",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_bool",
+                                                "typeString": "bool"
+                                            },
+                                            "typeName": {
+                                                "id": 145,
+                                                "name": "bool",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "283:4:1",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bool",
+                                                    "typeString": "bool"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        }
+                                    ],
+                                    "src": "282:6:1"
+                                },
+                                "scope": 173,
+                                "src": "230:96:1",
+                                "stateMutability": "view",
+                                "superFunction": null,
+                                "visibility": "internal"
+                            },
+                            {
+                                "body": {
+                                    "id": 171,
+                                    "nodeType": "Block",
+                                    "src": "396:88:1",
+                                    "statements": [
+                                        {
+                                            "condition": {
+                                                "argumentTypes": null,
+                                                "commonType": {
+                                                    "typeIdentifier": "t_address",
+                                                    "typeString": "address"
+                                                },
+                                                "id": 164,
+                                                "isConstant": false,
+                                                "isLValue": false,
+                                                "isPure": false,
+                                                "lValueRequested": false,
+                                                "leftExpression": {
+                                                    "argumentTypes": null,
+                                                    "id": 160,
+                                                    "name": "newOwner",
+                                                    "nodeType": "Identifier",
+                                                    "overloadedDeclarations": [],
+                                                    "referencedDeclaration": 155,
+                                                    "src": "410:8:1",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_address",
+                                                        "typeString": "address"
+                                                    }
+                                                },
+                                                "nodeType": "BinaryOperation",
+                                                "operator": "!=",
+                                                "rightExpression": {
+                                                    "argumentTypes": null,
+                                                    "arguments": [
+                                                        {
+                                                            "argumentTypes": null,
+                                                            "id": 162,
+                                                            "name": "this",
+                                                            "nodeType": "Identifier",
+                                                            "overloadedDeclarations": [],
+                                                            "referencedDeclaration": 202,
+                                                            "src": "430:4:1",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_contract$_Ownable_$173",
+                                                                "typeString": "contract Ownable"
+                                                            }
+                                                        }
+                                                    ],
+                                                    "expression": {
+                                                        "argumentTypes": [
+                                                            {
+                                                                "typeIdentifier": "t_contract$_Ownable_$173",
+                                                                "typeString": "contract Ownable"
+                                                            }
+                                                        ],
+                                                        "id": 161,
+                                                        "isConstant": false,
+                                                        "isLValue": false,
+                                                        "isPure": true,
+                                                        "lValueRequested": false,
+                                                        "nodeType": "ElementaryTypeNameExpression",
+                                                        "src": "422:7:1",
+                                                        "typeDescriptions": {
+                                                            "typeIdentifier": "t_type$_t_address_$",
+                                                            "typeString": "type(address)"
+                                                        },
+                                                        "typeName": "address"
+                                                    },
+                                                    "id": 163,
+                                                    "isConstant": false,
+                                                    "isLValue": false,
+                                                    "isPure": false,
+                                                    "kind": "typeConversion",
+                                                    "lValueRequested": false,
+                                                    "names": [],
+                                                    "nodeType": "FunctionCall",
+                                                    "src": "422:13:1",
+                                                    "typeDescriptions": {
+                                                        "typeIdentifier": "t_address",
+                                                        "typeString": "address"
+                                                    }
+                                                },
+                                                "src": "410:25:1",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_bool",
+                                                    "typeString": "bool"
+                                                }
+                                            },
+                                            "falseBody": null,
+                                            "id": 170,
+                                            "nodeType": "IfStatement",
+                                            "src": "406:72:1",
+                                            "trueBody": {
+                                                "id": 169,
+                                                "nodeType": "Block",
+                                                "src": "437:41:1",
+                                                "statements": [
+                                                    {
+                                                        "expression": {
+                                                            "argumentTypes": null,
+                                                            "id": 167,
+                                                            "isConstant": false,
+                                                            "isLValue": false,
+                                                            "isPure": false,
+                                                            "lValueRequested": false,
+                                                            "leftHandSide": {
+                                                                "argumentTypes": null,
+                                                                "id": 165,
+                                                                "name": "owner",
+                                                                "nodeType": "Identifier",
+                                                                "overloadedDeclarations": [],
+                                                                "referencedDeclaration": 121,
+                                                                "src": "451:5:1",
+                                                                "typeDescriptions": {
+                                                                    "typeIdentifier": "t_address",
+                                                                    "typeString": "address"
+                                                                }
+                                                            },
+                                                            "nodeType": "Assignment",
+                                                            "operator": "=",
+                                                            "rightHandSide": {
+                                                                "argumentTypes": null,
+                                                                "id": 166,
+                                                                "name": "newOwner",
+                                                                "nodeType": "Identifier",
+                                                                "overloadedDeclarations": [],
+                                                                "referencedDeclaration": 155,
+                                                                "src": "459:8:1",
+                                                                "typeDescriptions": {
+                                                                    "typeIdentifier": "t_address",
+                                                                    "typeString": "address"
+                                                                }
+                                                            },
+                                                            "src": "451:16:1",
+                                                            "typeDescriptions": {
+                                                                "typeIdentifier": "t_address",
+                                                                "typeString": "address"
+                                                            }
+                                                        },
+                                                        "id": 168,
+                                                        "nodeType": "ExpressionStatement",
+                                                        "src": "451:16:1"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                "documentation": null,
+                                "id": 172,
+                                "implemented": true,
+                                "kind": "function",
+                                "modifiers": [
+                                    {
+                                        "arguments": null,
+                                        "id": 158,
+                                        "modifierName": {
+                                            "argumentTypes": null,
+                                            "id": 157,
+                                            "name": "onlyOwner",
+                                            "nodeType": "Identifier",
+                                            "overloadedDeclarations": [],
+                                            "referencedDeclaration": 132,
+                                            "src": "386:9:1",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_modifier$__$",
+                                                "typeString": "modifier ()"
+                                            }
+                                        },
+                                        "nodeType": "ModifierInvocation",
+                                        "src": "386:9:1"
+                                    }
+                                ],
+                                "name": "transferOwnership",
+                                "nodeType": "FunctionDefinition",
+                                "parameters": {
+                                    "id": 156,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [
+                                        {
+                                            "constant": false,
+                                            "id": 155,
+                                            "name": "newOwner",
+                                            "nodeType": "VariableDeclaration",
+                                            "scope": 172,
+                                            "src": "359:16:1",
+                                            "stateVariable": false,
+                                            "storageLocation": "default",
+                                            "typeDescriptions": {
+                                                "typeIdentifier": "t_address",
+                                                "typeString": "address"
+                                            },
+                                            "typeName": {
+                                                "id": 154,
+                                                "name": "address",
+                                                "nodeType": "ElementaryTypeName",
+                                                "src": "359:7:1",
+                                                "stateMutability": "nonpayable",
+                                                "typeDescriptions": {
+                                                    "typeIdentifier": "t_address",
+                                                    "typeString": "address"
+                                                }
+                                            },
+                                            "value": null,
+                                            "visibility": "internal"
+                                        }
+                                    ],
+                                    "src": "358:18:1"
+                                },
+                                "returnParameters": {
+                                    "id": 159,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [],
+                                    "src": "396:0:1"
+                                },
+                                "scope": 173,
+                                "src": "332:152:1",
+                                "stateMutability": "nonpayable",
+                                "superFunction": null,
+                                "visibility": "internal"
+                            }
+                        ],
+                        "scope": 174,
+                        "src": "25:461:1"
+                    }
+                ],
+                "src": "0:486:1"
+            },
+            "id": 1
+        }
+    }
+}
