@@ -186,7 +186,7 @@ namespace QuorumDemo.Core
         }
 
 
-        public async Task<T> CallContractFunctionAsycn<T>(T ReturnType, ContractInfo contractInfo, string contractAddress, string functionName)
+        public async Task<T> CallContractFunctionAsync<T>(T ReturnType, ContractInfo contractInfo, string contractAddress, string functionName)
         {
             var contract = web3.Eth.GetContract(contractInfo.ContractABI, contractAddress);
             var function = contract.GetFunction(functionName);

@@ -13,6 +13,8 @@ using RF.Contracts.Domain.Exceptions;
 using System;
 using System.Threading.Tasks;
 
+using QuorumDemo.Core;
+
 namespace RF.Contracts.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -69,6 +71,7 @@ namespace RF.Contracts.Api.Controllers
 
                 //TODO: Make a call into the Quorum Helper and create the contract
 
+             
 
             }
             catch (Exception ex)

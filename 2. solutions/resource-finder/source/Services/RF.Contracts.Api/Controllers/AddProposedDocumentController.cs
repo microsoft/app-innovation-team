@@ -12,6 +12,9 @@ using RF.Contracts.Domain.Enums;
 using RF.Contracts.Domain.Exceptions;
 using System;
 using System.Threading.Tasks;
+using QuorumDemo.Core;
+using QuorumDemo.Core.Models;
+using System.Collections.Generic;
 
 namespace RF.Contracts.Api.Controllers
 {
@@ -28,7 +31,7 @@ namespace RF.Contracts.Api.Controllers
 
         [HttpPost]
         [Authorize(Policy = "RF-Users")]
-        public async Task<IActionResult> Post([FromBody]ContractDeploymentRequest model)
+        public async Task<IActionResult> Post([FromBody]ContractDeploymentRequest PostRequest)
         {
             // non-forced-to-disposal
             ContractDeploymentResponse result = new ContractDeploymentResponse
@@ -42,10 +45,10 @@ namespace RF.Contracts.Api.Controllers
 
             try
             {
-                if (string.IsNullOrEmpty(model.Name))
+                if (string.IsNullOrEmpty(PostRequest.Name))
                     throw new BusinessException((int)ContractDeploymentResponseEnum.FailedEmptyName);
 
-                if (string.IsNullOrEmpty(model.Description))
+                if (string.IsNullOrEmpty(PostRequest.Description))
                     throw new BusinessException((int)ContractDeploymentResponseEnum.FailedEmptyDescription);
 
                 keyVaultConnectionInfo = new KeyVaultConnectionInfo()
@@ -60,15 +63,50 @@ namespace RF.Contracts.Api.Controllers
                 {
                     ContractDeploymentMessage contractDeploymentMessage = new ContractDeploymentMessage()
                     {
-                        name = model.Name,
-                        description = model.Description
+                        name = PostRequest.Name,
+                        description = PostRequest.Description
                     };
 
                     await messageQueueHelper.QueueMessageAsync(contractDeploymentMessage, ApplicationSettings.ContractDeploymentQueueName, keyVaultConnectionInfo);
                 }
 
-                //TODO: Make a call into the Quorum Helper and create the contract
+                //--- Make a call into the Quorum Helper and call the contract --/
 
+                var abiFile = System.IO.File.OpenText("/../../../Contracts/ProposalFile.abi");
+                var abi = abiFile.ReadToEnd();
+
+                var byteCodeFile = System.IO.File.OpenText("/../../../Contracts/ProposalFile.bin");
+                var byteCode = "0x" + byteCodeFile.ReadToEnd();
+
+
+                var ContractInfo = new ContractInfo
+                {
+                    ContractABI = abi,
+                    ContractByteCode = byteCode
+                };
+
+                var RPC_URL = "";
+                var CONTRACT_ADDRESS = ""; // THIS WILL REMAIN CONSTANT ONCE WE HAVE DEPLOYED THE CONTRACTS
+
+                var ACCOUNT_JSON_FILE = "";
+                var PASSWORD = "";
+
+                var PRIVATE_FOR_KEYS = new List<string>() { "aasdfsadfsadf" };
+
+
+                var account = QuorumDemo.Core.AccountHelper.DecryptAccount(ACCOUNT_JSON_FILE, PASSWORD);
+
+                // -- SET WEB3 Handler -- //
+                QuorumContractHelper.Instance.SetWeb3Handler(RPC_URL);
+
+                var txResult =  await QuorumContractHelper.Instance.CreateTransactionAsync(
+                    CONTRACT_ADDRESS,
+                    ContractInfo,
+                    "Register",
+                    account,
+                    new object[] { PostRequest.Name, PostRequest.Description, "the hash from IPFS"},
+                    PRIVATE_FOR_KEYS
+                    );
 
             }
             catch (Exception ex)

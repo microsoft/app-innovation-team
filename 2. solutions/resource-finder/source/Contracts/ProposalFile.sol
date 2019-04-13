@@ -18,7 +18,7 @@ contract ProposalFile is Ownable
 
     mapping(bytes32 => Document) public Documents;
     
-    function Register(bytes32 id, string memory description, bytes32 hash) public onlyOwner {
+    function Register(bytes32 id, string memory description, bytes32 hash) public {
         
         //validate if record has been registered before
         require(!Documents[id].registered);
@@ -35,7 +35,7 @@ contract ProposalFile is Ownable
         documents++;
 	}
 	
-	function GetRecord(bytes32 id) public view onlyOwner returns (bytes32, string memory, bytes32) {
+	function GetRecord(bytes32 id) public view returns (bytes32, string memory, bytes32) {
 	    Document storage document = Documents[id];
 	    return (document.id, document.description, document.hash);
 	}
