@@ -71,8 +71,21 @@ namespace RF.Contracts.Api.Controllers
 
                 //TODO: Make a call into the Quorum Helper and create the contract
 
-             
 
+                var quorumDeployerA = new QuorumContractHelper("RPC FOR NODE A");
+
+
+                //  to test locally 
+
+                // deploy the contract with the given bytecode & private key / params using the helper with RPC for Node A 
+
+
+                // make another call into the contract providing publicKEy for node B for a transaction 
+
+                // 
+
+
+                
             }
             catch (Exception ex)
             {

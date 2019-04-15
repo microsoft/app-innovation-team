@@ -59,17 +59,7 @@ namespace RF.Contracts.Api.Controllers
                     KeyVaultIdentifier = ApplicationSettings.KeyVaultIdentifier
                 };
 
-                using (MessageQueueHelper messageQueueHelper = new MessageQueueHelper())
-                {
-                    ContractDeploymentMessage contractDeploymentMessage = new ContractDeploymentMessage()
-                    {
-                        name = PostRequest.Name,
-                        description = PostRequest.Description
-                    };
-
-                    await messageQueueHelper.QueueMessageAsync(contractDeploymentMessage, ApplicationSettings.ContractDeploymentQueueName, keyVaultConnectionInfo);
-                }
-
+                
                 //--- Make a call into the Quorum Helper and call the contract --/
 
                 var abiFile = System.IO.File.OpenText("/../../../Contracts/ProposalFile.abi");
@@ -85,9 +75,10 @@ namespace RF.Contracts.Api.Controllers
                     ContractByteCode = byteCode
                 };
 
-                var RPC_URL = "";
+                var RPC_URL = ""; // based n who is logged in we know the RPC URL
                 var CONTRACT_ADDRESS = ""; // THIS WILL REMAIN CONSTANT ONCE WE HAVE DEPLOYED THE CONTRACTS
 
+                // following is for getting private key but if we have it its OK. 
                 var ACCOUNT_JSON_FILE = "";
                 var PASSWORD = "";
 
@@ -97,9 +88,9 @@ namespace RF.Contracts.Api.Controllers
                 var account = QuorumDemo.Core.AccountHelper.DecryptAccount(ACCOUNT_JSON_FILE, PASSWORD);
 
                 // -- SET WEB3 Handler -- //
-                QuorumContractHelper.Instance.SetWeb3Handler(RPC_URL);
+                var quorumHelper = new QuorumContractHelper(RPC_URL);
 
-                var txResult =  await QuorumContractHelper.Instance.CreateTransactionAsync(
+                var txResult =  await quorumHelper.CreateTransactionAsync(
                     CONTRACT_ADDRESS,
                     ContractInfo,
                     "Register",
