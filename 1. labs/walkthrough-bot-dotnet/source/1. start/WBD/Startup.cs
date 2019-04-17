@@ -40,16 +40,19 @@ namespace WBD
 
             IStorage storage = new MemoryStorage();
 
+            var userState = new UserState(storage);
+            var conversationState = new ConversationState(storage);
+
+            services.AddSingleton(userState);
+            services.AddSingleton(conversationState);
+
             services.AddBot<Bot>(options =>
             {
-                options.State.Add(new UserState(storage));
-                options.State.Add(new ConversationState(storage));
-
                 options.CredentialProvider = new SimpleCredentialProvider(Settings.MicrosoftAppId, Settings.MicrosoftAppPassword);
 
                 // The BotStateSet middleware forces state storage to auto-save when the bot is complete processing the message.
                 // Note: Developers may choose not to add all the state providers to this middleware if save is not required.
-                options.Middleware.Add(new AutoSaveStateMiddleware(options.State.ToArray()));
+                options.Middleware.Add(new AutoSaveStateMiddleware(userState, conversationState));
                 options.Middleware.Add(new ShowTypingMiddleware());
             });
 

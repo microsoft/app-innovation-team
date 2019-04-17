@@ -48,16 +48,19 @@ namespace WBD
 
             IStorage storage = new MemoryStorage();
 
+            var userState = new UserState(storage);
+            var conversationState = new ConversationState(storage);
+
+            services.AddSingleton(userState);
+            services.AddSingleton(conversationState);
+
             services.AddBot<Bot>(options =>
             {
-                options.State.Add(new UserState(storage));
-                options.State.Add(new ConversationState(storage));
-
                 options.CredentialProvider = new SimpleCredentialProvider(Settings.MicrosoftAppId, Settings.MicrosoftAppPassword);
 
                 // The BotStateSet middleware forces state storage to auto-save when the bot is complete processing the message.
                 // Note: Developers may choose not to add all the state providers to this middleware if save is not required.
-                options.Middleware.Add(new AutoSaveStateMiddleware(options.State.ToArray()));
+                options.Middleware.Add(new AutoSaveStateMiddleware(userState, conversationState));
                 options.Middleware.Add(new ShowTypingMiddleware());
             });
 
@@ -70,13 +73,13 @@ namespace WBD
                     throw new InvalidOperationException("BotFrameworkOptions must be configured prior to setting up the State Accessors");
                 }
 
-                var conversationState = options.State.OfType<ConversationState>().FirstOrDefault();
+                conversationState = options.Middleware.OfType<AutoSaveStateMiddleware>().FirstOrDefault().BotStateSet.BotStates.OfType<ConversationState>().FirstOrDefault();
                 if (conversationState == null)
                 {
                     throw new InvalidOperationException("ConversationState must be defined and added before adding conversation-scoped state accessors.");
                 }
 
-                var userState = options.State.OfType<UserState>().FirstOrDefault();
+                userState = options.Middleware.OfType<AutoSaveStateMiddleware>().FirstOrDefault().BotStateSet.BotStates.OfType<UserState>().FirstOrDefault();
                 if (userState == null)
                 {
                     throw new InvalidOperationException("UserState must be defined and added before adding user-scoped state accessors.");
