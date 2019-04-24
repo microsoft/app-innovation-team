@@ -36,7 +36,7 @@ To run the project locally you need:
 - Docker Community Edition (https://www.docker.com/get-started) (optional)
 - Optional: you may want to install CTOP if you are using Linux/MacOS to manage containers from your terminal: https://github.com/bcicen/ctop
 
-<b>Important:</b> The current microservices solution is optimized to run on Linux/MacOS, it means I’m using a specific configuration in the code to handle IO directly with libuv unix sockets, said that, I would suggest host Docker on MacOS or Linux VM, otherwise you will need to perform some adjustments in the code to add IIS service on Program.cs on each API exposed.
+<b>Important:</b> The gateway project is optimized to run on Linux/MacOS, it means I’m using a specific configuration in the code to handle IO directly with libuv unix sockets, said that, I would suggest host Docker on MacOS or Linux VM, otherwise you will need to perform some adjustments in the code to add IIS service on Program.cs on each API exposed.
 
 ### Docker Compose
 
