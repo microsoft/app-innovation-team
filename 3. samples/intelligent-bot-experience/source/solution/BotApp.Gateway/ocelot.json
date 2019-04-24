@@ -1,0 +1,22 @@
+{
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/api/messages",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/api/messages",
+      "ServiceName": "bot-app",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://gateway:433",
+    "ServiceDiscoveryProvider": {
+      "Host": "consul",
+      "Port": 8500,
+      "Type": "Consul"
+    }
+  }
+}
