@@ -1,0 +1,19 @@
+{
+    "name": "BotApp",
+    "description": "",
+    "services": [
+        {
+            "type": "endpoint",
+            "appId": "",
+            "appPassword": "",
+            "endpoint": "http://10.211.55.2:17070/api/messages",
+            "id": "546434f0-b465-11e8-bf1e-b98c0ae7c001",
+            "name": "Local"
+        }
+    ],
+    "padlock": "",
+    "version": "2.0",
+    "path": "Z:\\GitHub\\app-innovation-team\\3. samples\\intelligent-bot-experience\\source\\solution\\BotApp\\BotApp.bot",
+    "overrides": null,
+    "secretKey": ""
+}
