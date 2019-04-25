@@ -19,11 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Microsoft.Identity.Web\Microsoft.Identity.Web.csproj" />
-    <ProjectReference Include="..\..\RF.ContentSearch.Api.Domain\RF.ContentSearch.Api.Domain.csproj" />
-    <ProjectReference Include="..\..\RF.ContentSearch.Api\RF.ContentSearch.Api.csproj" />
-    <ProjectReference Include="..\..\RF.ContentSearch.Domain\RF.ContentSearch.Domain.csproj" />
-    <ProjectReference Include="..\..\RF.Identity.Domain\RF.Identity.Domain.csproj" />
+    <ProjectReference Include="..\Microsoft.Identity.Web\Microsoft.Identity.Web.csproj" />
+    <ProjectReference Include="..\RF.ContentSearch.Api.Domain\RF.ContentSearch.Api.Domain.csproj" />
+    <ProjectReference Include="..\RF.ContentSearch.Api\RF.ContentSearch.Api.csproj" />
+    <ProjectReference Include="..\RF.ContentSearch.Domain\RF.ContentSearch.Domain.csproj" />
+    <ProjectReference Include="..\RF.Identity.Domain\RF.Identity.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
