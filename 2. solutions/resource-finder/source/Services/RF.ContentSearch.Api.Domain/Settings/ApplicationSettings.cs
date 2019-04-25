@@ -10,10 +10,13 @@ namespace RF.ContentSearch.Api.Domain.Settings
         public static string RabbitMQHostname { get; set; }
         public static int RabbitMQPort { get; set; }
         public static string ContractDeploymentQueueName { get; set; }
+        public static string ContentSubmissionQueueName { get; set; }
         public static string KeyVaultCertificateName { get; set; }
         public static string KeyVaultClientId { get; set; }
         public static string KeyVaultClientSecret { get; set; }
         public static string KeyVaultIdentifier { get; set; }
         public static string KeyVaultEncryptionKey { get; set; }
+        public static string SendGridAPIKey { get; set; }
+        public static string UserCollection { get; set; }
     }
 }

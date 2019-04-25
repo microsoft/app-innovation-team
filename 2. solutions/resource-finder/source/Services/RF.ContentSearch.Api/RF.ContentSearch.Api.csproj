@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="2.2.0" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.3" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
     <PackageReference Include="NETCore.Encrypt" Version="2.0.7" />
   </ItemGroup>
@@ -18,5 +19,6 @@
     <ProjectReference Include="..\Microsoft.Identity.Web\Microsoft.Identity.Web.csproj" />
     <ProjectReference Include="..\RF.ContentSearch.Api.Domain\RF.ContentSearch.Api.Domain.csproj" />
     <ProjectReference Include="..\RF.ContentSearch.Domain\RF.ContentSearch.Domain.csproj" />
+    <ProjectReference Include="..\RF.Identity.Domain\RF.Identity.Domain.csproj" />
   </ItemGroup>
 </Project>
