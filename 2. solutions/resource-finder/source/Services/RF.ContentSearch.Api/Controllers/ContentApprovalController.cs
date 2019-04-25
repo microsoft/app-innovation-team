@@ -59,6 +59,7 @@ namespace RF.ContentSearch.Api.Controllers
                     {
                         name = model.Name,
                     };
+                    
 
                     await messageQueueHelper.QueueMessageAsync(contractDeploymentMessage, ApplicationSettings.ContractDeploymentQueueName, keyVaultConnectionInfo);
                 }

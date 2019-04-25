@@ -67,7 +67,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RF.ContentSearch.Api.Domain
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RF.ContentSearch.Domain", "..\RF.ContentSearch.Domain\RF.ContentSearch.Domain.csproj", "{3207F5EA-5DD8-4489-ADF7-CBE83F8992C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RF.ContentSearch.App", "RF.ContentSearch.App\RF.ContentSearch.App.csproj", "{C6A6CAB9-2D23-4DB2-AB8D-1BAE9354B5A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RF.ContentSearch.App", "..\RF.ContentSearch.App\RF.ContentSearch.App.csproj", "{C6A6CAB9-2D23-4DB2-AB8D-1BAE9354B5A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
