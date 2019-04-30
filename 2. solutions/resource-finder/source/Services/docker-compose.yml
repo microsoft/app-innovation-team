@@ -108,6 +108,25 @@ services:
     depends_on:
       rabbit:
         condition: service_healthy
+  contentsearch-app:
+    image: rf.contentsearch.app:1.0
+    mem_limit: 200M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: contentsearch-app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+    build:
+      context: .
+      dockerfile: RF.ContentSearch.App/Dockerfile
+    restart: always
+    depends_on:
+      rabbit:
+        condition: service_healthy
   consul:
     image: consul:1.4.3
     mem_limit: 250M
