@@ -60,10 +60,12 @@ namespace RF.ContentSearch.Api
                 Configuration.Bind("AdGroups", adGroupConfig);
 
                 foreach (var adGroup in adGroupConfig)
+                {
                     options.AddPolicy(
                         adGroup.GroupName,
                         policy =>
                             policy.AddRequirements(new IsMemberOfGroupRequirement(adGroup.GroupName, adGroup.GroupId)));
+                }
             });
 
             services.AddSingleton<IAuthorizationHandler, IsMemberOfGroupHandler>();
