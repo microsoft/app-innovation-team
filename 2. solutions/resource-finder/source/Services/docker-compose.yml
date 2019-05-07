@@ -108,6 +108,25 @@ services:
     depends_on:
       rabbit:
         condition: service_healthy
+  contentapproval-app:
+    image: rf.contentapproval.app:1.0
+    mem_limit: 200M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: contentapproval-app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+    build:
+      context: .
+      dockerfile: RF.ContentApproval.App/Dockerfile
+    restart: always
+    depends_on:
+      rabbit:
+        condition: service_healthy
   contentsearch-app:
     image: rf.contentsearch.app:1.0
     mem_limit: 200M
