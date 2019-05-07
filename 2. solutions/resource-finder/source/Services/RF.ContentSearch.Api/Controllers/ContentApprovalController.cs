@@ -55,13 +55,13 @@ namespace RF.ContentSearch.Api.Controllers
 
                 using (MessageQueueHelper messageQueueHelper = new MessageQueueHelper())
                 {
-                    ContractDeploymentMessage contractDeploymentMessage = new ContractDeploymentMessage()
+                    ContentApprovalMessage contentApprovalMessage = new ContentApprovalMessage()
                     {
-                        name = model.Name,
+                        ApprovedBy = model.Name,
                     };
                     
 
-                    await messageQueueHelper.QueueMessageAsync(contractDeploymentMessage, ApplicationSettings.ContractDeploymentQueueName, keyVaultConnectionInfo);
+                    await messageQueueHelper.QueueMessageAsync(contentApprovalMessage, ApplicationSettings.ContentApprovalQueueName, keyVaultConnectionInfo);
                 }
             }
             catch (Exception ex)
