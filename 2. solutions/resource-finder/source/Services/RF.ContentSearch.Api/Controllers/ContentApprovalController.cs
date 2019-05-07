@@ -31,7 +31,7 @@ namespace RF.ContentSearch.Api.Controllers
         public async Task<IActionResult> Post([FromBody]ContentApprovalRequest model)
         {
             // non-forced-to-disposal
-            ContractDeploymentResponse result = new ContractDeploymentResponse
+            ContentApprovalResponse result = new ContentApprovalResponse
             {
                 IsSucceded = true,
                 ResultId = (int)ContentApprovalResponseEnum.Success

@@ -89,7 +89,7 @@ namespace RF.ContentSearch.Api.Controllers
                 GC.Collect();
             }
 
-            string message = EnumDescription.GetEnumDescription((ContentApprovalResponseEnum)result.ResultId);
+            string message = EnumDescription.GetEnumDescription((ContentSubmissionResponseEnum)result.ResultId);
             this.logger.LogInformation($">> Message information: {message}");
 
             return (result.IsSucceded) ? (ActionResult)new OkObjectResult(new { message = message }) : (ActionResult)new BadRequestObjectResult(new { message = message });

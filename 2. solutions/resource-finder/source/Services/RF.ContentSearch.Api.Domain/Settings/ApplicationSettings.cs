@@ -11,6 +11,7 @@ namespace RF.ContentSearch.Api.Domain.Settings
         public static int RabbitMQPort { get; set; }
         public static string ContractDeploymentQueueName { get; set; }
         public static string ContentSubmissionQueueName { get; set; }
+        public static string ContentApprovalQueueName { get; set; }
         public static string KeyVaultCertificateName { get; set; }
         public static string KeyVaultClientId { get; set; }
         public static string KeyVaultClientSecret { get; set; }
