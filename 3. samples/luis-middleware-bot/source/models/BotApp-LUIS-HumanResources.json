@@ -1,7 +1,7 @@
 {
   "luis_schema_version": "3.2.0",
   "versionId": "0.1",
-  "name": "BotApp-LUIS",
+  "name": "BotApp-LUIS-HumanResources",
   "desc": "",
   "culture": "en-us",
   "tokenizerVersion": "1.0.0",
@@ -47,6 +47,11 @@
       "entities": []
     },
     {
+      "text": "i would like to see a sample about how can i get the monthly balance?",
+      "intent": "None",
+      "entities": []
+    },
+    {
       "text": "i would like to see a sample about how should i prepare for an interview",
       "intent": "HumanResources_InterviewPreparation_Sample",
       "entities": []
@@ -57,7 +62,7 @@
       "entities": []
     },
     {
-      "text": "i would like to see a sample about what i need to consider for an interview",
+      "text": "i would like to see a sample about what do i need to consider for an interview",
       "intent": "HumanResources_InterviewPreparation_Sample",
       "entities": []
     },
@@ -72,8 +77,13 @@
       "entities": []
     },
     {
-      "text": "what i need to consider for an interview?",
+      "text": "what do i need to consider for an interview?",
       "intent": "HumanResources_InterviewPreparation",
+      "entities": []
+    },
+    {
+      "text": "you are fired!",
+      "intent": "None",
       "entities": []
     }
   ],
