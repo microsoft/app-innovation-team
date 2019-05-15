@@ -1,0 +1,123 @@
+version: '2.4'
+
+services:
+  consul:
+    image: consul:1.4.3
+    mem_limit: 250M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600"
+    expose:
+      - 8500
+      - 8600
+    restart: always
+  luis-middleware-gateway:
+    image: luis-middleware-gateway:1.0
+    mem_limit: 500M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: luis-middleware-gateway
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=https://+;http://+
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=Password.123
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/RF-CERT.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+    build:
+      context: .
+      dockerfile: BotApp.LUIS.Middleware.Gateway/Dockerfile
+    ports:
+      - "17070:443"
+    restart: always
+    depends_on:
+      - consul
+  luis-middleware:
+    image: luis-middleware:1.0
+    mem_limit: 250M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: luis-middleware
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=https://+;http://+
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=Password.123
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/RF-CERT.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+    build:
+      context: .
+      dockerfile: BotApp.LUIS.Middleware/Dockerfile
+    ports:
+      - "443"
+    restart: always
+    depends_on:
+      - consul
+  luis-middleware-identity:
+    image: luis-middleware-identity:1.0
+    mem_limit: 250M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: luis-middleware-identity
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=https://+;http://+
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=Password.123
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/RF-CERT.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+    build:
+      context: .
+      dockerfile: BotApp.LUIS.Middleware.Identity/Dockerfile
+    ports:
+      - "443"
+    restart: always
+    depends_on:
+      - consul
+  bot-app-gateway:
+    image: bot-app-gateway:1.0
+    mem_limit: 500M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: bot-app-gateway
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: BotApp.Gateway/Dockerfile
+    ports:
+      - "17071:80"
+    restart: always
+    depends_on:
+      - consul
+  bot-app:
+    image: bot-app:1.0
+    mem_limit: 250M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: bot-app
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: BotApp/Dockerfile
+    ports:
+      - "80"
+    restart: always
+    depends_on:
+      - consul
