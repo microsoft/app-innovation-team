@@ -1,0 +1,34 @@
+{
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/api/appauthentication",
+      "DownstreamScheme": "https",
+      "DangerousAcceptAnyServerCertificateValidator": "true",
+      "UpstreamPathTemplate": "/appauthentication",
+      "ServiceName": "luis-router-identity",
+      "UpstreamHttpMethod": [ "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/luisdiscovery",
+      "DownstreamScheme": "https",
+      "DangerousAcceptAnyServerCertificateValidator": "true",
+      "UpstreamPathTemplate": "/luisdiscovery",
+      "ServiceName": "luis-router",
+      "UpstreamHttpMethod": [ "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://luis-router-gateway:433",
+    "ServiceDiscoveryProvider": {
+      "Host": "consul",
+      "Port": 8500,
+      "Type": "Consul"
+    }
+  }
+}
