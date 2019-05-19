@@ -1,8 +1,11 @@
-﻿using IBE.Tests.Fixtures;
+﻿using BotApp.Extensions.BotBuilder.LuisRouter.Accessors;
+using BotApp.Extensions.BotBuilder.LuisRouter.Helpers;
+using BotApp.Extensions.BotBuilder.QnAMaker.Accessors;
+using BotApp.Extensions.BotBuilder.QnAMaker.Helpers;
+using BotApp.Extensions.Common.KeyVault.Helpers;
+using IBE.Tests.Fixtures;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
-using Microsoft.Bot.Builder.AI.Luis;
-using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
@@ -31,48 +34,21 @@ namespace BotApp.Tests.Classes
             var adapter = new TestAdapter()
                 .Use(new AutoSaveStateMiddleware(conversationState));
 
-            KeyVaultConnectionInfo keyVaultConnectionInfo = new KeyVaultConnectionInfo()
+            // Adding LUIS Router accessor
+            LuisRouterAccessor luisRouterAccessor = null;
+            using (LuisRouterHelper luisRouterHelper = new LuisRouterHelper(Startup.EnvironmentName, Startup.ContentRootPath))
             {
-                CertificateName = Settings.KeyVaultCertificateName,
-                ClientId = Settings.KeyVaultClientId,
-                ClientSecret = Settings.KeyVaultClientSecret,
-                KeyVaultIdentifier = Settings.KeyVaultIdentifier
-            };
-
-            using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(keyVaultConnectionInfo))
-            {
-                var encryptionkey = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
-                var appcode = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
-                Startup.EncryptedKey = NETCore.Encrypt.EncryptProvider.AESEncrypt(appcode, encryptionkey);
+                luisRouterAccessor = luisRouterHelper.BuildAccessor(userState, null);
             }
 
-            var luisServices = new Dictionary<string, LuisRecognizer>();
-
-            var app = new LuisApplication(TestSettings.LuisAppId01, TestSettings.LuisAuthoringKey01, TestSettings.LuisEndpoint01);
-            var recognizer = new LuisRecognizer(app);
-            luisServices.Add(TestSettings.LuisName01, recognizer);
-
-            app = new LuisApplication(TestSettings.LuisAppId02, TestSettings.LuisAuthoringKey02, TestSettings.LuisEndpoint02);
-            recognizer = new LuisRecognizer(app);
-            luisServices.Add(TestSettings.LuisName02, recognizer);
-
-            var qnaEndpoint = new QnAMakerEndpoint()
+            // Adding QnAMaker Router accessor
+            QnAMakerAccessor qnaMakerAccessor = null;
+            using (QnAMakerHelper qnaMakerHelper = new QnAMakerHelper(Startup.EnvironmentName, Startup.ContentRootPath))
             {
-                KnowledgeBaseId = Settings.QnAKbId,
-                EndpointKey = Settings.QnAEndpointKey,
-                Host = Settings.QnAHostname,
-            };
+                qnaMakerAccessor = qnaMakerHelper.BuildAccessor();
+            }
 
-            var qnaOptions = new QnAMakerOptions
-            {
-                ScoreThreshold = 0.3F
-            };
-
-            var qnaServices = new Dictionary<string, QnAMaker>();
-            var qnaMaker = new QnAMaker(qnaEndpoint, qnaOptions);
-            qnaServices.Add(Settings.QnAName, qnaMaker);
-
-            var accessors = new BotAccessors(new LoggerFactory(), conversationState, userState, luisServices, qnaServices)
+            var accessors = new BotAccessors(new LoggerFactory(), conversationState, userState)
             {
                 ConversationDialogState = conversationState.CreateProperty<DialogState>("DialogState"),
                 AskForExamplePreference = conversationState.CreateProperty<bool>("AskForExamplePreference"),
@@ -83,7 +59,7 @@ namespace BotApp.Tests.Classes
             {
                 var state = await accessors.ConversationDialogState.GetAsync(turnContext, () => new DialogState());
                 var dialogs = new DialogSet(accessors.ConversationDialogState);
-                dialogs.Add(new LuisQnADialog(accessors));
+                dialogs.Add(new LuisQnADialog(accessors, luisRouterAccessor, qnaMakerAccessor));
 
                 var dc = await dialogs.CreateContextAsync(turnContext, cancellationToken);
 
@@ -115,48 +91,21 @@ namespace BotApp.Tests.Classes
             var adapter = new TestAdapter()
                 .Use(new AutoSaveStateMiddleware(conversationState));
 
-            KeyVaultConnectionInfo keyVaultConnectionInfo = new KeyVaultConnectionInfo()
+            // Adding LUIS Router accessor
+            LuisRouterAccessor luisRouterAccessor = null;
+            using (LuisRouterHelper luisRouterHelper = new LuisRouterHelper(Startup.EnvironmentName, Startup.ContentRootPath))
             {
-                CertificateName = Settings.KeyVaultCertificateName,
-                ClientId = Settings.KeyVaultClientId,
-                ClientSecret = Settings.KeyVaultClientSecret,
-                KeyVaultIdentifier = Settings.KeyVaultIdentifier
-            };
-
-            using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(keyVaultConnectionInfo))
-            {
-                var encryptionkey = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
-                var appcode = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
-                Startup.EncryptedKey = NETCore.Encrypt.EncryptProvider.AESEncrypt(appcode, encryptionkey);
+                luisRouterAccessor = luisRouterHelper.BuildAccessor(userState, null);
             }
 
-            var luisServices = new Dictionary<string, LuisRecognizer>();
-
-            var app = new LuisApplication(TestSettings.LuisAppId01, TestSettings.LuisAuthoringKey01, TestSettings.LuisEndpoint01);
-            var recognizer = new LuisRecognizer(app);
-            luisServices.Add(TestSettings.LuisName01, recognizer);
-
-            app = new LuisApplication(TestSettings.LuisAppId02, TestSettings.LuisAuthoringKey02, TestSettings.LuisEndpoint02);
-            recognizer = new LuisRecognizer(app);
-            luisServices.Add(TestSettings.LuisName02, recognizer);
-
-            var qnaEndpoint = new QnAMakerEndpoint()
+            // Adding QnAMaker Router accessor
+            QnAMakerAccessor qnaMakerAccessor = null;
+            using (QnAMakerHelper qnaMakerHelper = new QnAMakerHelper(Startup.EnvironmentName, Startup.ContentRootPath))
             {
-                KnowledgeBaseId = Settings.QnAKbId,
-                EndpointKey = Settings.QnAEndpointKey,
-                Host = Settings.QnAHostname,
-            };
+                qnaMakerAccessor = qnaMakerHelper.BuildAccessor();
+            }
 
-            var qnaOptions = new QnAMakerOptions
-            {
-                ScoreThreshold = 0.3F
-            };
-
-            var qnaServices = new Dictionary<string, QnAMaker>();
-            var qnaMaker = new QnAMaker(qnaEndpoint, qnaOptions);
-            qnaServices.Add(Settings.QnAName, qnaMaker);
-
-            var accessors = new BotAccessors(new LoggerFactory(), conversationState, userState, luisServices, qnaServices)
+            var accessors = new BotAccessors(new LoggerFactory(), conversationState, userState)
             {
                 ConversationDialogState = conversationState.CreateProperty<DialogState>("DialogState"),
                 AskForExamplePreference = conversationState.CreateProperty<bool>("AskForExamplePreference"),
@@ -184,7 +133,7 @@ namespace BotApp.Tests.Classes
             {
                 var state = await accessors.ConversationDialogState.GetAsync(turnContext, () => new DialogState());
                 var dialogs = new DialogSet(accessors.ConversationDialogState);
-                dialogs.Add(new LuisQnADialog(accessors));
+                dialogs.Add(new LuisQnADialog(accessors, luisRouterAccessor, qnaMakerAccessor));
 
                 var dc = await dialogs.CreateContextAsync(turnContext, cancellationToken);
 

@@ -1,17 +1,17 @@
-﻿using BotApp.Luis.Router.Domain;
-using BotApp.Luis.Router.Domain.ServiceDiscovery;
+﻿using BotApp.Extensions.Common.Consul.Helpers;
+using BotApp.Luis.Router.Domain;
 using BotApp.Luis.Router.Domain.Settings;
-using BotApp.Luis.Router.HostedServices.ServiceDiscovery;
-using Consul;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Bot.Builder.AI.Luis;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.ApplicationInsights;
+using Microsoft.Bot.Builder.Integration.ApplicationInsights.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,9 +19,24 @@ namespace BotApp.Luis.Router
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public static string EnvironmentName { get; set; }
+        public static string ContentRootPath { get; set; }
+
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            // Specify the environment name
+            EnvironmentName = env.EnvironmentName;
+
+            // Specify the content root path
+            ContentRootPath = env.ContentRootPath;
+
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -33,32 +48,35 @@ namespace BotApp.Luis.Router
 
             Settings.AuthorizationKey = Configuration.GetSection("ApplicationSettings:AuthorizationKey")?.Value;
 
-            try
-            {
-                var apps = new List<LuisAppRegistration>();
-                Configuration.GetSection("LuisAppRegistrations").Bind(apps);
-                Settings.LuisAppRegistrations = apps;
+            // Add Application Insights services into service collection
+            services.AddApplicationInsightsTelemetry();
 
-                Settings.LuisServices = new Dictionary<string, Microsoft.Bot.Builder.AI.Luis.LuisRecognizer>();
-                foreach (LuisAppRegistration app in Settings.LuisAppRegistrations)
-                {
-                    var luis = new LuisApplication(app.LuisAppId, app.LuisAuthoringKey, app.LuisEndpoint);
-                    var recognizer = new LuisRecognizer(luis);
-                    Settings.LuisServices.Add(app.LuisName, recognizer);
-                }
-            }
-            catch
-            {
-                throw new Exception("There was an exception loading LUIS apps");
-            }
+            // Add the standard telemetry client
+            services.AddSingleton<IBotTelemetryClient, BotTelemetryClient>();
 
-            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, ConsulHostedService>();
-            services.Configure<ConsulConfig>(Configuration.GetSection("ConsulConfig"));
-            services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
+            // Add ASP middleware to store the HTTP body, mapped with bot activity key, in the httpcontext.items
+            // This will be picked by the TelemetryBotIdInitializer
+            services.AddTransient<TelemetrySaveBodyASPMiddleware>();
+
+            // Add telemetry initializer that will set the correlation context for all telemetry items
+            services.AddSingleton<ITelemetryInitializer, OperationCorrelationTelemetryInitializer>();
+
+            // Add telemetry initializer that sets the user ID and session ID (in addition to other
+            // bot-specific properties, such as activity ID)
+            services.AddSingleton<ITelemetryInitializer, TelemetryBotIdInitializer>();
+
+            // Create the telemetry middleware to track conversation events
+            services.AddSingleton<IMiddleware, TelemetryLoggerMiddleware>();
+
+            var apps = new List<LuisAppRegistration>();
+            Configuration.GetSection("LuisAppRegistrations").Bind(apps);
+            Settings.LuisAppRegistrations = apps;
+
+            // Adding Consul hosted service
+            using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))
             {
-                var address = Configuration["ConsulConfig:Address"];
-                consulConfig.Address = new Uri(address);
-            }));
+                consulHelper.Initialize(services, Configuration);
+            }
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                  .AddJwtBearer(options =>
@@ -111,12 +129,10 @@ namespace BotApp.Luis.Router
 
         private async void OnApplicationStopping()
         {
-            ConsulClient client = new ConsulClient(consulConfig =>
+            using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))
             {
-                consulConfig.Address = new Uri(Configuration["ConsulConfig:Address"]);
-            });
-
-            await client.Agent.ServiceDeregister(ConsulHostedService.RegistrationID);
+                await consulHelper.Stop();
+            }
         }
     }
 }

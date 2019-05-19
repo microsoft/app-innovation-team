@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using BotApp.Extensions.BotBuilder.LuisRouter.Accessors;
+using BotApp.Extensions.BotBuilder.QnAMaker.Accessors;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
@@ -14,23 +16,27 @@ namespace BotApp
 {
     public class BotAppBot : ActivityHandler
     {
-        protected readonly Dialog _dialog;
-        protected readonly BotState _conversationState;
-        protected readonly BotState _userState;
-        protected readonly ILogger _logger;
-        protected BotAccessors _accessors = null;
+        protected readonly Dialog dialog;
+        protected readonly BotState conversationState;
+        protected readonly BotState userState;
+        protected readonly ILogger logger;
+        protected BotAccessors accessors = null;
         protected DialogSet dialogs = null;
+        protected LuisRouterAccessor luisRouterAccessor = null;
+        protected QnAMakerAccessor qnaMakerAccessor = null;
 
-        public BotAppBot(BotAccessors accessors, ConversationState conversationState, UserState userState, ILogger<BotAppBot> logger)
+        public BotAppBot(BotAccessors accessors, LuisRouterAccessor luisRouterAccessor, QnAMakerAccessor qnaMakerAccessor, ConversationState conversationState, UserState userState, ILogger<BotAppBot> logger)
         {
-            _accessors = accessors;
-            _conversationState = conversationState;
-            _userState = userState;
-            _logger = logger;
+            this.accessors = accessors;
+            this.conversationState = conversationState;
+            this.userState = userState;
+            this.logger = logger;
+            this.luisRouterAccessor = luisRouterAccessor;
+            this.qnaMakerAccessor = qnaMakerAccessor;
 
             this.dialogs = new DialogSet(accessors.ConversationDialogState);
-            this.dialogs.Add(new MainDialog(accessors));
-            this.dialogs.Add(new LuisQnADialog(accessors));
+            this.dialogs.Add(new MainDialog(accessors, luisRouterAccessor, qnaMakerAccessor));
+            this.dialogs.Add(new LuisQnADialog(accessors, luisRouterAccessor, qnaMakerAccessor));
         }
 
         private async Task LaunchWelcomeAsync(ITurnContext turnContext)
@@ -69,9 +75,10 @@ namespace BotApp
                     var text = turnContext.Activity.Text;
                     if (text == "/start")
                     {
-                        await _accessors.AskForExamplePreference.DeleteAsync(turnContext);
-                        await _accessors.ConversationDialogState.DeleteAsync(turnContext);
-                        await _accessors.IsAuthenticatedPreference.DeleteAsync(turnContext);
+                        await this.accessors.AskForExamplePreference.DeleteAsync(turnContext);
+                        await this.accessors.ConversationDialogState.DeleteAsync(turnContext);
+                        await this.accessors.IsAuthenticatedPreference.DeleteAsync(turnContext);
+                        await this.luisRouterAccessor.TokenPreference.DeleteAsync(turnContext);
                         await dialogContext.EndDialogAsync();
                         await dialogContext.BeginDialogAsync(MainDialog.dialogId, null, cancellationToken);
                     }
@@ -79,7 +86,7 @@ namespace BotApp
                     {
                         if (!dialogContext.Context.Responded)
                         {
-                            bool isAuthenticated = await _accessors.IsAuthenticatedPreference.GetAsync(turnContext, () => { return false; });
+                            bool isAuthenticated = await this.accessors.IsAuthenticatedPreference.GetAsync(turnContext, () => { return false; });
 
                             if (!isAuthenticated)
                             {
@@ -95,8 +102,8 @@ namespace BotApp
             }
 
             // Save any state changes that might have occured during the turn.
-            await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
-            await _userState.SaveChangesAsync(turnContext, false, cancellationToken);
+            await this.conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
+            await this.userState.SaveChangesAsync(turnContext, false, cancellationToken);
         }
     }
 }

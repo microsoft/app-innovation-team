@@ -1,6 +1,5 @@
-﻿using BotApp.Luis.Router.Identity.Domain.ServiceDiscovery;
-using BotApp.Luis.Router.Identity.HostedService.ServiceDiscovery;
-using Consul;
+﻿using BotApp.Extensions.Common.Consul.Helpers;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,16 +7,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Text;
 
 namespace BotApp.Luis.Router.Identity
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public static string EnvironmentName { get; set; }
+        public static string ContentRootPath { get; set; }
+
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            // Specify the environment name
+            EnvironmentName = env.EnvironmentName;
+
+            // Specify the content root path
+            ContentRootPath = env.ContentRootPath;
+
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -28,20 +41,20 @@ namespace BotApp.Luis.Router.Identity
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             Settings.AuthorizationKey = Configuration.GetSection("ApplicationSettings:AuthorizationKey")?.Value;
-            Settings.KeyVaultCertificateName = Configuration.GetSection("ApplicationSettings:KeyVaultCertificateName")?.Value;
-            Settings.KeyVaultClientId = Configuration.GetSection("ApplicationSettings:KeyVaultClientId")?.Value;
-            Settings.KeyVaultClientSecret = Configuration.GetSection("ApplicationSettings:KeyVaultClientSecret")?.Value;
-            Settings.KeyVaultIdentifier = Configuration.GetSection("ApplicationSettings:KeyVaultIdentifier")?.Value;
             Settings.KeyVaultEncryptionKey = Configuration.GetSection("ApplicationSettings:KeyVaultEncryptionKey")?.Value;
             Settings.KeyVaultApplicationCode = Configuration.GetSection("ApplicationSettings:KeyVaultApplicationCode")?.Value;
 
-            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, ConsulHostedService>();
-            services.Configure<ConsulConfig>(Configuration.GetSection("ConsulConfig"));
-            services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
+            // Add Application Insights services into service collection
+            services.AddApplicationInsightsTelemetry();
+
+            // Add the standard telemetry client
+            services.AddSingleton<TelemetryClient, TelemetryClient>();
+
+            // Adding Consul hosted service
+            using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))
             {
-                var address = Configuration["ConsulConfig:Address"];
-                consulConfig.Address = new Uri(address);
-            }));
+                consulHelper.Initialize(services, Configuration);
+            }
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -94,12 +107,10 @@ namespace BotApp.Luis.Router.Identity
 
         private async void OnApplicationStopping()
         {
-            ConsulClient client = new ConsulClient(consulConfig =>
+            using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))
             {
-                consulConfig.Address = new Uri(Configuration["ConsulConfig:Address"]);
-            });
-
-            await client.Agent.ServiceDeregister(ConsulHostedService.RegistrationID);
+                await consulHelper.Stop();
+            }
         }
     }
 }
