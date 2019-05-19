@@ -16,6 +16,7 @@ namespace BotApp.Luis.Router
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseApplicationInsights()
                 .ConfigureLogging(logging =>
                 {
                     logging.ClearProviders();

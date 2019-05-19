@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
+using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,10 +22,12 @@ namespace BotApp.Luis.Router.Controllers
     [ApiController]
     public class LuisDiscoveryController : ControllerBase
     {
+        private readonly IBotTelemetryClient telemetry = null;
         private readonly ILogger logger = null;
 
-        public LuisDiscoveryController(ILogger<LuisDiscoveryController> logger)
+        public LuisDiscoveryController(IBotTelemetryClient telemetry, ILogger<LuisDiscoveryController> logger)
         {
+            this.telemetry = telemetry;
             this.logger = logger;
         }
 
@@ -45,6 +49,49 @@ namespace BotApp.Luis.Router.Controllers
                 if (string.IsNullOrEmpty(model.Text))
                     throw new BusinessException((int)LUISDiscoveryResponseEnum.FailedEmptyText);
 
+                // building service list
+                Settings.LuisServices = new Dictionary<string, LuisRecognizer>();
+                foreach (LuisAppRegistration app in Settings.LuisAppRegistrations)
+                {
+                    var luis = new LuisApplication(app.LuisAppId, app.LuisAuthoringKey, app.LuisEndpoint);
+
+                    LuisPredictionOptions luisPredictionOptions = null;
+                    LuisRecognizer recognizer = null;
+
+                    bool needsPredictionOptions = false;
+                    if ((!string.IsNullOrEmpty(model.BingSpellCheckSubscriptionKey)) || (model.EnableLuisTelemetry))
+                    {
+                        needsPredictionOptions = true;
+                    }
+
+                    if (needsPredictionOptions)
+                    {
+                        luisPredictionOptions = new LuisPredictionOptions();
+
+                        if (model.EnableLuisTelemetry)
+                        {
+                            luisPredictionOptions.TelemetryClient = telemetry;
+                            luisPredictionOptions.Log = true;
+                            luisPredictionOptions.LogPersonalInformation = true;
+                        }
+
+                        if (!string.IsNullOrEmpty(model.BingSpellCheckSubscriptionKey))
+                        {
+                            luisPredictionOptions.BingSpellCheckSubscriptionKey = model.BingSpellCheckSubscriptionKey;
+                            luisPredictionOptions.SpellCheck = true;
+                            luisPredictionOptions.IncludeAllIntents = true;
+                        }
+
+                        recognizer = new LuisRecognizer(luis, luisPredictionOptions);
+                    }
+                    else
+                    {
+                        recognizer = new LuisRecognizer(luis);
+                    }
+
+                    Settings.LuisServices.Add(app.LuisName, recognizer);
+                }
+
                 foreach (LuisAppRegistration app in Settings.LuisAppRegistrations)
                 {
                     var storage = new MemoryStorage();
@@ -54,8 +101,8 @@ namespace BotApp.Luis.Router.Controllers
 
                     IMessageActivity msg = Activity.CreateMessageActivity();
                     msg.Id = Guid.NewGuid().ToString();
-                    msg.From = new ChannelAccount("sip: account@middleware.com", "bot");
-                    msg.Recipient = new ChannelAccount("sip: account@middleware.com ", "agent");
+                    msg.From = new ChannelAccount("sip: account@botapp-luis-router.com", "bot");
+                    msg.Recipient = new ChannelAccount("sip: account@botapp-luis-router.com", "agent");
                     msg.Text = model.Text;
                     msg.Locale = "en-us";
                     msg.ServiceUrl = "url";
@@ -68,7 +115,7 @@ namespace BotApp.Luis.Router.Controllers
 
                     var recognizerResult = await Settings.LuisServices[app.LuisName].RecognizeAsync(context, new CancellationToken());
                     var topIntent = recognizerResult?.GetTopScoringIntent();
-                    if (topIntent != null && topIntent.HasValue && topIntent.Value.score >= .80 && topIntent.Value.intent != "None")
+                    if (topIntent != null && topIntent.HasValue && topIntent.Value.score >= .90 && topIntent.Value.intent != "None")
                     {
                         result.LuisAppDetails.Add(new LuisAppDetail() { Name = app.LuisName, Intent = topIntent.Value.intent, Score = topIntent.Value.score });
                     }

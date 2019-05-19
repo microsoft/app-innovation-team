@@ -1,10 +1,10 @@
 {
   "ReRoutes": [
     {
-      "DownstreamPathTemplate": "/api/appauthentication",
+      "DownstreamPathTemplate": "/api/identity",
       "DownstreamScheme": "https",
       "DangerousAcceptAnyServerCertificateValidator": "true",
-      "UpstreamPathTemplate": "/appauthentication",
+      "UpstreamPathTemplate": "/identity",
       "ServiceName": "luis-router-identity",
       "UpstreamHttpMethod": [ "Post" ],
       "LoadBalancerOptions": {

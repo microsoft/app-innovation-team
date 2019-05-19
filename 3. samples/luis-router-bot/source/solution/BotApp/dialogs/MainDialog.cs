@@ -1,3 +1,5 @@
+using BotApp.Extensions.BotBuilder.LuisRouter.Accessors;
+using BotApp.Extensions.BotBuilder.QnAMaker.Accessors;
 using Microsoft.Bot.Builder.Dialogs;
 using System;
 using System.Threading;
@@ -9,10 +11,14 @@ namespace BotApp
     {
         public const string dialogId = "MainDialog";
         private BotAccessors accessors = null;
+        private LuisRouterAccessor luisRouterAccessor = null;
+        private QnAMakerAccessor qnaMakerAccessor = null;
 
-        public MainDialog(BotAccessors accessors) : base(dialogId)
+        public MainDialog(BotAccessors accessors, LuisRouterAccessor luisRouterAccessor, QnAMakerAccessor qnaMakerAccessor) : base(dialogId)
         {
             this.accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
+            this.luisRouterAccessor = luisRouterAccessor ?? throw new ArgumentNullException(nameof(luisRouterAccessor));
+            this.qnaMakerAccessor = qnaMakerAccessor ?? throw new ArgumentNullException(nameof(qnaMakerAccessor));
 
             AddDialog(new WaterfallDialog(dialogId, new WaterfallStep[]
             {
@@ -20,7 +26,7 @@ namespace BotApp
                 EndMainDialog
             }));
 
-            AddDialog(new LuisQnADialog(accessors));
+            AddDialog(new LuisQnADialog(accessors, luisRouterAccessor, qnaMakerAccessor));
         }
 
         private async Task<DialogTurnResult> LaunchLuisQnADialog(WaterfallStepContext step, CancellationToken cancellationToken = default(CancellationToken))

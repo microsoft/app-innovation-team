@@ -1,14 +1,20 @@
-﻿using Consul;
+﻿using BotApp.Extensions.BotBuilder.LuisRouter.Accessors;
+using BotApp.Extensions.BotBuilder.LuisRouter.Helpers;
+using BotApp.Extensions.BotBuilder.QnAMaker.Accessors;
+using BotApp.Extensions.BotBuilder.QnAMaker.Helpers;
+using BotApp.Extensions.Common.Consul.Helpers;
+using BotApp.Extensions.Common.KeyVault.Helpers;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.AI.Luis;
-using Microsoft.Bot.Builder.AI.QnA;
+using Microsoft.Bot.Builder.ApplicationInsights;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Integration;
+using Microsoft.Bot.Builder.Integration.ApplicationInsights.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
@@ -16,20 +22,28 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BotApp
 {
     public class Startup
     {
         private ILoggerFactory loggerFactory;
-
-        public static string EncryptedKey { get; set; }
+        public static string EnvironmentName { get; set; }
+        public static string ContentRootPath { get; set; }
+        public static string EncryptionKey { get; set; }
+        public static string ApplicationCode { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public Startup(IHostingEnvironment env)
         {
+            // Specify the environment name
+            EnvironmentName = env.EnvironmentName;
+
+            // Specify the content root path
+            ContentRootPath = env.ContentRootPath;
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -52,46 +66,18 @@ namespace BotApp
             Settings.BotConversationStorageDatabaseId = Configuration.GetSection("ApplicationSettings:BotConversationStorageDatabaseId")?.Value;
             Settings.BotConversationStorageUserCollection = Configuration.GetSection("ApplicationSettings:BotConversationStorageUserCollection")?.Value;
             Settings.BotConversationStorageConversationCollection = Configuration.GetSection("ApplicationSettings:BotConversationStorageConversationCollection")?.Value;
-            Settings.QnAKbId = Configuration.GetSection("ApplicationSettings:QnAKbId")?.Value;
-            Settings.QnAName = Configuration.GetSection("ApplicationSettings:QnAName")?.Value;
-            Settings.QnAEndpointKey = Configuration.GetSection("ApplicationSettings:QnAEndpointKey")?.Value;
-            Settings.QnAHostname = Configuration.GetSection("ApplicationSettings:QnAHostname")?.Value;
-            Settings.LuisRouterUrl = Configuration.GetSection("ApplicationSettings:LuisRouterUrl")?.Value;
-            Settings.KeyVaultCertificateName = Configuration.GetSection("ApplicationSettings:KeyVaultCertificateName")?.Value;
-            Settings.KeyVaultClientId = Configuration.GetSection("ApplicationSettings:KeyVaultClientId")?.Value;
-            Settings.KeyVaultClientSecret = Configuration.GetSection("ApplicationSettings:KeyVaultClientSecret")?.Value;
-            Settings.KeyVaultIdentifier = Configuration.GetSection("ApplicationSettings:KeyVaultIdentifier")?.Value;
 
-            try
-            {
-                var apps = new List<LuisAppRegistration>();
-                Configuration.GetSection("LuisAppRegistrations").Bind(apps);
-                Settings.LuisAppRegistrations = apps;
-            }
-            catch
-            {
-                throw new Exception("There was an exception loading LUIS apps");
-            }
-
-            KeyVaultConnectionInfo keyVaultConnectionInfo = new KeyVaultConnectionInfo()
-            {
-                CertificateName = Settings.KeyVaultCertificateName,
-                ClientId = Settings.KeyVaultClientId,
-                ClientSecret = Settings.KeyVaultClientSecret,
-                KeyVaultIdentifier = Settings.KeyVaultIdentifier
-            };
-
-            using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(keyVaultConnectionInfo))
+            // Adding EncryptionKey and ApplicationCode
+            using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(EnvironmentName, ContentRootPath))
             {
                 Settings.KeyVaultEncryptionKey = Configuration.GetSection("ApplicationSettings:KeyVaultEncryptionKey")?.Value;
-                var encryptionkey = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
+                EncryptionKey = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
 
                 Settings.KeyVaultApplicationCode = Configuration.GetSection("ApplicationSettings:KeyVaultApplicationCode")?.Value;
-                var appcode = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
-                EncryptedKey = NETCore.Encrypt.EncryptProvider.AESEncrypt(appcode, encryptionkey);
+                ApplicationCode = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
             }
 
-            // Adding storage
+            // Adding CosmosDB user storage
             CosmosDbStorage userstorage = new CosmosDbStorage(new CosmosDbStorageOptions
             {
                 AuthKey = Settings.BotConversationStorageKey,
@@ -100,6 +86,10 @@ namespace BotApp
                 DatabaseId = Settings.BotConversationStorageDatabaseId,
             });
 
+            var userState = new UserState(userstorage);
+            services.AddSingleton(userState);
+
+            // Adding CosmosDB conversation storage
             CosmosDbStorage conversationstorage = new CosmosDbStorage(new CosmosDbStorageOptions
             {
                 AuthKey = Settings.BotConversationStorageKey,
@@ -108,20 +98,14 @@ namespace BotApp
                 DatabaseId = Settings.BotConversationStorageDatabaseId,
             });
 
-            var userState = new UserState(userstorage);
             var conversationState = new ConversationState(conversationstorage);
-
-            services.AddSingleton(userState);
             services.AddSingleton(conversationState);
 
-            // Adding communication to discovery service
-            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, ConsulHostedService>();
-            services.Configure<ConsulConfig>(Configuration.GetSection("ConsulConfig"));
-            services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
+            // Adding Consul hosted service
+            using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))
             {
-                var address = Configuration["ConsulConfig:Address"];
-                consulConfig.Address = new Uri(address);
-            }));
+                consulHelper.Initialize(services, Configuration);
+            }
 
             // Adding MVC compatibility
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -139,6 +123,48 @@ namespace BotApp
             services.AddSingleton(new AutoSaveStateMiddleware(userState, conversationState));
             services.AddSingleton(new ShowTypingMiddleware());
 
+            // Add Application Insights services into service collection
+            services.AddApplicationInsightsTelemetry();
+
+            // Add the standard telemetry client
+            services.AddSingleton<IBotTelemetryClient, BotTelemetryClient>();
+
+            // Add ASP middleware to store the HTTP body, mapped with bot activity key, in the httpcontext.items
+            // This will be picked by the TelemetryBotIdInitializer
+            services.AddTransient<TelemetrySaveBodyASPMiddleware>();
+
+            // Add telemetry initializer that will set the correlation context for all telemetry items
+            services.AddSingleton<ITelemetryInitializer, OperationCorrelationTelemetryInitializer>();
+
+            // Add telemetry initializer that sets the user ID and session ID (in addition to other
+            // bot-specific properties, such as activity ID)
+            services.AddSingleton<ITelemetryInitializer, TelemetryBotIdInitializer>();
+
+            // Create the telemetry middleware to track conversation events
+            services.AddSingleton<IMiddleware, TelemetryLoggerMiddleware>();
+
+            // Adding LUIS Router accessor
+            services.AddSingleton(sp =>
+            {
+                LuisRouterAccessor accessor = null;
+                using (LuisRouterHelper luisRouterHelper = new LuisRouterHelper(EnvironmentName, ContentRootPath))
+                {
+                    accessor = luisRouterHelper.BuildAccessor(userState, sp.GetRequiredService<IBotTelemetryClient>());
+                }
+                return accessor;
+            });
+
+            // Adding QnAMaker Router accessor
+            services.AddSingleton(sp =>
+            {
+                QnAMakerAccessor accessor = null;
+                using (QnAMakerHelper qnaMakerHelper = new QnAMakerHelper(EnvironmentName, ContentRootPath))
+                {
+                    accessor = qnaMakerHelper.BuildAccessor();
+                }
+                return accessor;
+            });
+
             // Adding accessors
             services.AddSingleton(sp =>
             {
@@ -149,33 +175,9 @@ namespace BotApp
                     throw new InvalidOperationException("BotFrameworkOptions must be configured prior to setting up the State Accessors");
                 }
 
-                var luisServices = new Dictionary<string, LuisRecognizer>();
-                foreach (LuisAppRegistration app in Settings.LuisAppRegistrations)
-                {
-                    var luis = new LuisApplication(app.LuisAppId, app.LuisAuthoringKey, app.LuisEndpoint);
-                    var recognizer = new LuisRecognizer(luis);
-                    luisServices.Add(app.LuisName, recognizer);
-                }
-
-                var qnaEndpoint = new QnAMakerEndpoint()
-                {
-                    KnowledgeBaseId = Settings.QnAKbId,
-                    EndpointKey = Settings.QnAEndpointKey,
-                    Host = Settings.QnAHostname,
-                };
-
-                var qnaOptions = new QnAMakerOptions
-                {
-                    ScoreThreshold = 0.3F
-                };
-
-                var qnaServices = new Dictionary<string, QnAMaker>();
-                var qnaMaker = new QnAMaker(qnaEndpoint, qnaOptions);
-                qnaServices.Add(Settings.QnAName, qnaMaker);
-
                 // Create the custom state accessor.
                 // State accessors enable other components to read and write individual properties of state.
-                var accessors = new BotAccessors(loggerFactory, conversationState, userState, luisServices, qnaServices)
+                var accessors = new BotAccessors(loggerFactory, conversationState, userState)
                 {
                     ConversationDialogState = conversationState.CreateProperty<DialogState>("DialogState"),
                     AskForExamplePreference = conversationState.CreateProperty<bool>("AskForExamplePreference"),
@@ -201,17 +203,16 @@ namespace BotApp
 
             app.UseDefaultFiles()
                 .UseStaticFiles()
+                .UseBotApplicationInsights()
                 .UseMvc();
         }
 
-        private async void OnApplicationStopping()
+        private async Task OnApplicationStopping()
         {
-            ConsulClient client = new ConsulClient(consulConfig =>
+            using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))
             {
-                consulConfig.Address = new Uri(Configuration["ConsulConfig:Address"]);
-            });
-
-            await client.Agent.ServiceDeregister(ConsulHostedService.RegistrationID);
+                await consulHelper.Stop();
+            }
         }
     }
 }
