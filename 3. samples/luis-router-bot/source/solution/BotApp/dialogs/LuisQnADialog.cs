@@ -153,21 +153,21 @@ namespace BotApp
                             responseType = FindResponseTypeMetadata(response[0].Metadata);
                             await step.Context.SendCustomResponseAsync(response[0].Answer, responseType);
 
-                            //if (!string.IsNullOrEmpty(responseType))
-                            //{
-                            //    if (!topIntent.Value.intent.EndsWith("_Sample"))
-                            //    {
-                            //        List<Choice> choices = new List<Choice>();
-                            //        choices.Add(new Choice { Value = $"Yes" });
-                            //        choices.Add(new Choice { Value = $"No" });
+                            if (!string.IsNullOrEmpty(responseType))
+                            {
+                                if (!topIntent.Value.intent.EndsWith("_Sample"))
+                                {
+                                    List<Choice> choices = new List<Choice>();
+                                    choices.Add(new Choice { Value = $"Yes" });
+                                    choices.Add(new Choice { Value = $"No" });
 
-                            //        var message = $"Would you like to see an example?";
-                            //        await step.Context.SendCustomResponseAsync(message);
+                                    var message = $"Would you like to see an example?";
+                                    await step.Context.SendCustomResponseAsync(message);
 
-                            //        PromptOptions options = new PromptOptions { Choices = choices };
-                            //        return await step.PromptAsync("AskForExampleValidator", options, cancellationToken: cancellationToken);
-                            //    }
-                            //}
+                                    PromptOptions options = new PromptOptions { Choices = choices };
+                                    return await step.PromptAsync("AskForExampleValidator", options, cancellationToken: cancellationToken);
+                                }
+                            }
                         }
                         else
                         {
