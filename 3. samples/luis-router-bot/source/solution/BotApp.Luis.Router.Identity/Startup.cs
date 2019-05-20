@@ -1,4 +1,5 @@
 ﻿using BotApp.Extensions.Common.Consul.Helpers;
+using BotApp.Extensions.Common.KeyVault.Helpers;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +16,8 @@ namespace BotApp.Luis.Router.Identity
     {
         public static string EnvironmentName { get; set; }
         public static string ContentRootPath { get; set; }
+        public static string EncryptionKey { get; set; }
+        public static string ApplicationCode { get; set; }
 
         public Startup(IHostingEnvironment env)
         {
@@ -49,6 +52,16 @@ namespace BotApp.Luis.Router.Identity
 
             // Add the standard telemetry client
             services.AddSingleton<TelemetryClient, TelemetryClient>();
+
+            // Adding EncryptionKey and ApplicationCode
+            using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(EnvironmentName, ContentRootPath))
+            {
+                Settings.KeyVaultEncryptionKey = Configuration.GetSection("ApplicationSettings:KeyVaultEncryptionKey")?.Value;
+                EncryptionKey = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
+
+                Settings.KeyVaultApplicationCode = Configuration.GetSection("ApplicationSettings:KeyVaultApplicationCode")?.Value;
+                ApplicationCode = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
+            }
 
             // Adding Consul hosted service
             using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))

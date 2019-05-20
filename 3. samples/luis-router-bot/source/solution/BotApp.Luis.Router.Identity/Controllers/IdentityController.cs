@@ -31,7 +31,7 @@ namespace BotApp.Luis.Router.Identity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]IdentityRequest model)
+        public IActionResult Post([FromBody]IdentityRequest model)
         {
             this.telemetry.TrackEvent("Identity Post");
 
@@ -52,24 +52,13 @@ namespace BotApp.Luis.Router.Identity.Controllers
                 if (string.IsNullOrEmpty(model.AppIdentity))
                     throw new BusinessException((int)IdentityResultEnum.FailedEmptyAppIdentity);
 
-                string encryptionkey = string.Empty;
-                string appcode = string.Empty;
-                using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(Startup.EnvironmentName, Startup.ContentRootPath))
-                {
-                    encryptionkey = await keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey);
-                    appcode = await keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultApplicationCode);
-                }
-
-                if (string.IsNullOrEmpty(appcode))
-                    throw new BusinessException((int)IdentityResultEnum.FailedEmptyServerApplicationCode);
-
                 var decrypted = string.Empty;
-                decrypted = NETCore.Encrypt.EncryptProvider.AESDecrypt(model.AppIdentity, encryptionkey);
+                decrypted = NETCore.Encrypt.EncryptProvider.AESDecrypt(model.AppIdentity, Startup.EncryptionKey);
 
                 dynamic data = JsonConvert.DeserializeObject(decrypted);
                 string decryptedAppCode = data?.appcode;
 
-                if (appcode != decryptedAppCode)
+                if (Startup.ApplicationCode != decryptedAppCode)
                     throw new BusinessException((int)IdentityResultEnum.FailedIncorrectCredentials);
 
                 DateTime when = data?.timestamp;
