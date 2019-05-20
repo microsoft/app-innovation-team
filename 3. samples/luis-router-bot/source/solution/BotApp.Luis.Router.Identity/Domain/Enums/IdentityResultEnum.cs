@@ -10,9 +10,6 @@ namespace BotApp.Luis.Router.Identity.Domain.Enums
         [Description("The application identity can not be empty.")]
         FailedEmptyAppIdentity,
 
-        [Description("The application code can not be empty on the server.")]
-        FailedEmptyServerApplicationCode,
-
         [Description("The application code is not valid.")]
         FailedIncorrectCredentials,
 
