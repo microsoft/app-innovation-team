@@ -1,4 +1,6 @@
-﻿using IBE.Tests.Fixtures;
+﻿using BotApp.Extensions.BotBuilder.LuisRouter.Services;
+using BotApp.Extensions.BotBuilder.QnAMaker.Services;
+using IBE.Tests.Fixtures;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
 using Microsoft.Bot.Builder.Dialogs;
@@ -29,21 +31,13 @@ namespace BotApp.Tests.Classes
             var adapter = new TestAdapter()
                 .Use(new AutoSaveStateMiddleware(conversationState));
 
-            // Adding LUIS Router accessor
-            LuisRouterAccessor luisRouterAccessor = null;
-            using (LuisRouterHelper luisRouterHelper = new LuisRouterHelper(Startup.EnvironmentName, Startup.ContentRootPath))
-            {
-                luisRouterAccessor = luisRouterHelper.BuildAccessor(userState, null);
-            }
+            // Adding LUIS Router service
+            LuisRouterService luisRouterService = new LuisRouterService(Startup.EnvironmentName, Startup.ContentRootPath, userState, null);
 
-            // Adding QnAMaker Router accessor
-            QnAMakerAccessor qnaMakerAccessor = null;
-            using (QnAMakerHelper qnaMakerHelper = new QnAMakerHelper(Startup.EnvironmentName, Startup.ContentRootPath))
-            {
-                qnaMakerAccessor = qnaMakerHelper.BuildAccessor();
-            }
+            // Adding QnAMaker service
+            QnAMakerService qnaMakerService = new QnAMakerService(Startup.EnvironmentName, Startup.ContentRootPath);
 
-            var accessors = new BotAccessors(new LoggerFactory(), conversationState, userState)
+            var accessors = new BotAccessor(new LoggerFactory(), conversationState, userState)
             {
                 ConversationDialogState = conversationState.CreateProperty<DialogState>("DialogState"),
                 AskForExamplePreference = conversationState.CreateProperty<bool>("AskForExamplePreference"),
@@ -54,14 +48,14 @@ namespace BotApp.Tests.Classes
             {
                 var state = await accessors.ConversationDialogState.GetAsync(turnContext, () => new DialogState());
                 var dialogs = new DialogSet(accessors.ConversationDialogState);
-                dialogs.Add(new LuisQnADialog(accessors, luisRouterAccessor, qnaMakerAccessor));
+                dialogs.Add(new LuisQnADialog(accessors, luisRouterService, qnaMakerService));
 
                 var dc = await dialogs.CreateContextAsync(turnContext, cancellationToken);
 
                 var results = await dc.ContinueDialogAsync(cancellationToken);
                 if (results.Status == DialogTurnStatus.Empty)
                 {
-                    await dc.BeginDialogAsync(LuisQnADialog.dialogId, null, cancellationToken);
+                    await dc.BeginDialogAsync(nameof(LuisQnADialog), null, cancellationToken);
                 }
                 else if (results.Status == DialogTurnStatus.Complete)
                 {
@@ -86,21 +80,13 @@ namespace BotApp.Tests.Classes
             var adapter = new TestAdapter()
                 .Use(new AutoSaveStateMiddleware(conversationState));
 
-            // Adding LUIS Router accessor
-            LuisRouterAccessor luisRouterAccessor = null;
-            using (LuisRouterHelper luisRouterHelper = new LuisRouterHelper(Startup.EnvironmentName, Startup.ContentRootPath))
-            {
-                luisRouterAccessor = luisRouterHelper.BuildAccessor(userState, null);
-            }
+            // Adding LUIS Router service
+            LuisRouterService luisRouterService = new LuisRouterService(Startup.EnvironmentName, Startup.ContentRootPath, userState, null);
 
-            // Adding QnAMaker Router accessor
-            QnAMakerAccessor qnaMakerAccessor = null;
-            using (QnAMakerHelper qnaMakerHelper = new QnAMakerHelper(Startup.EnvironmentName, Startup.ContentRootPath))
-            {
-                qnaMakerAccessor = qnaMakerHelper.BuildAccessor();
-            }
+            // Adding QnAMaker service
+            QnAMakerService qnaMakerService = new QnAMakerService(Startup.EnvironmentName, Startup.ContentRootPath);
 
-            var accessors = new BotAccessors(new LoggerFactory(), conversationState, userState)
+            var accessors = new BotAccessor(new LoggerFactory(), conversationState, userState)
             {
                 ConversationDialogState = conversationState.CreateProperty<DialogState>("DialogState"),
                 AskForExamplePreference = conversationState.CreateProperty<bool>("AskForExamplePreference"),
@@ -128,14 +114,14 @@ namespace BotApp.Tests.Classes
             {
                 var state = await accessors.ConversationDialogState.GetAsync(turnContext, () => new DialogState());
                 var dialogs = new DialogSet(accessors.ConversationDialogState);
-                dialogs.Add(new LuisQnADialog(accessors, luisRouterAccessor, qnaMakerAccessor));
+                dialogs.Add(new LuisQnADialog(accessors, luisRouterService, qnaMakerService));
 
                 var dc = await dialogs.CreateContextAsync(turnContext, cancellationToken);
 
                 var results = await dc.ContinueDialogAsync(cancellationToken);
                 if (results.Status == DialogTurnStatus.Empty)
                 {
-                    await dc.BeginDialogAsync(LuisQnADialog.dialogId, null, cancellationToken);
+                    await dc.BeginDialogAsync(nameof(LuisQnADialog), null, cancellationToken);
                 }
                 else if (results.Status == DialogTurnStatus.Complete)
                 {

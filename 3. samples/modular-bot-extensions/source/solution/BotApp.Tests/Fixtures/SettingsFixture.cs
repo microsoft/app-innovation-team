@@ -1,4 +1,5 @@
 ﻿using BotApp;
+using BotApp.Extensions.Common.KeyVault.Services;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
@@ -19,15 +20,13 @@ namespace IBE.Tests.Fixtures
               .AddJsonFile($"appsettings.{Startup.EnvironmentName}.json", optional: true, reloadOnChange: true)
               .Build();
 
-            // Adding EncryptionKey and ApplicationCode
-            using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(Startup.EnvironmentName, Startup.ContentRootPath))
-            {
-                Settings.KeyVaultEncryptionKey = config.GetSection("ApplicationSettings:KeyVaultEncryptionKey")?.Value;
-                Startup.EncryptionKey = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
+            Settings.KeyVaultEncryptionKey = config.GetSection("ApplicationSettings:KeyVaultEncryptionKey")?.Value;
+            Settings.KeyVaultApplicationCode = config.GetSection("ApplicationSettings:KeyVaultApplicationCode")?.Value;
 
-                Settings.KeyVaultApplicationCode = config.GetSection("ApplicationSettings:KeyVaultApplicationCode")?.Value;
-                Startup.ApplicationCode = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
-            }
+            // Adding EncryptionKey and ApplicationCode
+            KeyVaultService keyVaultService = new KeyVaultService(Startup.EnvironmentName, Startup.ContentRootPath);
+            Startup.EncryptionKey = keyVaultService.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
+            Startup.ApplicationCode = keyVaultService.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
         }
 
         public void Dispose()
