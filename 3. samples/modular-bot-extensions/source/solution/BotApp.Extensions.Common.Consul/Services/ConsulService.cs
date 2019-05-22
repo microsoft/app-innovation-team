@@ -1,5 +1,6 @@
 ﻿using BotApp.Extensions.Common.Consul.Domain;
 using BotApp.Extensions.Common.Consul.HostedService;
+using BotApp.Extensions.Common.Consul.Services;
 using Consul;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace BotApp.Extensions.Common.Consul.Helpers
 {
-    public class ConsulHelper : BaseHelper
+    public class ConsulService : BaseService
     {
         private readonly ConsulConfig config = null;
 
-        public ConsulHelper(string environmentName, string contentRootPath)
+        public ConsulService(string environmentName, string contentRootPath)
         {
             var builder = new ConfigurationBuilder()
               .SetBasePath(contentRootPath)
