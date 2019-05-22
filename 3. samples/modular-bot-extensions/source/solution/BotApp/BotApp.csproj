@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.AspNetCore.All" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.0" />
     <PackageReference Include="Microsoft.Recognizers.Text.Number" Version="1.2.0" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.9.1">
       <NoWarn>NU1608</NoWarn>
@@ -33,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BotApp.Extensions.BotBuilder.Channel.WebChat\BotApp.Extensions.BotBuilder.Channel.WebChat.csproj" />
     <ProjectReference Include="..\BotApp.Extensions.BotBuilder.LuisRouter\BotApp.Extensions.BotBuilder.LuisRouter.csproj" />
     <ProjectReference Include="..\BotApp.Extensions.BotBuilder.QnAMaker\BotApp.Extensions.BotBuilder.QnAMaker.csproj" />
     <ProjectReference Include="..\BotApp.Extensions.Common.Consul\BotApp.Extensions.Common.Consul.csproj" />

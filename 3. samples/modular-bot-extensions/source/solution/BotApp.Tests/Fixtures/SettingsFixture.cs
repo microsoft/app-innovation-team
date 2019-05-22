@@ -1,6 +1,4 @@
 ﻿using BotApp;
-using BotApp.Extensions.Common.KeyVault.Helpers;
-using BotApp.Tests;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;

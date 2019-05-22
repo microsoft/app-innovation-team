@@ -1,5 +1,4 @@
-﻿using BotApp.Extensions.BotBuilder.LuisRouter.Accessors;
-using BotApp.Extensions.BotBuilder.LuisRouter.Domain;
+﻿using BotApp.Extensions.BotBuilder.LuisRouter.Domain;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.Dialogs;
@@ -13,13 +12,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BotApp.Extensions.BotBuilder.LuisRouter.Helpers
+namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
 {
-    public class LuisRouterHelper : BaseHelper
+    public class LuisRouterService : ILuisRouterService
     {
         private readonly LuisRouterConfig config = null;
 
-        public LuisRouterHelper(string environmentName, string contentRootPath)
+        public UserState UserState { get; }
+        public IStatePropertyAccessor<string> TokenPreference { get; set; }
+        public Dictionary<string, LuisRecognizer> LuisServices { get; }
+
+        public LuisRouterService(string environmentName, string contentRootPath, UserState userState, IBotTelemetryClient botTelemetryClient = null)
         {
             var builder = new ConfigurationBuilder()
               .SetBasePath(contentRootPath)
@@ -31,17 +34,14 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Helpers
 
             config = new LuisRouterConfig();
             configuration.GetSection("LuisRouterConfig").Bind(config);
+
+            this.LuisServices = BuildDictionary(botTelemetryClient);
+            this.TokenPreference = userState.CreateProperty<string>("TokenPreference");
         }
 
         public LuisRouterConfig GetConfiguration() => config;
 
-        public LuisRouterAccessor BuildAccessor(UserState userState, IBotTelemetryClient botTelemetryClient = null)
-        {
-            Dictionary<string, LuisRecognizer> luisServices = BuildDictionary(botTelemetryClient);
-            return new LuisRouterAccessor(userState, luisServices) { TokenPreference = userState.CreateProperty<string>("TokenPreference") };
-        }
-
-        public async Task GetTokenAsync(WaterfallStepContext step, LuisRouterAccessor accessor, string encryptedRequest)
+        public async Task GetTokenAsync(WaterfallStepContext step, string encryptedRequest)
         {
             using (var handler = new HttpClientHandler())
             {
@@ -60,15 +60,15 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Helpers
                             var json = await response.Content.ReadAsStringAsync();
                             var identityResponse = JsonConvert.DeserializeObject<IdentityResponse>(json);
 
-                            await accessor.TokenPreference.SetAsync(step.Context, identityResponse.token);
-                            await accessor.UserState.SaveChangesAsync(step.Context, false);
+                            await this.TokenPreference.SetAsync(step.Context, identityResponse.token);
+                            await this.UserState.SaveChangesAsync(step.Context, false);
                         }
                     }
                 }
             }
         }
 
-        public async Task<List<LuisAppDetail>> LuisDiscoveryAsync(WaterfallStepContext step, LuisRouterAccessor accessor, string text, string applicationCode, string encryptionKey)
+        public async Task<List<LuisAppDetail>> LuisDiscoveryAsync(WaterfallStepContext step, string text, string applicationCode, string encryptionKey)
         {
             List<LuisAppDetail> result = new List<LuisAppDetail>();
 
@@ -88,7 +88,7 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Helpers
                             byte[] byteData = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Text = text, BingSpellCheckSubscriptionKey = config.BingSpellCheckSubscriptionKey, EnableLuisTelemetry = config.EnableLuisTelemetry }));
                             using (var content = new ByteArrayContent(byteData))
                             {
-                                string token = await accessor.TokenPreference.GetAsync(step.Context, () => { return string.Empty; });
+                                string token = await this.TokenPreference.GetAsync(step.Context, () => { return string.Empty; });
 
                                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $"{token}");
@@ -111,7 +111,7 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Helpers
 
                                     string json = JsonConvert.SerializeObject(request);
                                     var encryptedRequest = NETCore.Encrypt.EncryptProvider.AESEncrypt(json, encryptionKey);
-                                    await GetTokenAsync(step, accessor, encryptedRequest);
+                                    await GetTokenAsync(step, encryptedRequest);
                                     continue;
                                 }
                             }

@@ -4,7 +4,7 @@ namespace BotApp.Luis.Router.Identity.Domain.Enums
 {
     public enum IdentityResultEnum
     {
-        [Description("Application authentication successfully.")]
+        [Description("Application identity successfully.")]
         Success,
 
         [Description("The application identity can not be empty.")]
@@ -13,7 +13,7 @@ namespace BotApp.Luis.Router.Identity.Domain.Enums
         [Description("The application code is not valid.")]
         FailedIncorrectCredentials,
 
-        [Description("There was a problem in the application authentication.")]
+        [Description("There was a problem in the application identity.")]
         Failed
     }
 }

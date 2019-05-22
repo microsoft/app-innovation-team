@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using BotApp.Extensions.BotBuilder.LuisRouter.Accessors;
-using BotApp.Extensions.BotBuilder.QnAMaker.Accessors;
+using BotApp.Extensions.BotBuilder.LuisRouter.Services;
+using BotApp.Extensions.BotBuilder.QnAMaker.Services;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
@@ -20,23 +20,23 @@ namespace BotApp
         protected readonly BotState conversationState;
         protected readonly BotState userState;
         protected readonly ILogger logger;
-        protected BotAccessors accessors = null;
+        protected BotAccessor accessor = null;
         protected DialogSet dialogs = null;
-        protected LuisRouterAccessor luisRouterAccessor = null;
-        protected QnAMakerAccessor qnaMakerAccessor = null;
+        protected ILuisRouterService luisRouterService = null;
+        protected IQnAMakerService qnaMakerService = null;
 
-        public BotAppBot(BotAccessors accessors, LuisRouterAccessor luisRouterAccessor, QnAMakerAccessor qnaMakerAccessor, ConversationState conversationState, UserState userState, ILogger<BotAppBot> logger)
+        public BotAppBot(BotAccessor accessor, ILuisRouterService luisRouterService, IQnAMakerService qnaMakerService, ConversationState conversationState, UserState userState, ILogger<BotAppBot> logger)
         {
-            this.accessors = accessors;
+            this.accessor = accessor;
             this.conversationState = conversationState;
             this.userState = userState;
             this.logger = logger;
-            this.luisRouterAccessor = luisRouterAccessor;
-            this.qnaMakerAccessor = qnaMakerAccessor;
+            this.luisRouterService = luisRouterService;
+            this.qnaMakerService = qnaMakerService;
 
-            this.dialogs = new DialogSet(accessors.ConversationDialogState);
-            this.dialogs.Add(new MainDialog(accessors, luisRouterAccessor, qnaMakerAccessor));
-            this.dialogs.Add(new LuisQnADialog(accessors, luisRouterAccessor, qnaMakerAccessor));
+            this.dialogs = new DialogSet(accessor.ConversationDialogState);
+            this.dialogs.Add(new MainDialog(accessor, luisRouterService, qnaMakerService));
+            this.dialogs.Add(new LuisQnADialog(accessor, luisRouterService, qnaMakerService));
         }
 
         private async Task LaunchWelcomeAsync(ITurnContext turnContext)
@@ -65,7 +65,7 @@ namespace BotApp
                     if (turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
                     {
                         await LaunchWelcomeAsync(turnContext);
-                        await dialogContext.BeginDialogAsync(MainDialog.dialogId, null, cancellationToken: cancellationToken);
+                        await dialogContext.BeginDialogAsync(nameof(MainDialog), null, cancellationToken: cancellationToken);
                     }
                     break;
 
@@ -75,26 +75,26 @@ namespace BotApp
                     var text = turnContext.Activity.Text;
                     if (text == "/start")
                     {
-                        await this.accessors.AskForExamplePreference.DeleteAsync(turnContext);
-                        await this.accessors.ConversationDialogState.DeleteAsync(turnContext);
-                        await this.accessors.IsAuthenticatedPreference.DeleteAsync(turnContext);
-                        await this.luisRouterAccessor.TokenPreference.DeleteAsync(turnContext);
+                        await this.accessor.AskForExamplePreference.DeleteAsync(turnContext);
+                        await this.accessor.ConversationDialogState.DeleteAsync(turnContext);
+                        await this.accessor.IsAuthenticatedPreference.DeleteAsync(turnContext);
+                        await this.luisRouterService.TokenPreference.DeleteAsync(turnContext);
                         await dialogContext.EndDialogAsync();
-                        await dialogContext.BeginDialogAsync(MainDialog.dialogId, null, cancellationToken);
+                        await dialogContext.BeginDialogAsync(nameof(MainDialog), null, cancellationToken);
                     }
                     else
                     {
                         if (!dialogContext.Context.Responded)
                         {
-                            bool isAuthenticated = await this.accessors.IsAuthenticatedPreference.GetAsync(turnContext, () => { return false; });
+                            bool isAuthenticated = await this.accessor.IsAuthenticatedPreference.GetAsync(turnContext, () => { return false; });
 
                             if (!isAuthenticated)
                             {
-                                await dialogContext.BeginDialogAsync(MainDialog.dialogId, null, cancellationToken);
+                                await dialogContext.BeginDialogAsync(nameof(MainDialog), null, cancellationToken);
                             }
                             else
                             {
-                                await dialogContext.BeginDialogAsync(LuisQnADialog.dialogId, null, cancellationToken);
+                                await dialogContext.BeginDialogAsync(nameof(LuisQnADialog), null, cancellationToken);
                             }
                         }
                     }

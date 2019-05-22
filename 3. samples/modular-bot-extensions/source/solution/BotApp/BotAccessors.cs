@@ -5,9 +5,9 @@ using System;
 
 namespace BotApp
 {
-    public class BotAccessors
+    public class BotAccessor
     {
-        public BotAccessors(ILoggerFactory loggerFactory,
+        public BotAccessor(ILoggerFactory loggerFactory,
             ConversationState conversationState,
             UserState userState)
         {

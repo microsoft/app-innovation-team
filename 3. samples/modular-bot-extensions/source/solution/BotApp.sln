@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotApp.Extensions.BotBuilde
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotApp.Identity.Tests", "BotApp.Identity.Tests\BotApp.Identity.Tests.csproj", "{A9958289-ADEC-4517-B3DD-C5913FD2A265}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotApp.Extensions.BotBuilder.Channel.WebChat", "BotApp.Extensions.BotBuilder.Channel.WebChat\BotApp.Extensions.BotBuilder.Channel.WebChat.csproj", "{15945AA5-76F2-4542-9318-F70362923CB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{A9958289-ADEC-4517-B3DD-C5913FD2A265}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9958289-ADEC-4517-B3DD-C5913FD2A265}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9958289-ADEC-4517-B3DD-C5913FD2A265}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15945AA5-76F2-4542-9318-F70362923CB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15945AA5-76F2-4542-9318-F70362923CB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15945AA5-76F2-4542-9318-F70362923CB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15945AA5-76F2-4542-9318-F70362923CB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +107,7 @@ Global
 		{C8A21BFE-8934-4A0A-B335-7D4F5D8167B4} = {45623CE7-73BF-409D-876D-375F9D8F6991}
 		{DD0AD50E-311B-4232-A146-6A95A1065301} = {45623CE7-73BF-409D-876D-375F9D8F6991}
 		{A9958289-ADEC-4517-B3DD-C5913FD2A265} = {43F55AE0-46B5-4D49-A53F-CFF8097F164A}
+		{15945AA5-76F2-4542-9318-F70362923CB4} = {45623CE7-73BF-409D-876D-375F9D8F6991}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0247D1E6-F530-4C1F-89C8-801FABD36CC5}

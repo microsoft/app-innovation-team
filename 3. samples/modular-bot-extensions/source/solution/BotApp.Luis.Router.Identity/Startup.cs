@@ -1,5 +1,4 @@
 ﻿using BotApp.Extensions.Common.Consul.Helpers;
-using BotApp.Extensions.Common.KeyVault.Helpers;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;

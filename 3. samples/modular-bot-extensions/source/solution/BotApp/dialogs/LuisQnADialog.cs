@@ -1,8 +1,6 @@
-﻿using BotApp.Extensions.BotBuilder.LuisRouter.Accessors;
-using BotApp.Extensions.BotBuilder.LuisRouter.Domain;
-using BotApp.Extensions.BotBuilder.LuisRouter.Helpers;
-using BotApp.Extensions.BotBuilder.QnAMaker.Accessors;
-using BotApp.Extensions.BotBuilder.QnAMaker.Helpers;
+﻿using BotApp.Extensions.BotBuilder.LuisRouter.Domain;
+using BotApp.Extensions.BotBuilder.LuisRouter.Services;
+using BotApp.Extensions.BotBuilder.QnAMaker.Services;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.Dialogs;
@@ -18,18 +16,17 @@ namespace BotApp
 {
     public class LuisQnADialog : ComponentDialog
     {
-        public const string dialogId = "LuisQnADialog";
-        private BotAccessors accessors = null;
-        private LuisRouterAccessor luisRouterAccessor = null;
-        private QnAMakerAccessor qnaMakerAccessor = null;
+        private BotAccessor accessor = null;
+        private ILuisRouterService luisRouterService = null;
+        private IQnAMakerService qnaMakerService = null;
 
-        public LuisQnADialog(BotAccessors accessors, LuisRouterAccessor luisRouterAccessor, QnAMakerAccessor qnaMakerAccessor) : base(dialogId)
+        public LuisQnADialog(BotAccessor accessor, ILuisRouterService luisRouterService, IQnAMakerService qnaMakerService) : base(nameof(LuisQnADialog))
         {
-            this.accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
-            this.luisRouterAccessor = luisRouterAccessor ?? throw new ArgumentNullException(nameof(luisRouterAccessor));
-            this.qnaMakerAccessor = qnaMakerAccessor ?? throw new ArgumentNullException(nameof(qnaMakerAccessor));
+            this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
+            this.luisRouterService = luisRouterService ?? throw new ArgumentNullException(nameof(luisRouterService));
+            this.qnaMakerService = qnaMakerService ?? throw new ArgumentNullException(nameof(qnaMakerService));
 
-            AddDialog(new WaterfallDialog(dialogId, new WaterfallStep[]
+            AddDialog(new WaterfallDialog(nameof(LuisQnADialog), new WaterfallStep[]
             {
                 AskQuestionDialog,
                 ProcessQuestionDialog,
@@ -87,14 +84,14 @@ namespace BotApp
                 var value = promptContext.Recognized.Value;
                 if (value.Index == 0)
                 {
-                    await accessors.AskForExamplePreference.SetAsync(promptContext.Context, true);
-                    await accessors.ConversationState.SaveChangesAsync(promptContext.Context, false, cancellationToken);
+                    await accessor.AskForExamplePreference.SetAsync(promptContext.Context, true);
+                    await accessor.ConversationState.SaveChangesAsync(promptContext.Context, false, cancellationToken);
                     return true;
                 }
                 else if (value.Index == 1)
                 {
-                    await accessors.AskForExamplePreference.SetAsync(promptContext.Context, false);
-                    await accessors.ConversationState.SaveChangesAsync(promptContext.Context, false, cancellationToken);
+                    await accessor.AskForExamplePreference.SetAsync(promptContext.Context, false);
+                    await accessor.ConversationState.SaveChangesAsync(promptContext.Context, false, cancellationToken);
                     return true;
                 }
                 else
@@ -127,62 +124,48 @@ namespace BotApp
                 return Dialog.EndOfTurn;
             }
 
-            using (LuisRouterHelper luisRouterHelper = new LuisRouterHelper(Startup.EnvironmentName, Startup.ContentRootPath))
+            var apps = await luisRouterService.LuisDiscoveryAsync(step, step.Context.Activity.Text, Startup.ApplicationCode, Startup.EncryptionKey);
+
+            if (apps.Count > 0)
             {
-                var apps = await luisRouterHelper.LuisDiscoveryAsync(step, luisRouterAccessor, step.Context.Activity.Text, Startup.ApplicationCode, Startup.EncryptionKey);
+                LuisAppDetail app = apps.OrderByDescending(x => x.Score).FirstOrDefault();
 
-                if (apps.Count > 0)
+                var recognizerResult = await luisRouterService.LuisServices[app.Name].RecognizeAsync(step.Context, cancellationToken);
+                var topIntent = recognizerResult?.GetTopScoringIntent();
+                if (topIntent != null && topIntent.HasValue && topIntent.Value.score >= .90 && topIntent.Value.intent != "None")
                 {
-                    LuisAppDetail app = apps.OrderByDescending(x => x.Score).FirstOrDefault();
+                    step.Context.Activity.Text = topIntent.Value.intent;
 
-                    var recognizerResult = await luisRouterAccessor.LuisServices[app.Name].RecognizeAsync(step.Context, cancellationToken);
-                    var topIntent = recognizerResult?.GetTopScoringIntent();
-                    if (topIntent != null && topIntent.HasValue && topIntent.Value.score >= .90 && topIntent.Value.intent != "None")
+                    var qnaName = string.Empty;
+                    qnaName = qnaMakerService.GetConfiguration().Name;
+
+                    var response = await qnaMakerService.QnAMakerServices[qnaName].GetAnswersAsync(step.Context);
+                    if (response != null && response.Length > 0)
                     {
-                        step.Context.Activity.Text = topIntent.Value.intent;
+                        string responseType = string.Empty;
+                        responseType = FindResponseTypeMetadata(response[0].Metadata);
+                        await step.Context.SendCustomResponseAsync(response[0].Answer, responseType);
 
-                        var qnaName = string.Empty;
-                        using (QnAMakerHelper qnaMakerHelper = new QnAMakerHelper(Startup.EnvironmentName, Startup.ContentRootPath))
+                        if (!string.IsNullOrEmpty(responseType))
                         {
-                            qnaName = qnaMakerHelper.GetConfiguration().Name;
-                        }
-
-                        var response = await qnaMakerAccessor.QnAMakerServices[qnaName].GetAnswersAsync(step.Context);
-                        if (response != null && response.Length > 0)
-                        {
-                            string responseType = string.Empty;
-                            responseType = FindResponseTypeMetadata(response[0].Metadata);
-                            await step.Context.SendCustomResponseAsync(response[0].Answer, responseType);
-
-                            if (!string.IsNullOrEmpty(responseType))
+                            if (!topIntent.Value.intent.EndsWith("_Sample"))
                             {
-                                if (!topIntent.Value.intent.EndsWith("_Sample"))
-                                {
-                                    List<Choice> choices = new List<Choice>();
-                                    choices.Add(new Choice { Value = $"Yes" });
-                                    choices.Add(new Choice { Value = $"No" });
+                                List<Choice> choices = new List<Choice>();
+                                choices.Add(new Choice { Value = $"Yes" });
+                                choices.Add(new Choice { Value = $"No" });
 
-                                    var message = $"Would you like to see an example?";
-                                    await step.Context.SendCustomResponseAsync(message);
+                                var message = $"Would you like to see an example?";
+                                await step.Context.SendCustomResponseAsync(message);
 
-                                    PromptOptions options = new PromptOptions { Choices = choices };
-                                    return await step.PromptAsync("AskForExampleValidator", options, cancellationToken: cancellationToken);
-                                }
+                                PromptOptions options = new PromptOptions { Choices = choices };
+                                return await step.PromptAsync("AskForExampleValidator", options, cancellationToken: cancellationToken);
                             }
-                        }
-                        else
-                        {
-                            await accessors.AskForExamplePreference.SetAsync(step.Context, false);
-                            await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
-
-                            var message = $"I did not find information to show you";
-                            await step.Context.SendCustomResponseAsync(message);
                         }
                     }
                     else
                     {
-                        await accessors.AskForExamplePreference.SetAsync(step.Context, false);
-                        await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
+                        await accessor.AskForExamplePreference.SetAsync(step.Context, false);
+                        await accessor.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                         var message = $"I did not find information to show you";
                         await step.Context.SendCustomResponseAsync(message);
@@ -190,12 +173,20 @@ namespace BotApp
                 }
                 else
                 {
-                    await accessors.AskForExamplePreference.SetAsync(step.Context, false);
-                    await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
+                    await accessor.AskForExamplePreference.SetAsync(step.Context, false);
+                    await accessor.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                     var message = $"I did not find information to show you";
                     await step.Context.SendCustomResponseAsync(message);
                 }
+            }
+            else
+            {
+                await accessor.AskForExamplePreference.SetAsync(step.Context, false);
+                await accessor.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
+
+                var message = $"I did not find information to show you";
+                await step.Context.SendCustomResponseAsync(message);
             }
 
             return await step.NextAsync();
@@ -203,7 +194,7 @@ namespace BotApp
 
         private async Task<DialogTurnResult> ProcessIfExampleIsRequiredDialog(WaterfallStepContext step, CancellationToken cancellationToken = default(CancellationToken))
         {
-            bool askForExample = await accessors.AskForExamplePreference.GetAsync(step.Context, () => { return false; });
+            bool askForExample = await accessor.AskForExamplePreference.GetAsync(step.Context, () => { return false; });
 
             if (askForExample)
             {
@@ -211,46 +202,32 @@ namespace BotApp
                 //await step.Context.SendActivityAsync(message, cancellationToken: cancellationToken);
                 step.Context.Activity.Text = message;
 
-                using (LuisRouterHelper luisRouterHelper = new LuisRouterHelper(Startup.EnvironmentName, Startup.ContentRootPath))
+                var apps = await luisRouterService.LuisDiscoveryAsync(step, step.Context.Activity.Text, Startup.ApplicationCode, Startup.EncryptionKey);
+
+                if (apps.Count > 0)
                 {
-                    var apps = await luisRouterHelper.LuisDiscoveryAsync(step, luisRouterAccessor, step.Context.Activity.Text, Startup.ApplicationCode, Startup.EncryptionKey);
+                    LuisAppDetail app = apps.OrderByDescending(x => x.Score).FirstOrDefault();
 
-                    if (apps.Count > 0)
+                    var recognizerResult = await luisRouterService.LuisServices[app.Name].RecognizeAsync(step.Context, cancellationToken);
+                    var topIntent = recognizerResult?.GetTopScoringIntent();
+                    if (topIntent != null && topIntent.HasValue && topIntent.Value.score >= .90 && topIntent.Value.intent != "None")
                     {
-                        LuisAppDetail app = apps.OrderByDescending(x => x.Score).FirstOrDefault();
+                        step.Context.Activity.Text = topIntent.Value.intent;
 
-                        var recognizerResult = await luisRouterAccessor.LuisServices[app.Name].RecognizeAsync(step.Context, cancellationToken);
-                        var topIntent = recognizerResult?.GetTopScoringIntent();
-                        if (topIntent != null && topIntent.HasValue && topIntent.Value.score >= .90 && topIntent.Value.intent != "None")
+                        var qnaName = string.Empty;
+                        qnaName = qnaMakerService.GetConfiguration().Name;
+
+                        var response = await qnaMakerService.QnAMakerServices[qnaName].GetAnswersAsync(step.Context);
+                        if (response != null && response.Length > 0)
                         {
-                            step.Context.Activity.Text = topIntent.Value.intent;
-
-                            var qnaName = string.Empty;
-                            using (QnAMakerHelper qnaMakerHelper = new QnAMakerHelper(Startup.EnvironmentName, Startup.ContentRootPath))
-                            {
-                                qnaName = qnaMakerHelper.GetConfiguration().Name;
-                            }
-
-                            var response = await qnaMakerAccessor.QnAMakerServices[qnaName].GetAnswersAsync(step.Context);
-                            if (response != null && response.Length > 0)
-                            {
-                                string responseType = string.Empty;
-                                responseType = FindResponseTypeMetadata(response[0].Metadata);
-                                await step.Context.SendCustomResponseAsync(response[0].Answer, responseType);
-                            }
-                            else
-                            {
-                                await accessors.AskForExamplePreference.SetAsync(step.Context, false);
-                                await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
-
-                                message = $"I did not find information to show you";
-                                await step.Context.SendCustomResponseAsync(message);
-                            }
+                            string responseType = string.Empty;
+                            responseType = FindResponseTypeMetadata(response[0].Metadata);
+                            await step.Context.SendCustomResponseAsync(response[0].Answer, responseType);
                         }
                         else
                         {
-                            await accessors.AskForExamplePreference.SetAsync(step.Context, false);
-                            await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
+                            await accessor.AskForExamplePreference.SetAsync(step.Context, false);
+                            await accessor.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                             message = $"I did not find information to show you";
                             await step.Context.SendCustomResponseAsync(message);
@@ -258,12 +235,20 @@ namespace BotApp
                     }
                     else
                     {
-                        await accessors.AskForExamplePreference.SetAsync(step.Context, false);
-                        await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
+                        await accessor.AskForExamplePreference.SetAsync(step.Context, false);
+                        await accessor.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
                         message = $"I did not find information to show you";
                         await step.Context.SendCustomResponseAsync(message);
                     }
+                }
+                else
+                {
+                    await accessor.AskForExamplePreference.SetAsync(step.Context, false);
+                    await accessor.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
+
+                    message = $"I did not find information to show you";
+                    await step.Context.SendCustomResponseAsync(message);
                 }
             }
 
@@ -272,11 +257,11 @@ namespace BotApp
 
         private async Task<DialogTurnResult> EndDialog(WaterfallStepContext step, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await accessors.AskForExamplePreference.SetAsync(step.Context, false);
-            await accessors.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
+            await accessor.AskForExamplePreference.SetAsync(step.Context, false);
+            await accessor.ConversationState.SaveChangesAsync(step.Context, false, cancellationToken);
 
             await step.EndDialogAsync(step.ActiveDialog.State);
-            await step.BeginDialogAsync(dialogId);
+            await step.BeginDialogAsync(nameof(LuisQnADialog));
 
             return Dialog.EndOfTurn;
         }

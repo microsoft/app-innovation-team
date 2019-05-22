@@ -1,16 +1,17 @@
-﻿using BotApp.Extensions.BotBuilder.QnAMaker.Accessors;
-using BotApp.Extensions.BotBuilder.QnAMaker.Domain;
+﻿using BotApp.Extensions.BotBuilder.QnAMaker.Domain;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 
-namespace BotApp.Extensions.BotBuilder.QnAMaker.Helpers
+namespace BotApp.Extensions.BotBuilder.QnAMaker.Services
 {
-    public class QnAMakerHelper : BaseHelper
+    public class QnAMakerService : IQnAMakerService
     {
         private readonly QnAMakerConfig config = null;
 
-        public QnAMakerHelper(string environmentName, string contentRootPath)
+        public Dictionary<string, Microsoft.Bot.Builder.AI.QnA.QnAMaker> QnAMakerServices { get; }
+
+        public QnAMakerService(string environmentName, string contentRootPath)
         {
             var builder = new ConfigurationBuilder()
               .SetBasePath(contentRootPath)
@@ -34,15 +35,11 @@ namespace BotApp.Extensions.BotBuilder.QnAMaker.Helpers
 
             if (string.IsNullOrEmpty(config.EndpointKey))
                 throw new Exception("Missing value in QnAMakerConfig -> EndpointKey");
+
+            this.QnAMakerServices = BuildDictionary();
         }
 
         public QnAMakerConfig GetConfiguration() => config;
-
-        public QnAMakerAccessor BuildAccessor()
-        {
-            Dictionary<string, Microsoft.Bot.Builder.AI.QnA.QnAMaker> qnaServices = BuildDictionary();
-            return new QnAMakerAccessor(qnaServices) { };
-        }
 
         private Dictionary<string, Microsoft.Bot.Builder.AI.QnA.QnAMaker> BuildDictionary()
         {

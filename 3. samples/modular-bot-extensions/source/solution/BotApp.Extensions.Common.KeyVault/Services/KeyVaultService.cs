@@ -6,13 +6,13 @@ using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
-namespace BotApp.Extensions.Common.KeyVault.Helpers
+namespace BotApp.Extensions.Common.KeyVault.Services
 {
-    public class KeyVaultHelper : BaseHelper
+    public class KeyVaultService : IKeyVaultService
     {
         private readonly KeyVaultConfig config = null;
 
-        public KeyVaultHelper(string environmentName, string contentRootPath)
+        public KeyVaultService(string environmentName, string contentRootPath)
         {
             var builder = new ConfigurationBuilder()
               .SetBasePath(contentRootPath)

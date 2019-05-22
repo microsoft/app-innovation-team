@@ -1,5 +1,4 @@
-﻿using BotApp.Extensions.Common.KeyVault.Helpers;
-using BotApp.Luis.Router.Identity.Domain.Enums;
+﻿using BotApp.Luis.Router.Identity.Domain.Enums;
 using BotApp.Luis.Router.Identity.Domain.Exceptions;
 using BotApp.Luis.Router.Identity.Domain.Requests;
 using BotApp.Luis.Router.Identity.Domain.Responses;
@@ -13,7 +12,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BotApp.Luis.Router.Identity.Controllers
 {

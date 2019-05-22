@@ -2,9 +2,9 @@
 
 namespace BotApp.Luis.Router.Domain.Enums
 {
-    public enum LUISDiscoveryResponseEnum
+    public enum LuisDiscoveryResponseEnum
     {
-        [Description("LUIS discovered successfully.")]
+        [Description("Luis discovered successfully.")]
         Success,
 
         [Description("Text can not be empty.")]

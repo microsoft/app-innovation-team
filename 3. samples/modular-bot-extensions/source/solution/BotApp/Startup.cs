@@ -1,9 +1,8 @@
-﻿using BotApp.Extensions.BotBuilder.LuisRouter.Accessors;
-using BotApp.Extensions.BotBuilder.LuisRouter.Helpers;
-using BotApp.Extensions.BotBuilder.QnAMaker.Accessors;
-using BotApp.Extensions.BotBuilder.QnAMaker.Helpers;
+﻿using BotApp.Extensions.BotBuilder.Channel.WebChat.Services;
+using BotApp.Extensions.BotBuilder.LuisRouter.Services;
+using BotApp.Extensions.BotBuilder.QnAMaker.Services;
 using BotApp.Extensions.Common.Consul.Helpers;
-using BotApp.Extensions.Common.KeyVault.Helpers;
+using BotApp.Extensions.Common.KeyVault.Services;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -66,16 +65,8 @@ namespace BotApp
             Settings.BotConversationStorageDatabaseId = Configuration.GetSection("ApplicationSettings:BotConversationStorageDatabaseId")?.Value;
             Settings.BotConversationStorageUserCollection = Configuration.GetSection("ApplicationSettings:BotConversationStorageUserCollection")?.Value;
             Settings.BotConversationStorageConversationCollection = Configuration.GetSection("ApplicationSettings:BotConversationStorageConversationCollection")?.Value;
-
-            // Adding EncryptionKey and ApplicationCode
-            using (KeyVaultHelper keyVaultHelper = new KeyVaultHelper(EnvironmentName, ContentRootPath))
-            {
-                Settings.KeyVaultEncryptionKey = Configuration.GetSection("ApplicationSettings:KeyVaultEncryptionKey")?.Value;
-                EncryptionKey = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
-
-                Settings.KeyVaultApplicationCode = Configuration.GetSection("ApplicationSettings:KeyVaultApplicationCode")?.Value;
-                ApplicationCode = keyVaultHelper.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
-            }
+            Settings.KeyVaultEncryptionKey = Configuration.GetSection("ApplicationSettings:KeyVaultEncryptionKey")?.Value;
+            Settings.KeyVaultApplicationCode = Configuration.GetSection("ApplicationSettings:KeyVaultApplicationCode")?.Value;
 
             // Adding CosmosDB user storage
             CosmosDbStorage userstorage = new CosmosDbStorage(new CosmosDbStorageOptions
@@ -143,29 +134,23 @@ namespace BotApp
             // Create the telemetry middleware to track conversation events
             services.AddSingleton<IMiddleware, TelemetryLoggerMiddleware>();
 
-            // Adding LUIS Router accessor
-            services.AddSingleton(sp =>
-            {
-                LuisRouterAccessor accessor = null;
-                using (LuisRouterHelper luisRouterHelper = new LuisRouterHelper(EnvironmentName, ContentRootPath))
-                {
-                    accessor = luisRouterHelper.BuildAccessor(userState, sp.GetRequiredService<IBotTelemetryClient>());
-                }
-                return accessor;
-            });
+            // Adding LUIS Router service
+            services.AddSingleton<ILuisRouterService, LuisRouterService>(sp => { return new LuisRouterService(EnvironmentName, ContentRootPath, userState, sp.GetRequiredService<IBotTelemetryClient>()); });
 
-            // Adding QnAMaker Router accessor
-            services.AddSingleton(sp =>
-            {
-                QnAMakerAccessor accessor = null;
-                using (QnAMakerHelper qnaMakerHelper = new QnAMakerHelper(EnvironmentName, ContentRootPath))
-                {
-                    accessor = qnaMakerHelper.BuildAccessor();
-                }
-                return accessor;
-            });
+            // Adding QnAMaker Router service
+            services.AddSingleton<IQnAMakerService, QnAMakerService>(sp => { return new QnAMakerService(EnvironmentName, ContentRootPath); });
 
-            // Adding accessors
+            // Adding WebChat service
+            services.AddSingleton<IWebChatService, WebChatService>(sp => { return new WebChatService(EnvironmentName, ContentRootPath); });
+
+            // Adding KeyVault service
+            services.AddSingleton<IKeyVaultService, KeyVaultService>(sp => { return new KeyVaultService(EnvironmentName, ContentRootPath); });
+
+            KeyVaultService keyVaultService = new KeyVaultService(EnvironmentName, ContentRootPath);
+            EncryptionKey = keyVaultService.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
+            ApplicationCode = keyVaultService.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
+
+            // Adding accessor
             services.AddSingleton(sp =>
             {
                 // We need to grab the conversationState we added on the options in the previous step
@@ -176,15 +161,15 @@ namespace BotApp
                 }
 
                 // Create the custom state accessor.
-                // State accessors enable other components to read and write individual properties of state.
-                var accessors = new BotAccessors(loggerFactory, conversationState, userState)
+                // State accessor enable other components to read and write individual properties of state.
+                var accessor = new BotAccessor(loggerFactory, conversationState, userState)
                 {
                     ConversationDialogState = conversationState.CreateProperty<DialogState>("DialogState"),
                     AskForExamplePreference = conversationState.CreateProperty<bool>("AskForExamplePreference"),
                     IsAuthenticatedPreference = userState.CreateProperty<bool>("IsAuthenticatedPreference")
                 };
 
-                return accessors;
+                return accessor;
             });
 
             // Adding the bot as a transient. In this case the ASP Controller is expecting an IBot

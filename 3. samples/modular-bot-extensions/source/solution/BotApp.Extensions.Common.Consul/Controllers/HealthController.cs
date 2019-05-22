@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
-namespace BotApp.Luis.Router.Controllers
+namespace BotApp.Extensions.Common.Consul.HostedService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

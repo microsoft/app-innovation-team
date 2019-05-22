@@ -1,5 +1,5 @@
-using BotApp.Extensions.BotBuilder.LuisRouter.Accessors;
-using BotApp.Extensions.BotBuilder.QnAMaker.Accessors;
+using BotApp.Extensions.BotBuilder.LuisRouter.Services;
+using BotApp.Extensions.BotBuilder.QnAMaker.Services;
 using Microsoft.Bot.Builder.Dialogs;
 using System;
 using System.Threading;
@@ -9,36 +9,35 @@ namespace BotApp
 {
     public class MainDialog : ComponentDialog
     {
-        public const string dialogId = "MainDialog";
-        private BotAccessors accessors = null;
-        private LuisRouterAccessor luisRouterAccessor = null;
-        private QnAMakerAccessor qnaMakerAccessor = null;
+        private BotAccessor accessor = null;
+        private ILuisRouterService luisRouterService = null;
+        private IQnAMakerService qnaMakerService = null;
 
-        public MainDialog(BotAccessors accessors, LuisRouterAccessor luisRouterAccessor, QnAMakerAccessor qnaMakerAccessor) : base(dialogId)
+        public MainDialog(BotAccessor accessor, ILuisRouterService luisRouterService, IQnAMakerService qnaMakerService) : base(nameof(MainDialog))
         {
-            this.accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
-            this.luisRouterAccessor = luisRouterAccessor ?? throw new ArgumentNullException(nameof(luisRouterAccessor));
-            this.qnaMakerAccessor = qnaMakerAccessor ?? throw new ArgumentNullException(nameof(qnaMakerAccessor));
+            this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
+            this.luisRouterService = luisRouterService ?? throw new ArgumentNullException(nameof(luisRouterService));
+            this.qnaMakerService = qnaMakerService ?? throw new ArgumentNullException(nameof(qnaMakerService));
 
-            AddDialog(new WaterfallDialog(dialogId, new WaterfallStep[]
+            AddDialog(new WaterfallDialog(nameof(MainDialog), new WaterfallStep[]
             {
                 LaunchLuisQnADialog,
                 EndMainDialog
             }));
 
-            AddDialog(new LuisQnADialog(accessors, luisRouterAccessor, qnaMakerAccessor));
+            AddDialog(new LuisQnADialog(accessor, luisRouterService, qnaMakerService));
         }
 
         private async Task<DialogTurnResult> LaunchLuisQnADialog(WaterfallStepContext step, CancellationToken cancellationToken = default(CancellationToken))
         {
-            bool isAuthenticated = await accessors.IsAuthenticatedPreference.GetAsync(step.Context, () => { return false; });
+            bool isAuthenticated = await accessor.IsAuthenticatedPreference.GetAsync(step.Context, () => { return false; });
 
             if (!isAuthenticated)
             {
                 //is authenticated
-                await accessors.IsAuthenticatedPreference.SetAsync(step.Context, true);
+                await accessor.IsAuthenticatedPreference.SetAsync(step.Context, true);
 
-                return await step.BeginDialogAsync(LuisQnADialog.dialogId);
+                return await step.BeginDialogAsync(nameof(LuisQnADialog));
             }
             else
             {
@@ -54,7 +53,7 @@ namespace BotApp
             //ending dialog
             await step.EndDialogAsync(step.ActiveDialog.State);
 
-            await step.BeginDialogAsync(LuisQnADialog.dialogId, null, cancellationToken);
+            await step.BeginDialogAsync(nameof(LuisQnADialog), null, cancellationToken);
 
             return Dialog.EndOfTurn;
         }

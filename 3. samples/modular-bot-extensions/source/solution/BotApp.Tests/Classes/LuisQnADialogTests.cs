@@ -1,9 +1,4 @@
-﻿using BotApp.Extensions.BotBuilder.LuisRouter.Accessors;
-using BotApp.Extensions.BotBuilder.LuisRouter.Helpers;
-using BotApp.Extensions.BotBuilder.QnAMaker.Accessors;
-using BotApp.Extensions.BotBuilder.QnAMaker.Helpers;
-using BotApp.Extensions.Common.KeyVault.Helpers;
-using IBE.Tests.Fixtures;
+﻿using IBE.Tests.Fixtures;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
 using Microsoft.Bot.Builder.Dialogs;

@@ -33,13 +33,13 @@ namespace BotApp.Luis.Router.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Post([FromBody]LUISDiscoveryRequest model)
+        public async Task<IActionResult> Post([FromBody]LuisDiscoveryRequest model)
         {
             // non-forced-to-disposal
-            LUISDiscoveryResponse result = new LUISDiscoveryResponse
+            LuisDiscoveryResponse result = new LuisDiscoveryResponse
             {
                 IsSucceded = true,
-                ResultId = (int)LUISDiscoveryResponseEnum.Success
+                ResultId = (int)LuisDiscoveryResponseEnum.Success
             };
 
             // forced-to-disposal
@@ -47,7 +47,7 @@ namespace BotApp.Luis.Router.Controllers
             try
             {
                 if (string.IsNullOrEmpty(model.Text))
-                    throw new BusinessException((int)LUISDiscoveryResponseEnum.FailedEmptyText);
+                    throw new BusinessException((int)LuisDiscoveryResponseEnum.FailedEmptyText);
 
                 // building service list
                 Settings.LuisServices = new Dictionary<string, LuisRecognizer>();
@@ -131,7 +131,7 @@ namespace BotApp.Luis.Router.Controllers
                 }
                 else
                 {
-                    result.ResultId = (int)LUISDiscoveryResponseEnum.Failed;
+                    result.ResultId = (int)LuisDiscoveryResponseEnum.Failed;
 
                     this.logger.LogError($">> Exception: {ex.Message}, StackTrace: {ex.StackTrace}");
 
@@ -148,7 +148,7 @@ namespace BotApp.Luis.Router.Controllers
                 GC.Collect();
             }
 
-            string message = EnumDescription.GetEnumDescription((LUISDiscoveryResponseEnum)result.ResultId);
+            string message = EnumDescription.GetEnumDescription((LuisDiscoveryResponseEnum)result.ResultId);
             this.logger.LogInformation($">> Message information: {message}");
 
             return (result.IsSucceded) ? (ActionResult)new OkObjectResult(new { result = result }) : (ActionResult)new BadRequestObjectResult(new { message = message });

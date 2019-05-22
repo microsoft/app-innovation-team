@@ -1,6 +1,6 @@
 namespace BotApp.Luis.Router.Domain.Requests
 {
-    public class LUISDiscoveryRequest
+    public class LuisDiscoveryRequest
     {
         public string Text { get; set; }
         public string BingSpellCheckSubscriptionKey { get; set; }
