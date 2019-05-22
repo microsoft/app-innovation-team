@@ -2,9 +2,9 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace BotApp.Extensions.Common.Consul.Helpers
+namespace BotApp.Extensions.Common.Consul.Services
 {
-    public class BaseHelper : IDisposable
+    public class BaseService : IDisposable
     {
         // Flag: Has Dispose already been called?
         private bool disposed = false;

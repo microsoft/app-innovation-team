@@ -93,9 +93,9 @@ namespace BotApp
             services.AddSingleton(conversationState);
 
             // Adding Consul hosted service
-            using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))
+            using (ConsulService consulService = new ConsulService(EnvironmentName, ContentRootPath))
             {
-                consulHelper.Initialize(services, Configuration);
+                consulService.Initialize(services, Configuration);
             }
 
             // Adding MVC compatibility
@@ -194,9 +194,9 @@ namespace BotApp
 
         private async Task OnApplicationStopping()
         {
-            using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))
+            using (ConsulService consulService = new ConsulService(EnvironmentName, ContentRootPath))
             {
-                await consulHelper.Stop();
+                await consulService.Stop();
             }
         }
     }

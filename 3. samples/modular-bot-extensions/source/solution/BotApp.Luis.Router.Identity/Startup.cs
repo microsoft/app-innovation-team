@@ -61,9 +61,9 @@ namespace BotApp.Luis.Router.Identity
             ApplicationCode = keyVaultService.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
 
             // Adding Consul hosted service
-            using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))
+            using (ConsulService consulService = new ConsulService(EnvironmentName, ContentRootPath))
             {
-                consulHelper.Initialize(services, Configuration);
+                consulService.Initialize(services, Configuration);
             }
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -117,9 +117,9 @@ namespace BotApp.Luis.Router.Identity
 
         private async void OnApplicationStopping()
         {
-            using (ConsulHelper consulHelper = new ConsulHelper(EnvironmentName, ContentRootPath))
+            using (ConsulService consulService = new ConsulService(EnvironmentName, ContentRootPath))
             {
-                await consulHelper.Stop();
+                await consulService.Stop();
             }
         }
     }
