@@ -1,0 +1,54 @@
+version: '2.4'
+
+services:
+  consul:
+    image: consul:1.4.3
+    mem_limit: 250M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600"
+    expose:
+      - 8500
+      - 8600
+    restart: always
+  gateway:
+    image: gateway:1.0
+    mem_limit: 500M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: gateway
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: BotApp.Gateway/Dockerfile
+    ports:
+      - "17070:80"
+    restart: always
+    depends_on:
+      - consul
+  bot-app:
+    image: bot-app:1.0
+    mem_limit: 250M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    hostname: bot-app
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: BotApp/Dockerfile
+    ports:
+      - "80"
+    restart: always
+    depends_on:
+      - consul

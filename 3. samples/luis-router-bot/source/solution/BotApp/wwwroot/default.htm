@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8;IE=edge">
+    <title></title>
+    <style type="text/css">
+
+        @font-face {
+            font-family: 'SegoeLight';
+            src: url(//:) format('no404'), url(https://appservice.azureedge.net/fonts/segoe-ui-light-latest.woff2);
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html {
+            height: 100%;
+            width: 100%
+        }
+
+        .holder {
+            width: 100vw;
+            height: 100vh;
+            position: relative
+        }
+
+        .frame {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: #0078d7;
+            color: #fff;
+            font-family: 'SegoeLight', helvetica, sans-serif;
+            font-size: 2.7vmin;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .content {
+            position: absolute;
+            left: 3.8vw;
+            top: 5.5vh;
+            height: 30vh;
+        }
+
+            .content .azureLogo {
+                height: 2.7vmin;
+                width: 2.7vmin;
+                position: relative;
+                top: 0.3vmin;
+            }
+
+            .content .azureBrand {
+                margin: 0 0 6.5vh .2vh;
+                font-family: 'Segoe UI', helvetica, sans-serif;
+                font-size: 2.7vmin;
+            }
+
+            .content .bodyHeadline {
+                margin: 3.5vh 0 1vh 0;
+                font-size: 5.1vmin;
+            }
+
+            .content .bodyContent {
+                margin: 1.5vh 0 3.5vh 0;
+                font-family: 'Segoe UI', helvetica, sans-serif;
+                font-size: 2.7vmin;
+            }
+
+                .content .bodyContent a {
+                    color: #fff;
+                    text-decoration: underline;
+                }
+
+                    .content .bodyContent a:hover {
+                        opacity: .7;
+                    }
+    </style>
+    <link rel="stylesheet" type="text/css" href="https://appservice.azureedge.net/css/main.min.css">
+</head>
+
+<body>
+    <div class="content">
+        <img class="azureLogo" src="https://appservice.azureedge.net/images/azureLogo.svg"> <span class="azureBrand">Microsoft Azure Service</span>
+        <div class="bodyHeadline">Service app is up and running</div>
+        <div class="bodyContent"></div>
+    </div>
+</body>
+</html>
