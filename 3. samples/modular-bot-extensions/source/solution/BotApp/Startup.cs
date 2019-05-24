@@ -1,4 +1,5 @@
-﻿using BotApp.Extensions.BotBuilder.Channel.WebChat.Services;
+﻿using BotApp.Extensions.BotBuilder.ActiveDirectory.Services;
+using BotApp.Extensions.BotBuilder.Channel.WebChat.Services;
 using BotApp.Extensions.BotBuilder.LuisRouter.Services;
 using BotApp.Extensions.BotBuilder.QnAMaker.Services;
 using BotApp.Extensions.Common.Consul.Helpers;
@@ -135,20 +136,23 @@ namespace BotApp
             services.AddSingleton<IMiddleware, TelemetryLoggerMiddleware>();
 
             // Adding LUIS Router service
-            services.AddSingleton<ILuisRouterService, LuisRouterService>(sp => { return new LuisRouterService(EnvironmentName, ContentRootPath, userState, sp.GetRequiredService<IBotTelemetryClient>()); });
+            services.AddSingleton<ILuisRouterService>(sp => { return new LuisRouterService(EnvironmentName, ContentRootPath, userState, sp.GetRequiredService<IBotTelemetryClient>()); });
 
             // Adding QnAMaker Router service
-            services.AddSingleton<IQnAMakerService, QnAMakerService>(sp => { return new QnAMakerService(EnvironmentName, ContentRootPath); });
+            services.AddSingleton<IQnAMakerService>(sp => { return new QnAMakerService(EnvironmentName, ContentRootPath); });
 
             // Adding WebChat service
-            services.AddSingleton<IWebChatService, WebChatService>(sp => { return new WebChatService(EnvironmentName, ContentRootPath); });
+            services.AddSingleton<IWebChatService>(sp => { return new WebChatService(EnvironmentName, ContentRootPath); });
 
             // Adding KeyVault service
-            services.AddSingleton<IKeyVaultService, KeyVaultService>(sp => { return new KeyVaultService(EnvironmentName, ContentRootPath); });
+            services.AddSingleton<IKeyVaultService>(sp => { return new KeyVaultService(EnvironmentName, ContentRootPath); });
 
             KeyVaultService keyVaultService = new KeyVaultService(EnvironmentName, ContentRootPath);
             EncryptionKey = keyVaultService.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;
             ApplicationCode = keyVaultService.GetVaultKeyAsync(Settings.KeyVaultApplicationCode).Result;
+
+            // Adding Active Directory service
+            services.AddSingleton<IActiveDirectoryService>(sp => { return new ActiveDirectoryService(EnvironmentName, ContentRootPath); });
 
             // Adding accessor
             services.AddSingleton(sp =>

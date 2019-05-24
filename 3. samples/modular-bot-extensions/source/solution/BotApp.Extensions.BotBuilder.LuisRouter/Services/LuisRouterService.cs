@@ -35,6 +35,7 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
             config = new LuisRouterConfig();
             configuration.GetSection("LuisRouterConfig").Bind(config);
 
+            this.UserState = userState;
             this.LuisServices = BuildDictionary(botTelemetryClient);
             this.TokenPreference = userState.CreateProperty<string>("TokenPreference");
         }

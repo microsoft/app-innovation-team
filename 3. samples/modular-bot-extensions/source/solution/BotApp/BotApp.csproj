@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BotApp.Extensions.BotBuilder.ActiveDirectory\BotApp.Extensions.BotBuilder.ActiveDirectory.csproj" />
     <ProjectReference Include="..\BotApp.Extensions.BotBuilder.Channel.WebChat\BotApp.Extensions.BotBuilder.Channel.WebChat.csproj" />
     <ProjectReference Include="..\BotApp.Extensions.BotBuilder.LuisRouter\BotApp.Extensions.BotBuilder.LuisRouter.csproj" />
     <ProjectReference Include="..\BotApp.Extensions.BotBuilder.QnAMaker\BotApp.Extensions.BotBuilder.QnAMaker.csproj" />

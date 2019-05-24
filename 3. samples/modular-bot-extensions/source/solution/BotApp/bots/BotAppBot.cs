@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using BotApp.Extensions.BotBuilder.ActiveDirectory.Services;
 using BotApp.Extensions.BotBuilder.LuisRouter.Services;
 using BotApp.Extensions.BotBuilder.QnAMaker.Services;
 using Microsoft.Bot.Builder;
@@ -24,8 +25,9 @@ namespace BotApp
         protected DialogSet dialogs = null;
         protected ILuisRouterService luisRouterService = null;
         protected IQnAMakerService qnaMakerService = null;
+        protected IActiveDirectoryService activeDirectoryService = null;
 
-        public BotAppBot(BotAccessor accessor, ILuisRouterService luisRouterService, IQnAMakerService qnaMakerService, ConversationState conversationState, UserState userState, ILogger<BotAppBot> logger)
+        public BotAppBot(BotAccessor accessor, ILuisRouterService luisRouterService, IQnAMakerService qnaMakerService, IActiveDirectoryService activeDirectoryService, ConversationState conversationState, UserState userState, ILogger<BotAppBot> logger)
         {
             this.accessor = accessor;
             this.conversationState = conversationState;
@@ -33,6 +35,7 @@ namespace BotApp
             this.logger = logger;
             this.luisRouterService = luisRouterService;
             this.qnaMakerService = qnaMakerService;
+            this.activeDirectoryService = activeDirectoryService;
 
             this.dialogs = new DialogSet(accessor.ConversationDialogState);
             this.dialogs.Add(new MainDialog(accessor, luisRouterService, qnaMakerService));
@@ -56,6 +59,19 @@ namespace BotApp
             {
                 throw new ArgumentNullException(nameof(turnContext));
             }
+
+            // begin: security validation
+            
+            bool hasPermissionToTalk = await activeDirectoryService.ValidateActiveDirectoryTokenAsync(turnContext);
+            if (!hasPermissionToTalk)
+            {
+                var message = string.Empty;
+                message = $"Ooops!! it seems you don't have permission to talk with me";
+                await turnContext.SendCustomResponseAsync(message);
+                return;
+            }
+
+            // end: security validation
 
             var dialogContext = await dialogs.CreateContextAsync(turnContext, cancellationToken: cancellationToken);
 

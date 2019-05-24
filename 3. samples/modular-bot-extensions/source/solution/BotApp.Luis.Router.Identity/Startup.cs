@@ -54,7 +54,7 @@ namespace BotApp.Luis.Router.Identity
             services.AddSingleton<TelemetryClient, TelemetryClient>();
 
             // Adding KeyVault service
-            services.AddSingleton<IKeyVaultService, KeyVaultService>(sp => { return new KeyVaultService(EnvironmentName, ContentRootPath); });
+            services.AddSingleton<IKeyVaultService>(sp => { return new KeyVaultService(EnvironmentName, ContentRootPath); });
 
             KeyVaultService keyVaultService = new KeyVaultService(EnvironmentName, ContentRootPath);
             EncryptionKey = keyVaultService.GetVaultKeyAsync(Settings.KeyVaultEncryptionKey).Result;

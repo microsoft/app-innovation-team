@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Identity.Client;
 using System;
 using System.Threading.Tasks;
 
@@ -16,13 +16,14 @@ namespace BotApp.Identity.Tests
             AuthenticationResult result = await identityApiClient.GetAccessTokenAsync();
 
             Console.WriteLine($"AccessToken: {result.AccessToken}");
-            Console.WriteLine($"AccessTokenType: {result.AccessTokenType}");
-            Console.WriteLine($"Authority: {result.Authority}");
+            Console.WriteLine($"Account: {result.Account}");
             Console.WriteLine($"ExpiresOn: {result.ExpiresOn}");
-            Console.WriteLine($"ExtendedLifeTimeToken: {result.ExtendedLifeTimeToken}");
+            Console.WriteLine($"Scopes: {result.Scopes}");
             Console.WriteLine($"IdToken: {result.IdToken}");
             Console.WriteLine($"TenantId: {result.TenantId}");
-            Console.WriteLine($"Fullname: {result.UserInfo.GivenName} {result.UserInfo.FamilyName}");
+
+            JwtValidator jwtValidator = new JwtValidator();
+            jwtValidator.Validate(result.AccessToken);
 
             Console.WriteLine("Press Enter to execute it again or close the window if you want to exit");
             Console.ReadLine();

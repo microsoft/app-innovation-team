@@ -1,6 +1,7 @@
-﻿using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Identity.Client;
+using System.Linq;
 
 namespace BotApp.Identity.Tests
 {
@@ -15,18 +16,39 @@ namespace BotApp.Identity.Tests
 
         public async Task<AuthenticationResult> GetAccessTokenAsync()
         {
-            var context = new AuthenticationContext(settings.Authority);
+            string[] scopes = { "User.Read" };
 
-            AuthenticationResult result;
+            IPublicClientApplication app = PublicClientApplicationBuilder
+                .Create(settings.ClientId)
+                .WithAuthority(new Uri(settings.Authority))
+                .Build();
+
+            AuthenticationResult result = null;
+            var accounts = await app.GetAccountsAsync();
+
             try
             {
-                result = await context.AcquireTokenSilentAsync(settings.ApiResourceUri, settings.ClientId);
+                result = await app.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
             }
-            catch (AdalSilentTokenAcquisitionException)
+            catch (MsalUiRequiredException)
             {
-                DeviceCodeResult deviceCodeResult = await context.AcquireDeviceCodeAsync(settings.ApiResourceUri, settings.ClientId);
-                Console.WriteLine(deviceCodeResult.Message);
-                result = await context.AcquireTokenByDeviceCodeAsync(deviceCodeResult);
+                try
+                {
+                    result = await app.AcquireTokenWithDeviceCode(scopes, deviceCodeCallback =>
+                    {
+                        Console.WriteLine(deviceCodeCallback.Message);
+                        return Task.FromResult(0);
+                    }).ExecuteAsync();
+                }
+                catch (MsalException exm)
+                {
+                    Console.WriteLine($">> Exception: {exm.Message}, StackTrace: {exm.StackTrace}");
+
+                    if (exm.InnerException != null)
+                    {
+                        Console.WriteLine($">> Inner Exception Message: {exm.InnerException.Message}, Inner Exception StackTrace: {exm.InnerException.StackTrace}");
+                    }
+                }
             }
 
             return result;

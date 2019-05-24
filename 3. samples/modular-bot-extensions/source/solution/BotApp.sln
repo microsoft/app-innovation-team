@@ -35,7 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotApp.Extensions.BotBuilde
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotApp.Identity.Tests", "BotApp.Identity.Tests\BotApp.Identity.Tests.csproj", "{A9958289-ADEC-4517-B3DD-C5913FD2A265}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotApp.Extensions.BotBuilder.Channel.WebChat", "BotApp.Extensions.BotBuilder.Channel.WebChat\BotApp.Extensions.BotBuilder.Channel.WebChat.csproj", "{15945AA5-76F2-4542-9318-F70362923CB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotApp.Extensions.BotBuilder.Channel.WebChat", "BotApp.Extensions.BotBuilder.Channel.WebChat\BotApp.Extensions.BotBuilder.Channel.WebChat.csproj", "{15945AA5-76F2-4542-9318-F70362923CB4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotApp.Extensions.BotBuilder.ActiveDirectory", "BotApp.Extensions.BotBuilder.ActiveDirectory\BotApp.Extensions.BotBuilder.ActiveDirectory.csproj", "{FC3230EE-37A1-425E-8383-72B99EEA7572}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +93,10 @@ Global
 		{15945AA5-76F2-4542-9318-F70362923CB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15945AA5-76F2-4542-9318-F70362923CB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15945AA5-76F2-4542-9318-F70362923CB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC3230EE-37A1-425E-8383-72B99EEA7572}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC3230EE-37A1-425E-8383-72B99EEA7572}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC3230EE-37A1-425E-8383-72B99EEA7572}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC3230EE-37A1-425E-8383-72B99EEA7572}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,6 +114,7 @@ Global
 		{DD0AD50E-311B-4232-A146-6A95A1065301} = {45623CE7-73BF-409D-876D-375F9D8F6991}
 		{A9958289-ADEC-4517-B3DD-C5913FD2A265} = {43F55AE0-46B5-4D49-A53F-CFF8097F164A}
 		{15945AA5-76F2-4542-9318-F70362923CB4} = {45623CE7-73BF-409D-876D-375F9D8F6991}
+		{FC3230EE-37A1-425E-8383-72B99EEA7572} = {45623CE7-73BF-409D-876D-375F9D8F6991}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0247D1E6-F530-4C1F-89C8-801FABD36CC5}
