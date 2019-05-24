@@ -39,9 +39,9 @@ namespace BotApp.Identity.Tests
             TokenValidationParameters validationParameters = new TokenValidationParameters
             {
                 ValidateAudience = true,
-                ValidAudience = "https://graph.microsoft.com",
+                ValidAudience = "audience",
                 ValidateIssuer = true,
-                ValidIssuer = "https://sts.windows.net/3bb57ff3-b0fc-4888-81a3-16f8f218a320/",
+                ValidIssuer = "issuer",
                 //IssuerSigningKeys = config.SigningKeys,
                 IssuerSigningKey = config.SigningKeys.ToList()[1],
                 ValidateIssuerSigningKey = false,
