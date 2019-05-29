@@ -8,6 +8,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Threading;
@@ -60,19 +61,6 @@ namespace BotApp
                 throw new ArgumentNullException(nameof(turnContext));
             }
 
-            // begin: security validation
-            
-            bool hasPermissionToTalk = await activeDirectoryService.ValidateActiveDirectoryTokenAsync(turnContext);
-            if (!hasPermissionToTalk)
-            {
-                var message = string.Empty;
-                message = $"Ooops!! it seems you don't have permission to talk with me";
-                await turnContext.SendCustomResponseAsync(message);
-                return;
-            }
-
-            // end: security validation
-
             var dialogContext = await dialogs.CreateContextAsync(turnContext, cancellationToken: cancellationToken);
 
             switch (turnContext.Activity.Type)
@@ -80,6 +68,19 @@ namespace BotApp
                 case ActivityTypes.ConversationUpdate:
                     if (turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
                     {
+                        // begin: token validation
+                        bool hasPermission = await activeDirectoryService.ValidateTokenAsync(turnContext);
+
+                        if (!hasPermission)
+                        {
+                            var message = string.Empty;
+                            message = $"Ooops!! it seems you don't have permission to talk with me";
+                            await turnContext.SendCustomResponseAsync(message);
+                            return;
+                        }
+
+                        // end: token validation
+
                         await LaunchWelcomeAsync(turnContext);
                         await dialogContext.BeginDialogAsync(nameof(MainDialog), null, cancellationToken: cancellationToken);
                     }

@@ -1,11 +1,13 @@
 ﻿using BotApp.Extensions.BotBuilder.ActiveDirectory.Domain;
 using Microsoft.Bot.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BotApp.Extensions.BotBuilder.ActiveDirectory.Services
@@ -27,20 +29,46 @@ namespace BotApp.Extensions.BotBuilder.ActiveDirectory.Services
             config = new ActiveDirectoryConfig();
             configuration.GetSection("ActiveDirectoryConfig").Bind(config);
 
-            if (string.IsNullOrEmpty(config.Secret))
-                throw new Exception("Missing value in ActiveDirectoryConfig -> Secret");
+            if (string.IsNullOrEmpty(config.ValidAudience))
+                throw new Exception("Missing value in ActiveDirectoryConfig -> ValidAudience");
+
+            if (string.IsNullOrEmpty(config.ValidIssuer))
+                throw new Exception("Missing value in ActiveDirectoryConfig -> ValidIssuer");
         }
 
         public ActiveDirectoryConfig GetConfiguration() => config;
 
-        public async Task<bool> ValidateActiveDirectoryTokenAsync(ITurnContext turnContext)
+        public async Task<bool> ValidateTokenAsync(ITurnContext turnContext)
         {
-            bool hasPermissionToTalk = true;
+            bool result = true;
+            string token = string.Empty;
+            if (ValidateContent(turnContext))
+            {
+                try
+                {
+                    var channelObj = turnContext.Activity.ChannelData.ToString();
+                    var channeldata = Newtonsoft.Json.Linq.JObject.Parse(channelObj);
+                    token = channeldata["token"].ToString();
+                    await TokenValidationAsync(token);
+                }
+                catch (SecurityTokenException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        private bool ValidateContent(ITurnContext turnContext)
+        {
+            bool result = true;
             string token = string.Empty;
 
             if (turnContext.Activity.ChannelData == null)
             {
-                hasPermissionToTalk = false;
+                result = false;
             }
             else
             {
@@ -52,23 +80,50 @@ namespace BotApp.Extensions.BotBuilder.ActiveDirectory.Services
 
                     if (channeldata == null)
                     {
-                        hasPermissionToTalk = false;
+                        result = false;
                     }
                     else
                     {
                         if (string.IsNullOrEmpty(token))
                         {
-                            hasPermissionToTalk = false;
+                            result = false;
                         }
                     }
                 }
                 catch
                 {
-                    hasPermissionToTalk = false;
+                    result = false;
                 }
             }
 
-            return hasPermissionToTalk;
+            return result;
+        }
+
+        private async Task<JwtSecurityToken> TokenValidationAsync(string token)
+        {
+            string stsDiscoveryEndpoint = "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration";
+
+            ConfigurationManager<OpenIdConnectConfiguration> configManager = new ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
+            OpenIdConnectConfiguration config = await configManager.GetConfigurationAsync();
+
+            TokenValidationParameters validationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = true,
+                ValidAudience = this.config.ValidAudience,
+                ValidateIssuer = true,
+                ValidIssuer = this.config.ValidIssuer,
+                IssuerSigningKeys = config.SigningKeys,
+                ValidateIssuerSigningKey = true,
+                ValidateLifetime = false
+            };
+
+            JwtSecurityTokenHandler tokendHandler = new JwtSecurityTokenHandler();
+
+            SecurityToken jwt;
+            IdentityModelEventSource.ShowPII = false;
+            ClaimsPrincipal claimsPrincipal = tokendHandler.ValidateToken(token, validationParameters, out jwt);
+
+            return jwt as JwtSecurityToken;
         }
     }
 }

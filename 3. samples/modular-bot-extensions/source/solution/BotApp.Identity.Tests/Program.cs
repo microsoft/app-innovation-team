@@ -23,7 +23,7 @@ namespace BotApp.Identity.Tests
             Console.WriteLine($"TenantId: {result.TenantId}");
 
             JwtValidator jwtValidator = new JwtValidator();
-            jwtValidator.Validate(result.AccessToken);
+            await jwtValidator.ValidateAsync(result.IdToken);
 
             Console.WriteLine("Press Enter to execute it again or close the window if you want to exit");
             Console.ReadLine();

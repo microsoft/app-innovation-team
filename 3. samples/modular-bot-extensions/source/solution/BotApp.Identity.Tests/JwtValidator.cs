@@ -2,22 +2,22 @@
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace BotApp.Identity.Tests
 {
     public class JwtValidator
     {
-        public bool Validate(string token)
+        public async Task<bool> ValidateAsync(string token)
         {
             var validationSucceeded = true;
             try
             {
-                InternalValidation(token);
+                await InternalValidationAsync(token);
             }
             catch (SecurityTokenException ex)
             {
@@ -29,12 +29,12 @@ namespace BotApp.Identity.Tests
         }
 
 
-        private JwtSecurityToken InternalValidation(string token)
+        private async Task<JwtSecurityToken> InternalValidationAsync(string token)
         {
             string stsDiscoveryEndpoint = "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration";
-
+            
             ConfigurationManager<OpenIdConnectConfiguration> configManager = new ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
-            OpenIdConnectConfiguration config = configManager.GetConfigurationAsync().Result;
+            OpenIdConnectConfiguration config = await configManager.GetConfigurationAsync();
 
             TokenValidationParameters validationParameters = new TokenValidationParameters
             {
@@ -42,36 +42,18 @@ namespace BotApp.Identity.Tests
                 ValidAudience = "audience",
                 ValidateIssuer = true,
                 ValidIssuer = "issuer",
-                //IssuerSigningKeys = config.SigningKeys,
-                IssuerSigningKey = config.SigningKeys.ToList()[1],
-                ValidateIssuerSigningKey = false,
-                ValidateLifetime = true
+                IssuerSigningKeys = config.SigningKeys,
+                ValidateIssuerSigningKey = true,
+                ValidateLifetime = false
             };
 
             JwtSecurityTokenHandler tokendHandler = new JwtSecurityTokenHandler();
-
+            
             SecurityToken jwt;
-            IdentityModelEventSource.ShowPII = true;
-            var result = tokendHandler.ValidateToken(token, validationParameters, out jwt);
+            IdentityModelEventSource.ShowPII = false;
+            ClaimsPrincipal claimsPrincipal = tokendHandler.ValidateToken(token, validationParameters, out jwt);
 
             return jwt as JwtSecurityToken;
-        }
-
-        private static string Base64UrlDecode(string value, Encoding encoding = null)
-        {
-            string urlDecodedValue = value.Replace('_', '/').Replace('-', '+');
-
-            switch (value.Length % 4)
-            {
-                case 2:
-                    urlDecodedValue += "==";
-                    break;
-                case 3:
-                    urlDecodedValue += "=";
-                    break;
-            }
-
-            return Encoding.ASCII.GetString(Convert.FromBase64String(urlDecodedValue));
         }
     }
 }

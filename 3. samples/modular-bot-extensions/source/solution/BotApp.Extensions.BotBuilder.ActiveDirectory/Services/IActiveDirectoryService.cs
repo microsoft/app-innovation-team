@@ -8,6 +8,6 @@ namespace BotApp.Extensions.BotBuilder.ActiveDirectory.Services
     {
         ActiveDirectoryConfig GetConfiguration();
 
-        Task<bool> ValidateActiveDirectoryTokenAsync(ITurnContext turnContext);
+        Task<bool> ValidateTokenAsync(ITurnContext turnContext);
     }
 }
