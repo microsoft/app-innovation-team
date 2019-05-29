@@ -8,7 +8,6 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Threading;
@@ -69,6 +68,13 @@ namespace BotApp
                     if (turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
                     {
                         // begin: token validation
+                        // uncomment for debugging purposes
+
+                        //string token = "TOKEN";
+                        //dynamic jsonObject = new JObject();
+                        //jsonObject.token = token;
+                        //turnContext.Activity.ChannelData = jsonObject;
+
                         bool hasPermission = await activeDirectoryService.ValidateTokenAsync(turnContext);
 
                         if (!hasPermission)

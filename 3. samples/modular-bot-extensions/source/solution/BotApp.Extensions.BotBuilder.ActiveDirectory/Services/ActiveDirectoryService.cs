@@ -114,7 +114,7 @@ namespace BotApp.Extensions.BotBuilder.ActiveDirectory.Services
                 ValidIssuer = this.config.ValidIssuer,
                 IssuerSigningKeys = config.SigningKeys,
                 ValidateIssuerSigningKey = true,
-                ValidateLifetime = false
+                ValidateLifetime = true
             };
 
             JwtSecurityTokenHandler tokendHandler = new JwtSecurityTokenHandler();

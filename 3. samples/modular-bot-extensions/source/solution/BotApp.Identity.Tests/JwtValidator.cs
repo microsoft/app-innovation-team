@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -28,11 +27,10 @@ namespace BotApp.Identity.Tests
             return validationSucceeded;
         }
 
-
         private async Task<JwtSecurityToken> InternalValidationAsync(string token)
         {
             string stsDiscoveryEndpoint = "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration";
-            
+
             ConfigurationManager<OpenIdConnectConfiguration> configManager = new ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
             OpenIdConnectConfiguration config = await configManager.GetConfigurationAsync();
 
@@ -48,7 +46,7 @@ namespace BotApp.Identity.Tests
             };
 
             JwtSecurityTokenHandler tokendHandler = new JwtSecurityTokenHandler();
-            
+
             SecurityToken jwt;
             IdentityModelEventSource.ShowPII = false;
             ClaimsPrincipal claimsPrincipal = tokendHandler.ValidateToken(token, validationParameters, out jwt);
