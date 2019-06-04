@@ -22,6 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace BotApp
@@ -136,7 +137,13 @@ namespace BotApp
             services.AddSingleton<IMiddleware, TelemetryLoggerMiddleware>();
 
             // Adding LUIS Router service
-            services.AddSingleton<ILuisRouterService>(sp => { return new LuisRouterService(EnvironmentName, ContentRootPath, userState, sp.GetRequiredService<IBotTelemetryClient>()); });
+            services.AddSingleton<ILuisRouterService>(sp =>
+            {
+                var handler = new HttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+                var httpClient = new HttpClient(handler);
+                return new LuisRouterService(httpClient, EnvironmentName, ContentRootPath, userState, sp.GetRequiredService<IBotTelemetryClient>());
+            });
 
             // Adding QnAMaker Router service
             services.AddSingleton<IQnAMakerService>(sp => { return new QnAMakerService(EnvironmentName, ContentRootPath); });

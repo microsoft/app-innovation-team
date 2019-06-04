@@ -7,6 +7,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Net.Http;
 using Xunit;
 
 namespace BotApp.Tests.Classes
@@ -31,10 +32,14 @@ namespace BotApp.Tests.Classes
             var adapter = new TestAdapter()
                 .Use(new AutoSaveStateMiddleware(conversationState));
 
-            // Adding LUIS Router service
-            LuisRouterService luisRouterService = new LuisRouterService(Startup.EnvironmentName, Startup.ContentRootPath, userState, null);
+            var handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+            var httpClient = new HttpClient(handler);
 
-            // Adding QnAMaker service
+            // adding LUIS Router service
+            LuisRouterService luisRouterService = new LuisRouterService(httpClient, Startup.EnvironmentName, Startup.ContentRootPath, userState, null);
+
+            // adding QnAMaker service
             QnAMakerService qnaMakerService = new QnAMakerService(Startup.EnvironmentName, Startup.ContentRootPath);
 
             var accessors = new BotAccessor(new LoggerFactory(), conversationState, userState)
@@ -80,10 +85,14 @@ namespace BotApp.Tests.Classes
             var adapter = new TestAdapter()
                 .Use(new AutoSaveStateMiddleware(conversationState));
 
-            // Adding LUIS Router service
-            LuisRouterService luisRouterService = new LuisRouterService(Startup.EnvironmentName, Startup.ContentRootPath, userState, null);
+            var handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+            var httpClient = new HttpClient(handler);
 
-            // Adding QnAMaker service
+            // adding LUIS Router service
+            LuisRouterService luisRouterService = new LuisRouterService(httpClient, Startup.EnvironmentName, Startup.ContentRootPath, userState, null);
+
+            // adding QnAMaker service
             QnAMakerService qnaMakerService = new QnAMakerService(Startup.EnvironmentName, Startup.ContentRootPath);
 
             var accessors = new BotAccessor(new LoggerFactory(), conversationState, userState)

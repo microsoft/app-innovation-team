@@ -15,6 +15,6 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Domain
         public string LuisRouterUrl { get; set; }
         public string BingSpellCheckSubscriptionKey { get; set; }
         public bool EnableLuisTelemetry { get; set; }
-        public List<LuisApp> LuisApplications { get; set; }
+        public IEnumerable<LuisApp> LuisApplications { get; set; }
     }
 }

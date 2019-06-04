@@ -1,8 +1,8 @@
 ﻿using BotApp.Extensions.BotBuilder.LuisRouter.Domain;
+using BotApp.Extensions.BotBuilder.LuisRouter.Services;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,36 +12,34 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
+namespace BotApp.Extensions.Tests.Fakes
 {
-    public class LuisRouterService : ILuisRouterService
+    public class FakeLuisRouterService : ILuisRouterService
     {
         private readonly HttpClient httpClient = null;
-        private readonly LuisRouterConfig config = null;
+
+        public FakeLuisRouterService(HttpClient httpClient = null, UserState userState = null)
+        {
+            this.httpClient = httpClient;
+            this.UserState = userState;
+            this.TokenPreference = userState.CreateProperty<string>("TokenPreference");
+        }
+
         public UserState UserState { get; }
         public IStatePropertyAccessor<string> TokenPreference { get; set; }
         public Dictionary<string, LuisRecognizer> LuisServices { get; }
 
-        public LuisRouterService(HttpClient httpClient, string environmentName, string contentRootPath, UserState userState, IBotTelemetryClient botTelemetryClient = null)
+        public LuisRouterConfig GetConfiguration()
         {
-            var builder = new ConfigurationBuilder()
-              .SetBasePath(contentRootPath)
-              .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-              .AddJsonFile($"appsettings.{environmentName}.json", optional: true)
-              .AddEnvironmentVariables();
-
-            var configuration = builder.Build();
-
-            config = new LuisRouterConfig();
-            configuration.GetSection("LuisRouterConfig").Bind(config);
-
-            this.httpClient = httpClient;
-            this.UserState = userState;
-            this.LuisServices = BuildDictionary(botTelemetryClient);
-            this.TokenPreference = userState.CreateProperty<string>("TokenPreference");
+            var luisRouterConfig = new LuisRouterConfig()
+            {
+                BingSpellCheckSubscriptionKey = "bing_spell_check_subscription_key",
+                EnableLuisTelemetry = true,
+                LuisApplications = new List<LuisApp>(),
+                LuisRouterUrl = "luis_router_url"
+            };
+            return luisRouterConfig;
         }
-
-        public LuisRouterConfig GetConfiguration() => config;
 
         public async Task GetTokenAsync(WaterfallStepContext step, string encryptedRequest)
         {
@@ -49,7 +47,7 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
             using (var content = new ByteArrayContent(byteData))
             {
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                var response = await httpClient.PostAsync($"{config.LuisRouterUrl}/identity", content);
+                var response = await httpClient.PostAsync($"/identity", content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -72,14 +70,14 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
             {
                 try
                 {
-                    byte[] byteData = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Text = text, BingSpellCheckSubscriptionKey = config.BingSpellCheckSubscriptionKey, EnableLuisTelemetry = config.EnableLuisTelemetry }));
+                    byte[] byteData = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Text = text, BingSpellCheckSubscriptionKey = "", EnableLuisTelemetry = "" }));
                     using (var content = new ByteArrayContent(byteData))
                     {
                         string token = await this.TokenPreference.GetAsync(step.Context, () => { return string.Empty; });
 
                         content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $"{token}");
-                        var response = await httpClient.PostAsync($"{config.LuisRouterUrl}/luisdiscovery", content);
+                        var response = await httpClient.PostAsync($"/luisdiscovery", content);
 
                         if (response.IsSuccessStatusCode)
                         {
@@ -108,54 +106,6 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
                     Thread.Sleep(TimeToSleepForRetry);
                     continue;
                 }
-            }
-
-            return result;
-        }
-
-        private Dictionary<string, LuisRecognizer> BuildDictionary(IBotTelemetryClient botTelemetryClient = null)
-        {
-            Dictionary<string, LuisRecognizer> result = new Dictionary<string, LuisRecognizer>();
-
-            foreach (LuisApp app in config.LuisApplications)
-            {
-                var luis = new LuisApplication(app.AppId, app.AuthoringKey, app.Endpoint);
-
-                LuisPredictionOptions luisPredictionOptions = null;
-                LuisRecognizer recognizer = null;
-
-                bool needsPredictionOptions = false;
-                if ((!string.IsNullOrEmpty(config.BingSpellCheckSubscriptionKey)) || (config.EnableLuisTelemetry))
-                {
-                    needsPredictionOptions = true;
-                }
-
-                if (needsPredictionOptions)
-                {
-                    luisPredictionOptions = new LuisPredictionOptions();
-
-                    if (config.EnableLuisTelemetry)
-                    {
-                        luisPredictionOptions.TelemetryClient = botTelemetryClient;
-                        luisPredictionOptions.Log = true;
-                        luisPredictionOptions.LogPersonalInformation = true;
-                    }
-
-                    if (!string.IsNullOrEmpty(config.BingSpellCheckSubscriptionKey))
-                    {
-                        luisPredictionOptions.BingSpellCheckSubscriptionKey = config.BingSpellCheckSubscriptionKey;
-                        luisPredictionOptions.SpellCheck = true;
-                        luisPredictionOptions.IncludeAllIntents = true;
-                    }
-
-                    recognizer = new LuisRecognizer(luis, luisPredictionOptions);
-                }
-                else
-                {
-                    recognizer = new LuisRecognizer(luis);
-                }
-
-                result.Add(app.Name, recognizer);
             }
 
             return result;

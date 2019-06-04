@@ -75,7 +75,7 @@ namespace BotApp
                         //jsonObject.token = token;
                         //turnContext.Activity.ChannelData = jsonObject;
 
-                        bool hasPermission = await activeDirectoryService.ValidateTokenAsync(turnContext);
+                        bool hasPermission = true; //await activeDirectoryService.ValidateTokenAsync(turnContext);
 
                         if (!hasPermission)
                         {

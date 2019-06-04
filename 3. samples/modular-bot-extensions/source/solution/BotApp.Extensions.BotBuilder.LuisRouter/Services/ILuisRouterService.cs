@@ -19,6 +19,6 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
 
         Task GetTokenAsync(WaterfallStepContext step, string encryptedRequest);
 
-        Task<List<LuisAppDetail>> LuisDiscoveryAsync(WaterfallStepContext step, string text, string applicationCode, string encryptionKey);
+        Task<IEnumerable<LuisAppDetail>> LuisDiscoveryAsync(WaterfallStepContext step, string text, string applicationCode, string encryptionKey);
     }
 }

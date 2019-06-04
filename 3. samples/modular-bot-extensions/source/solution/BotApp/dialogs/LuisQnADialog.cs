@@ -126,7 +126,7 @@ namespace BotApp
 
             var apps = await luisRouterService.LuisDiscoveryAsync(step, step.Context.Activity.Text, Startup.ApplicationCode, Startup.EncryptionKey);
 
-            if (apps.Count > 0)
+            if (apps.ToList().Count > 0)
             {
                 LuisAppDetail app = apps.OrderByDescending(x => x.Score).FirstOrDefault();
 
@@ -204,7 +204,7 @@ namespace BotApp
 
                 var apps = await luisRouterService.LuisDiscoveryAsync(step, step.Context.Activity.Text, Startup.ApplicationCode, Startup.EncryptionKey);
 
-                if (apps.Count > 0)
+                if (apps.ToList().Count > 0)
                 {
                     LuisAppDetail app = apps.OrderByDescending(x => x.Score).FirstOrDefault();
 
