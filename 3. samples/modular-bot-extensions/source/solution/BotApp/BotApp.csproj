@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <UserSecretsId>bb36fd58-8424-43a9-a96b-ef14acbcd76b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="10.0.3" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.4.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.ApplicationInsights" Version="4.4.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.Azure" Version="4.4.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.4.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.ApplicationInsights.Core" Version="4.4.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.4.3" />
+    <PackageReference Include="Microsoft.Bot.Connector" Version="4.4.3" />
+    <PackageReference Include="Microsoft.Bot.Schema" Version="4.4.3" />
+    <PackageReference Include="Microsoft.AspNetCore.All" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Recognizers.Text.Number" Version="1.2.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.9.1">
+      <NoWarn>NU1608</NoWarn>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="NETCore.Encrypt" Version="2.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BotApp.Extensions.BotBuilder.ActiveDirectory\BotApp.Extensions.BotBuilder.ActiveDirectory.csproj" />
+    <ProjectReference Include="..\BotApp.Extensions.BotBuilder.Channel.WebChat\BotApp.Extensions.BotBuilder.Channel.WebChat.csproj" />
+    <ProjectReference Include="..\BotApp.Extensions.BotBuilder.LuisRouter\BotApp.Extensions.BotBuilder.LuisRouter.csproj" />
+    <ProjectReference Include="..\BotApp.Extensions.BotBuilder.QnAMaker\BotApp.Extensions.BotBuilder.QnAMaker.csproj" />
+    <ProjectReference Include="..\BotApp.Extensions.Common.Consul\BotApp.Extensions.Common.Consul.csproj" />
+    <ProjectReference Include="..\BotApp.Extensions.Common.KeyVault\BotApp.Extensions.Common.KeyVault.csproj" />
+  </ItemGroup>
+
+</Project>
