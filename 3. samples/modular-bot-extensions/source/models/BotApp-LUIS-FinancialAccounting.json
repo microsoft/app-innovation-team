@@ -1,0 +1,91 @@
+{
+  "luis_schema_version": "3.2.0",
+  "versionId": "0.1",
+  "name": "BotApp-LUIS-FinancialAccounting",
+  "desc": "",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "intents": [
+    {
+      "name": "FinancialAccounting_MonthlyBalance"
+    },
+    {
+      "name": "FinancialAccounting_MonthlyBalance_Sample"
+    },
+    {
+      "name": "None"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "prebuiltEntities": [],
+  "model_features": [],
+  "regex_features": [],
+  "patterns": [],
+  "utterances": [
+    {
+      "text": "considerations to get the monthly balance?",
+      "intent": "FinancialAccounting_MonthlyBalance",
+      "entities": []
+    },
+    {
+      "text": "how can i get the monthly balance?",
+      "intent": "FinancialAccounting_MonthlyBalance",
+      "entities": []
+    },
+    {
+      "text": "how can i obtain the monthly balance?",
+      "intent": "FinancialAccounting_MonthlyBalance",
+      "entities": []
+    },
+    {
+      "text": "how do i need to get the monthly balance?",
+      "intent": "FinancialAccounting_MonthlyBalance",
+      "entities": []
+    },
+    {
+      "text": "i would like to see a sample about how can i get the monthly balance",
+      "intent": "FinancialAccounting_MonthlyBalance_Sample",
+      "entities": []
+    },
+    {
+      "text": "i would like to see a sample about how do i need to get the monthly balance",
+      "intent": "FinancialAccounting_MonthlyBalance_Sample",
+      "entities": []
+    },
+    {
+      "text": "i would like to see a sample about is there any particular requirement to get the monthly balance",
+      "intent": "FinancialAccounting_MonthlyBalance_Sample",
+      "entities": []
+    },
+    {
+      "text": "i would like to see a sample about what do i need to consider for an interview?",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "i would like to view a sample about considerations to get the monthly balance",
+      "intent": "FinancialAccounting_MonthlyBalance_Sample",
+      "entities": []
+    },
+    {
+      "text": "i would like to view a sample about how can i obtain the monthly balance",
+      "intent": "FinancialAccounting_MonthlyBalance_Sample",
+      "entities": []
+    },
+    {
+      "text": "is there any particular requirement to get the monthly balance?",
+      "intent": "FinancialAccounting_MonthlyBalance",
+      "entities": []
+    },
+    {
+      "text": "you are fired!",
+      "intent": "None",
+      "entities": []
+    }
+  ],
+  "settings": []
+}
