@@ -40,7 +40,7 @@ namespace BotApp.Tests.Classes
             LuisRouterService luisRouterService = new LuisRouterService(httpClient, Startup.EnvironmentName, Startup.ContentRootPath, userState, null);
 
             // adding QnAMaker service
-            QnAMakerService qnaMakerService = new QnAMakerService(Startup.EnvironmentName, Startup.ContentRootPath);
+            QnAMakerService qnaMakerService = new QnAMakerService(httpClient, Startup.EnvironmentName, Startup.ContentRootPath);
 
             var accessors = new BotAccessor(new LoggerFactory(), conversationState, userState)
             {
@@ -93,7 +93,7 @@ namespace BotApp.Tests.Classes
             LuisRouterService luisRouterService = new LuisRouterService(httpClient, Startup.EnvironmentName, Startup.ContentRootPath, userState, null);
 
             // adding QnAMaker service
-            QnAMakerService qnaMakerService = new QnAMakerService(Startup.EnvironmentName, Startup.ContentRootPath);
+            QnAMakerService qnaMakerService = new QnAMakerService(httpClient, Startup.EnvironmentName, Startup.ContentRootPath);
 
             var accessors = new BotAccessor(new LoggerFactory(), conversationState, userState)
             {
