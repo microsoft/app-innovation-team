@@ -30,10 +30,10 @@ namespace BotApp.Extensions.BotBuilder.ActiveDirectory.Services
             configuration.GetSection("ActiveDirectoryConfig").Bind(config);
 
             if (string.IsNullOrEmpty(config.ValidAudience))
-                throw new Exception("Missing value in ActiveDirectoryConfig -> ValidAudience");
+                throw new ArgumentException("Missing value in ActiveDirectoryConfig -> ValidAudience");
 
             if (string.IsNullOrEmpty(config.ValidIssuer))
-                throw new Exception("Missing value in ActiveDirectoryConfig -> ValidIssuer");
+                throw new ArgumentException("Missing value in ActiveDirectoryConfig -> ValidIssuer");
         }
 
         public ActiveDirectoryConfig GetConfiguration() => config;

@@ -28,16 +28,16 @@ namespace BotApp.Extensions.Common.Consul.Helpers
             configuration.GetSection("ConsulConfig").Bind(config);
 
             if (string.IsNullOrEmpty(config.Address))
-                throw new Exception("Missing value in ConsulConfig -> Address");
+                throw new ArgumentException("Missing value in ConsulConfig -> Address");
 
             if (string.IsNullOrEmpty(config.ServiceName))
-                throw new Exception("Missing value in ConsulConfig -> ServiceName");
+                throw new ArgumentException("Missing value in ConsulConfig -> ServiceName");
 
             if (string.IsNullOrEmpty(config.ServiceID))
-                throw new Exception("Missing value in ConsulConfig -> ServiceID");
+                throw new ArgumentException("Missing value in ConsulConfig -> ServiceID");
 
             if (string.IsNullOrEmpty(config.ServiceTag))
-                throw new Exception("Missing value in ConsulConfig -> ServiceTag");
+                throw new ArgumentException("Missing value in ConsulConfig -> ServiceTag");
         }
 
         public ConsulConfig GetConfiguration() => config;
