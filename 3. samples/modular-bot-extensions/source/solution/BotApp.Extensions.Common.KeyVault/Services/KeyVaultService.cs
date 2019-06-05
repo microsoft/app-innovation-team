@@ -26,16 +26,16 @@ namespace BotApp.Extensions.Common.KeyVault.Services
             configuration.GetSection("KeyVaultConfig").Bind(config);
 
             if (string.IsNullOrEmpty(config.CertificateName))
-                throw new Exception("Missing value in KeyVaultConfig -> CertificateName");
+                throw new ArgumentException("Missing value in KeyVaultConfig -> CertificateName");
 
             if (string.IsNullOrEmpty(config.ClientId))
-                throw new Exception("Missing value in KeyVaultConfig -> ClientId");
+                throw new ArgumentException("Missing value in KeyVaultConfig -> ClientId");
 
             if (string.IsNullOrEmpty(config.ClientSecret))
-                throw new Exception("Missing value in KeyVaultConfig -> ClientSecret");
+                throw new ArgumentException("Missing value in KeyVaultConfig -> ClientSecret");
 
             if (string.IsNullOrEmpty(config.Identifier))
-                throw new Exception("Missing value in KeyVaultConfig -> Identifier");
+                throw new ArgumentException("Missing value in KeyVaultConfig -> Identifier");
         }
 
         public KeyVaultConfig GetConfiguration() => config;
