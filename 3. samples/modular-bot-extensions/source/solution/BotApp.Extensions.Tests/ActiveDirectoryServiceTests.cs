@@ -12,13 +12,12 @@ namespace BotApp.Extensions.Tests
         [Fact]
         public void GetConfigurationTest()
         {
-            IActiveDirectoryService fakeActiveDirectoryService = new FakeActiveDirectoryService();
-
             // arrange
             var expectedValidAudience = "valid_audience";
             var expectedValidIssuer = "valid_issuer";
 
             // act
+            IActiveDirectoryService fakeActiveDirectoryService = new FakeActiveDirectoryService();
             var result = fakeActiveDirectoryService.GetConfiguration();
 
             // assert
@@ -29,8 +28,6 @@ namespace BotApp.Extensions.Tests
         [Fact]
         public async void ValidateValidTokenTest()
         {
-            IActiveDirectoryService fakeActiveDirectoryService = new FakeActiveDirectoryService();
-
             // arrange
             var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJNb2R1bGFyIEJvdCBBcHAiLCJpYXQiOjE1NTk2NzQ1OTUsImV4cCI6MTU5MTIxMDU5NSwiYXVkIjoiQm90IEFwcCBBdWRpZW5jZSIsInN1YiI6IkJvdCBBcHAiLCJHaXZlbk5hbWUiOiJKb2hubnkiLCJTdXJuYW1lIjoiUm9ja2V0IiwiRW1haWwiOiJqcm9ja2V0QGV4YW1wbGUuY29tIiwiUm9sZSI6WyJNYW5hZ2VyIiwiUHJvamVjdCBBZG1pbmlzdHJhdG9yIl19.5UFBWMnBFgz0GHRzynDv8eyYuiv9doy_bFcno5sNQe4";
             var expectedResult = true;
@@ -48,6 +45,7 @@ namespace BotApp.Extensions.Tests
             turnContext.Activity.ChannelData = jsonObject;
 
             // act
+            IActiveDirectoryService fakeActiveDirectoryService = new FakeActiveDirectoryService();
             var result = await fakeActiveDirectoryService.ValidateTokenAsync(turnContext);
 
             // assert

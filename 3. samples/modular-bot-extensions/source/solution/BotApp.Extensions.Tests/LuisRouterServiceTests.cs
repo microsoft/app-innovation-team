@@ -24,19 +24,16 @@ namespace BotApp.Extensions.Tests
         public void GetConfigurationTest()
         {
             // arrage
-            ILuisRouterService fakeWebChatService = new FakeLuisRouterService();
-
             var expectedBingSpellCheckSubscriptionKey = "bing_spell_check_subscription_key";
-            var expectedEnableLuisTelemetry = true;
             var expectedLuisApplications = new List<LuisApp>();
             var expectedLuisRouterUrl = "luis_router_url";
 
             // act
+            ILuisRouterService fakeWebChatService = new FakeLuisRouterService();
             var result = fakeWebChatService.GetConfiguration();
 
             // assert
             Assert.Equal(expectedBingSpellCheckSubscriptionKey, result.BingSpellCheckSubscriptionKey);
-            Assert.Equal(expectedEnableLuisTelemetry, result.EnableLuisTelemetry);
             Assert.Equal(expectedLuisApplications, result.LuisApplications);
             Assert.Equal(expectedLuisRouterUrl, result.LuisRouterUrl);
         }
@@ -123,16 +120,16 @@ namespace BotApp.Extensions.Tests
             var expectedName = "Sample";
             var expectedScore = 100;
             var luisAppDetail = new LuisAppDetail() { Intent = expectedIntent, Name = expectedName, Score = expectedScore };
-            var luisDiscoveryResponseResult = new LuisDiscoveryResponseResult()
+            var luisDiscoveryResponse = new LuisDiscoveryResponse()
             {
-                Result = new LuisDiscoveryResponse()
+                Result = new LuisDiscoveryResponseResult()
                 {
                     IsSucceded = true,
                     ResultId = 100,
                     LuisAppDetails = new List<LuisAppDetail>() { luisAppDetail }
                 }
             };
-            var jsonLuisDiscoveryResponseResult = JsonConvert.SerializeObject(luisDiscoveryResponseResult);
+            var jsonLuisDiscoveryResponseResult = JsonConvert.SerializeObject(luisDiscoveryResponse);
 
             var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             handlerMock

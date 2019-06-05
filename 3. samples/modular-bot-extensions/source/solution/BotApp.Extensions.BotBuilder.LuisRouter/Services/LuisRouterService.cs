@@ -16,8 +16,10 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
 {
     public class LuisRouterService : ILuisRouterService
     {
-        private readonly HttpClient httpClient = null;
         private readonly LuisRouterConfig config = null;
+        private readonly HttpClient httpClient = null;
+        private readonly IBotTelemetryClient botTelemetryClient = null;
+
         public UserState UserState { get; }
         public IStatePropertyAccessor<string> TokenPreference { get; set; }
         public Dictionary<string, LuisRecognizer> LuisServices { get; }
@@ -35,7 +37,8 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
             config = new LuisRouterConfig();
             configuration.GetSection("LuisRouterConfig").Bind(config);
 
-            this.httpClient = httpClient;
+            this.httpClient = httpClient ?? throw new ArgumentException("Missing value in HttpClient");
+            this.botTelemetryClient = botTelemetryClient;
             this.UserState = userState;
             this.LuisServices = BuildDictionary(botTelemetryClient);
             this.TokenPreference = userState.CreateProperty<string>("TokenPreference");
@@ -72,7 +75,7 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
             {
                 try
                 {
-                    byte[] byteData = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Text = text, BingSpellCheckSubscriptionKey = config.BingSpellCheckSubscriptionKey, EnableLuisTelemetry = config.EnableLuisTelemetry }));
+                    byte[] byteData = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Text = text, BingSpellCheckSubscriptionKey = config.BingSpellCheckSubscriptionKey, EnableLuisTelemetry = (botTelemetryClient == null) ? false: true }));
                     using (var content = new ByteArrayContent(byteData))
                     {
                         string token = await this.TokenPreference.GetAsync(step.Context, () => { return string.Empty; });
@@ -84,7 +87,7 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
                         if (response.IsSuccessStatusCode)
                         {
                             var json = await response.Content.ReadAsStringAsync();
-                            var res = JsonConvert.DeserializeObject<LuisDiscoveryResponseResult>(json);
+                            var res = JsonConvert.DeserializeObject<LuisDiscoveryResponse>(json);
                             result = res.Result.LuisAppDetails;
                             break;
                         }
@@ -125,7 +128,7 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
                 LuisRecognizer recognizer = null;
 
                 bool needsPredictionOptions = false;
-                if ((!string.IsNullOrEmpty(config.BingSpellCheckSubscriptionKey)) || (config.EnableLuisTelemetry))
+                if ((!string.IsNullOrEmpty(config.BingSpellCheckSubscriptionKey)) || (botTelemetryClient != null))
                 {
                     needsPredictionOptions = true;
                 }
@@ -134,7 +137,7 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
                 {
                     luisPredictionOptions = new LuisPredictionOptions();
 
-                    if (config.EnableLuisTelemetry)
+                    if (botTelemetryClient != null)
                     {
                         luisPredictionOptions.TelemetryClient = botTelemetryClient;
                         luisPredictionOptions.Log = true;

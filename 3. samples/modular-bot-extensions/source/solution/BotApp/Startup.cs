@@ -116,40 +116,22 @@ namespace BotApp
             services.AddSingleton(new AutoSaveStateMiddleware(userState, conversationState));
             services.AddSingleton(new ShowTypingMiddleware());
 
-            // Add Application Insights services into service collection
-            services.AddApplicationInsightsTelemetry();
-
-            // Add the standard telemetry client
-            services.AddSingleton<IBotTelemetryClient, BotTelemetryClient>();
-
-            // Add ASP middleware to store the HTTP body, mapped with bot activity key, in the httpcontext.items
-            // This will be picked by the TelemetryBotIdInitializer
-            services.AddTransient<TelemetrySaveBodyASPMiddleware>();
-
-            // Add telemetry initializer that will set the correlation context for all telemetry items
-            services.AddSingleton<ITelemetryInitializer, OperationCorrelationTelemetryInitializer>();
-
-            // Add telemetry initializer that sets the user ID and session ID (in addition to other
-            // bot-specific properties, such as activity ID)
-            services.AddSingleton<ITelemetryInitializer, TelemetryBotIdInitializer>();
-
-            // Create the telemetry middleware to track conversation events
-            services.AddSingleton<IMiddleware, TelemetryLoggerMiddleware>();
+            // Adding telemetry
+            ConfigureTelemetry(services);
+            
+            // Adding HttpClient and HttpClientHandler
+            var handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+            var httpClient = new HttpClient(handler);
 
             // Adding LUIS Router service
-            services.AddSingleton<ILuisRouterService>(sp =>
-            {
-                var handler = new HttpClientHandler();
-                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-                var httpClient = new HttpClient(handler);
-                return new LuisRouterService(httpClient, EnvironmentName, ContentRootPath, userState, sp.GetRequiredService<IBotTelemetryClient>());
-            });
+            services.AddSingleton<ILuisRouterService>(sp => { return new LuisRouterService(httpClient, EnvironmentName, ContentRootPath, userState, sp.GetRequiredService<IBotTelemetryClient>()); });
 
             // Adding QnAMaker Router service
-            services.AddSingleton<IQnAMakerService>(sp => { return new QnAMakerService(EnvironmentName, ContentRootPath); });
+            services.AddSingleton<IQnAMakerService>(sp => { return new QnAMakerService(httpClient, EnvironmentName, ContentRootPath, sp.GetRequiredService<IBotTelemetryClient>()); });
 
             // Adding WebChat service
-            services.AddSingleton<IWebChatService>(sp => { return new WebChatService(EnvironmentName, ContentRootPath); });
+            services.AddSingleton<IWebChatService>(sp => { return new WebChatService(httpClient, EnvironmentName, ContentRootPath); });
 
             // Adding KeyVault service
             services.AddSingleton<IKeyVaultService>(sp => { return new KeyVaultService(EnvironmentName, ContentRootPath); });
@@ -201,6 +183,29 @@ namespace BotApp
                 .UseStaticFiles()
                 .UseBotApplicationInsights()
                 .UseMvc();
+        }
+
+        private void ConfigureTelemetry(IServiceCollection services)
+        {
+            // Add Application Insights services into service collection
+            services.AddApplicationInsightsTelemetry();
+
+            // Add the standard telemetry client
+            services.AddSingleton<IBotTelemetryClient, BotTelemetryClient>();
+
+            // Add ASP middleware to store the HTTP body, mapped with bot activity key, in the httpcontext.items
+            // This will be picked by the TelemetryBotIdInitializer
+            services.AddTransient<TelemetrySaveBodyASPMiddleware>();
+
+            // Add telemetry initializer that will set the correlation context for all telemetry items
+            services.AddSingleton<ITelemetryInitializer, OperationCorrelationTelemetryInitializer>();
+
+            // Add telemetry initializer that sets the user ID and session ID (in addition to other
+            // bot-specific properties, such as activity ID)
+            services.AddSingleton<ITelemetryInitializer, TelemetryBotIdInitializer>();
+
+            // Create the telemetry middleware to track conversation events
+            services.AddSingleton<IMiddleware, TelemetryLoggerMiddleware>();
         }
 
         private async Task OnApplicationStopping()

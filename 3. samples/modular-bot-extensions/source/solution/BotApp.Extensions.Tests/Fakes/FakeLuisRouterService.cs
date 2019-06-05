@@ -34,7 +34,6 @@ namespace BotApp.Extensions.Tests.Fakes
             var luisRouterConfig = new LuisRouterConfig()
             {
                 BingSpellCheckSubscriptionKey = "bing_spell_check_subscription_key",
-                EnableLuisTelemetry = true,
                 LuisApplications = new List<LuisApp>(),
                 LuisRouterUrl = "luis_router_url"
             };
@@ -82,7 +81,7 @@ namespace BotApp.Extensions.Tests.Fakes
                         if (response.IsSuccessStatusCode)
                         {
                             var json = await response.Content.ReadAsStringAsync();
-                            var res = JsonConvert.DeserializeObject<LuisDiscoveryResponseResult>(json);
+                            var res = JsonConvert.DeserializeObject<LuisDiscoveryResponse>(json);
                             result = res.Result.LuisAppDetails;
                             break;
                         }
