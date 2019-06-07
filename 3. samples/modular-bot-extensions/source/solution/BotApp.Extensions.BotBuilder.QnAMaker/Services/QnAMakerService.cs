@@ -68,11 +68,12 @@ namespace BotApp.Extensions.BotBuilder.QnAMaker.Services
             if (botTelemetryClient != null)
             {
                 qnaMaker = new Microsoft.Bot.Builder.AI.QnA.QnAMaker(qnaEndpoint, qnaOptions, httpClient, botTelemetryClient, true);
-            } else
+            }
+            else
             {
                 qnaMaker = new Microsoft.Bot.Builder.AI.QnA.QnAMaker(qnaEndpoint, qnaOptions, httpClient);
             }
-                
+
             result.Add(config.Name, qnaMaker);
 
             return result;

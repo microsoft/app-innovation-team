@@ -38,7 +38,7 @@ namespace BotApp.Extensions.BotBuilder.ActiveDirectory.Services
 
         public ActiveDirectoryConfig GetConfiguration() => config;
 
-        public async Task<bool> ValidateTokenAsync(ITurnContext turnContext)
+        public async Task<bool> ValidateTokenAsync(ITurnContext turnContext, string validAudience, string validIssuer, bool validateLifetime, string issuerSigningKey = "")
         {
             bool result = true;
             string token = string.Empty;
@@ -49,7 +49,7 @@ namespace BotApp.Extensions.BotBuilder.ActiveDirectory.Services
                     var channelObj = turnContext.Activity.ChannelData.ToString();
                     var channeldata = Newtonsoft.Json.Linq.JObject.Parse(channelObj);
                     token = channeldata["token"].ToString();
-                    await TokenValidationAsync(token);
+                    await TokenValidationAsync(token, validAudience, validIssuer, validateLifetime, issuerSigningKey);
                 }
                 catch (SecurityTokenException ex)
                 {
@@ -99,26 +99,31 @@ namespace BotApp.Extensions.BotBuilder.ActiveDirectory.Services
             return result;
         }
 
-        private async Task<JwtSecurityToken> TokenValidationAsync(string token)
+        private async Task<JwtSecurityToken> TokenValidationAsync(string token, string validAudience, string validIssuer, bool validateLifetime, string issuerSigningKey = "")
         {
-            string stsDiscoveryEndpoint = "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration";
+            TokenValidationParameters validationParameters = new TokenValidationParameters();
+            validationParameters.ValidateAudience = true;
+            validationParameters.ValidAudience = validAudience;
+            validationParameters.ValidateIssuer = true;
+            validationParameters.ValidIssuer = validIssuer;
+            validationParameters.ValidateIssuerSigningKey = true;
+            validationParameters.ValidateLifetime = validateLifetime;
 
-            ConfigurationManager<OpenIdConnectConfiguration> configManager = new ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
-            OpenIdConnectConfiguration config = await configManager.GetConfigurationAsync();
-
-            TokenValidationParameters validationParameters = new TokenValidationParameters
+            if (string.IsNullOrEmpty(issuerSigningKey))
             {
-                ValidateAudience = true,
-                ValidAudience = this.config.ValidAudience,
-                ValidateIssuer = true,
-                ValidIssuer = this.config.ValidIssuer,
-                IssuerSigningKeys = config.SigningKeys,
-                ValidateIssuerSigningKey = true,
-                ValidateLifetime = true
-            };
+                string stsDiscoveryEndpoint = "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration";
+
+                ConfigurationManager<OpenIdConnectConfiguration> configManager = new ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
+                OpenIdConnectConfiguration config = await configManager.GetConfigurationAsync();
+                validationParameters.IssuerSigningKeys = config.SigningKeys;
+            }
+            else
+            {
+                var securityKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.Default.GetBytes(issuerSigningKey));
+                validationParameters.IssuerSigningKey = securityKey;
+            }
 
             JwtSecurityTokenHandler tokendHandler = new JwtSecurityTokenHandler();
-
             SecurityToken jwt;
             IdentityModelEventSource.ShowPII = false;
             ClaimsPrincipal claimsPrincipal = tokendHandler.ValidateToken(token, validationParameters, out jwt);

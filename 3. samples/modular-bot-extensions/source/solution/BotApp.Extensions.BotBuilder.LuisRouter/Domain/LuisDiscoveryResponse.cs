@@ -2,7 +2,7 @@
 
 namespace BotApp.Extensions.BotBuilder.LuisRouter.Domain
 {
-    public class LuisDiscoveryResponseResult
+    public class LuisDiscoveryResponse
     {
         public bool IsSucceded { get; set; }
         public int ResultId { get; set; }
