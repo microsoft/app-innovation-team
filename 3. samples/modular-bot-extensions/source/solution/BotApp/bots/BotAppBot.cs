@@ -68,14 +68,8 @@ namespace BotApp
                     if (turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
                     {
                         // begin: token validation
-                        // uncomment for debugging purposes
 
-                        //string token = "TOKEN";
-                        //dynamic jsonObject = new JObject();
-                        //jsonObject.token = token;
-                        //turnContext.Activity.ChannelData = jsonObject;
-
-                        bool hasPermission = true; //await activeDirectoryService.ValidateTokenAsync(turnContext);
+                        bool hasPermission = true; //await activeDirectoryService.ValidateTokenAsync(turnContext, activeDirectoryService.GetConfiguration().ValidAudience, activeDirectoryService.GetConfiguration().ValidIssuer, true);
 
                         if (!hasPermission)
                         {

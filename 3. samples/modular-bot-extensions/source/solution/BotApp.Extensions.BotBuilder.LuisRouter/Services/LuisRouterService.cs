@@ -75,7 +75,7 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
             {
                 try
                 {
-                    byte[] byteData = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Text = text, BingSpellCheckSubscriptionKey = config.BingSpellCheckSubscriptionKey, EnableLuisTelemetry = (botTelemetryClient == null) ? false: true }));
+                    byte[] byteData = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Text = text, BingSpellCheckSubscriptionKey = config.BingSpellCheckSubscriptionKey, EnableLuisTelemetry = (botTelemetryClient == null) ? false : true }));
                     using (var content = new ByteArrayContent(byteData))
                     {
                         string token = await this.TokenPreference.GetAsync(step.Context, () => { return string.Empty; });
@@ -88,7 +88,7 @@ namespace BotApp.Extensions.BotBuilder.LuisRouter.Services
                         {
                             var json = await response.Content.ReadAsStringAsync();
                             var res = JsonConvert.DeserializeObject<LuisDiscoveryResponse>(json);
-                            result = res.Result.LuisAppDetails;
+                            result = res.LuisAppDetails;
                             break;
                         }
                         else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)

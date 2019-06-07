@@ -118,7 +118,7 @@ namespace BotApp
 
             // Adding telemetry
             ConfigureTelemetry(services);
-            
+
             // Adding HttpClient and HttpClientHandler
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;

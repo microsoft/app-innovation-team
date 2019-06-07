@@ -7,6 +7,6 @@ namespace BotApp.Extensions.BotBuilder.Channel.WebChat.Services
     {
         WebChatConfig GetConfiguration();
 
-        Task<GenerateResult> GetDirectLineTokenAsync(string secret);
+        Task<GenerateResponse> GetDirectLineTokenAsync(string secret);
     }
 }

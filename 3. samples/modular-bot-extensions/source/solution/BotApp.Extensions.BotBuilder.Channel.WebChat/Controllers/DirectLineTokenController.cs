@@ -1,10 +1,6 @@
 ﻿using BotApp.Extensions.BotBuilder.Channel.WebChat.Domain;
 using BotApp.Extensions.BotBuilder.Channel.WebChat.Services;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BotApp.Extensions.BotBuilder.Channel.WebChat.Controllers
@@ -23,7 +19,7 @@ namespace BotApp.Extensions.BotBuilder.Channel.WebChat.Controllers
         [HttpPost]
         public async Task<IActionResult> Post()
         {
-            GenerateResult result = await webChatService.GetDirectLineTokenAsync(webChatService.GetConfiguration().Secret);
+            GenerateResponse result = await webChatService.GetDirectLineTokenAsync(webChatService.GetConfiguration().Secret);
             return (ActionResult)new OkObjectResult(new { result.token });
         }
     }

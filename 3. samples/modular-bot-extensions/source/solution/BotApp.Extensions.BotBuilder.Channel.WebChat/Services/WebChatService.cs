@@ -35,9 +35,9 @@ namespace BotApp.Extensions.BotBuilder.Channel.WebChat.Services
 
         public WebChatConfig GetConfiguration() => config;
 
-        public async Task<GenerateResult> GetDirectLineTokenAsync(string secret)
+        public async Task<GenerateResponse> GetDirectLineTokenAsync(string secret)
         {
-            GenerateResult result = null;
+            GenerateResponse result = null;
             byte[] byteData = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { }));
             using (var content = new ByteArrayContent(byteData))
             {
@@ -48,7 +48,7 @@ namespace BotApp.Extensions.BotBuilder.Channel.WebChat.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    result = JsonConvert.DeserializeObject<GenerateResult>(json);
+                    result = JsonConvert.DeserializeObject<GenerateResponse>(json);
                 }
             }
             return result;
