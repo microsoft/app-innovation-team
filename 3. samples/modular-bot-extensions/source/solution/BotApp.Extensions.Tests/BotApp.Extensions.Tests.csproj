@@ -9,6 +9,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.4.4" />
     <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.4.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="5.4.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
     <PackageReference Include="Moq" Version="4.11.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -22,6 +27,7 @@
     <ProjectReference Include="..\BotApp.Extensions.BotBuilder.ActiveDirectory\BotApp.Extensions.BotBuilder.ActiveDirectory.csproj" />
     <ProjectReference Include="..\BotApp.Extensions.BotBuilder.Channel.WebChat\BotApp.Extensions.BotBuilder.Channel.WebChat.csproj" />
     <ProjectReference Include="..\BotApp.Extensions.BotBuilder.LuisRouter\BotApp.Extensions.BotBuilder.LuisRouter.csproj" />
+    <ProjectReference Include="..\BotApp.Extensions.Common.Translator\BotApp.Extensions.Common.Translator.csproj" />
   </ItemGroup>
 
 </Project>

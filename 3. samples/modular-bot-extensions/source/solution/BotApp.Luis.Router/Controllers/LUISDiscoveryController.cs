@@ -151,7 +151,7 @@ namespace BotApp.Luis.Router.Controllers
             string message = EnumDescription.GetEnumDescription((LuisDiscoveryResponseEnum)result.ResultId);
             this.logger.LogInformation($">> Message information: {message}");
 
-            return (result.IsSucceded) ? (ActionResult)new OkObjectResult(new { result = result }) : (ActionResult)new BadRequestObjectResult(new { message = message });
+            return (result.IsSucceded) ? (ActionResult)new OkObjectResult(result) : (ActionResult)new BadRequestObjectResult(new { message = message });
         }
     }
 }
