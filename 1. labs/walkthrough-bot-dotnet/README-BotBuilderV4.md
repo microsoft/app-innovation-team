@@ -1,10 +1,10 @@
 ## Programming the Bot
 
-#### Clone the project from GitHub repo
+**Clone the project from GitHub repo**
 
 `git clone https://github.com/Microsoft/app-innovation-team.git`
 
-#### Using Visual Studio 2019 (any version)
+**Using Visual Studio 2019 (any version)**
 
 1. Go `walkthrough-bot-dotnet\source\1. start\` folder and open the WBD.sln file in Visual Studio 2019.
 
@@ -12,15 +12,15 @@
 
 3. Build the WBD project (the project should be successfully compiled, but is not ready to be executed).
 
-#### Using Visual Studio Code (any version)
+**Using Visual Studio Code (any version)**
 
 1. Open Visual Studio Code and open the following folder `walkthrough-bot-dotnet\source\1. start\WBD\`.
 
 2. Open a terminal, navigate to the folder `walkthrough-bot-dotnet\source\1. start\WBD\` and run the following command: <b>dotnet build</b>, wait until nuget packages are restored and the project finishes the build process (the project should be successfully compiled but is not ready to be executed).
 
-#### Translator text configuration
+## Translator text configuration
 
-Go to https://portal.azure.com/ and sign-in with your Employee or Microsoft account.
+Go to <a href="https://portal.azure.com/" target="_blank">https://portal.azure.com/</a> and sign-in with your Employee or Microsoft account.
 
 Steps:
 
@@ -31,7 +31,7 @@ Steps:
     - Pricing tier: S1 (Pay as you go).
     - Resource Group: Create new with the same resource name, e.g. translator017-RG.
 
-    <div style="text-align:left">
+    <div style="text-align:center">
         <img src="resources/images/walkthrough-bot-dotnet-translator-template1.png" />
         <br />
         <img src="resources/images/walkthrough-bot-dotnet-translator-template2.png" />
@@ -40,23 +40,23 @@ Steps:
 
 2. Once the resource has been deployed go to the resource and click in <b>Resource Management->Keys</b> and take note of the `Key 1` in a notepad (we are going to use this information later to configure the bot).
 
-    <div style="text-align:left">
+    <div style="text-align:center">
         <img src="resources/images/walkthrough-bot-dotnet-translator-template3.png" />
         <br />
     </div>
 
-#### LUIS configuration
+## LUIS configuration
 
 1. Go to https://www.luis.ai/ and get successfully sign-in with your Employee or Microsoft account.
 
-    <div style="text-align:left">
+    <div style="text-align:center">
         <img src="resources/images/walkthrough-bot-dotnet-luis-template1.png" />
         <br />
     </div>
 
 2. Once you are signed-in, go to My Apps and click `Import new app`, select the file: Reminders.json located in the folder `walkthrough-bot-dotnet\source\3. models\` and finally click done.
 
-    <div style="text-align:left">
+    <div style="text-align:center">
         <img src="resources/images/walkthrough-bot-dotnet-luis-template2.png" />
         <br />
         <img src="resources/images/walkthrough-bot-dotnet-luis-template3.png" />
@@ -67,14 +67,14 @@ Steps:
 
 3. A new LUIS application has been created (this application contains three intents: Calendar.Add,Calendar.Find and None, each intent has been filled with a bunch of utterances as an example).
 
-    <div style="text-align:left">
+    <div style="text-align:center">
         <img src="resources/images/walkthrough-bot-dotnet-luis-template5.png" />
         <br />
     </div>
 
 4. Go to Reminders app and click on Train button, once you have trained the model click Publish to make public the API service. Select a Production environment value.
 
-    <div style="text-align:left">
+    <div style="text-align:center">
         <img src="resources/images/walkthrough-bot-dotnet-luis-template6.png" />
         <br />
         <img src="resources/images/walkthrough-bot-dotnet-luis-template7.png" />
@@ -85,7 +85,7 @@ Steps:
 
 5. Once the service has been trained and published go to manage and take note of the `Application ID (from Application Information tab)`, `Authoring Key (from Keys and Endpoints tab)`, `Endpoint (from Keys and Endpoints tab)` in a notepad (we are going to use this information later to configure the bot).
 
-    <div style="text-align:left">
+    <div style="text-align:center">
         <img src="resources/images/walkthrough-bot-dotnet-luis-template9.png" />
         <br />
         <img src="resources/images/walkthrough-bot-dotnet-luis-template10.png" />
@@ -96,7 +96,7 @@ Steps:
 
 6. Everytime you add, remove or update utterances a new train and publish process is required to train and expose the latest version.
 
-#### Bot configuration
+## Bot configuration
 
 Return to Visual Studio 2019 or Visual Studio Code open and update the `appsettings.json` file in the root of the bot project.
 
@@ -116,7 +116,7 @@ Your appsettings.json file should look like this
 
 <b>Note:</b> For local development and debugging MicrosoftAppId and MicrosoftAppPassword MUST be empty, these settings are used in Azure deployment.
 
-#### Getting dirty (let's code!)
+## Getting dirty (let's code!)
 
 1. In the Startup.cs file, search for: `// TODO: ADD SETTINGS` and replace the line with:
 
@@ -283,7 +283,7 @@ Your appsettings.json file should look like this
 
     <b>Note:</b> This code provides the routine to save the preferences before end the LanguageDialog and return to MainDialog.
 
-#### Running the bot
+## Running the bot
 
 Congratulations! if you are here is because your bot is almost done, you only need to verify the configuration of the ports, run the bot app and open the WBD.bot file from the emulator.
 
@@ -311,10 +311,10 @@ In the Bot Framework Emulator you will see an Endpoint called: Local, click it a
     <br />
 </div>
 
-#### Troubleshooting
+## Troubleshooting
 
 If you have issues with your emulator, verify you have unchecked the option: Bypass ngrok for local address located in emulator settings. 
 
-#### Master code (complete solution)
+## Master code (complete solution)
 
 In case you want to review your code with the complete solution you can follow the previous configuration steps using the complete solution located in: `walkthrough-bot-dotnet\source\2. completed\WBD\`.
