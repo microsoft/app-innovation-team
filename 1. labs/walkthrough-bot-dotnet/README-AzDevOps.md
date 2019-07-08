@@ -1,10 +1,10 @@
-    ## Adding CI/CD pipelines to the Bot using Azure DevOps
+## Adding CI/CD pipelines to the Bot using Azure DevOps
 
-#### Creating Azure DevOps account and project
+## Creating Azure DevOps account and project
 
-1. Go to https://dev.azure.com and get successfully sign-in with your Employee or Microsoft account.
+1. Go to <a href="https://dev.azure.com" target="_blank">https://dev.azure.com</a> and get successfully sign-in with your Employee or Microsoft account.
 
-2. If it's the first time you join to Azure DevOps you will need to [create an organizationt](https://azure.microsoft.com/en-us/free/), if it's for personal usage you can keep your username as organization.
+2. If it's the first time you join to Azure DevOps you will need to <a href="https://azure.microsoft.com/en-us/free/" target="_blank">create an organization</a>, if it's for personal usage you can keep your username as organization.
 
 3. Once you have been configured your organization a new project has been created as default, let's ignore that project and let's create a new one with the following attributes:
 
@@ -23,7 +23,7 @@ Great! now you are able to see your new project called: WBD.
     <img src="resources/images/walkthrough-bot-dotnet-azuredevops-dashboard.png" />
 </div>
 
-#### Cloning the repo
+## Cloning the repo
 
 First, we need to upload our bot code to the Azure DevOps Git repo. To perform this action click in <b>Repos->Files</b>, then click in the button <b>Generate Git credentials</b>.
 
@@ -101,7 +101,7 @@ Steps:
         <img src="resources/images/walkthrough-bot-dotnet-azuredevops-filesportal.png" />
     </div>
 
-#### Creating the CI pipeline
+## Creating the CI pipeline
 
 Now, it's time to configure the continuous integration pipeline. To perform this action click in <b>Pipelines->Builds</b> and then click `New pipeline`.
 
@@ -147,9 +147,9 @@ Steps:
 
 8. Awesome, at this moment you have your first bot artifact ready to be deployed.
 
-#### Creating the Web App Bot in Azure Portal
+## Creating the Web App Bot in Azure Portal
 
-Go to https://portal.azure.com/ and get successfully sign-in with your Employee or Microsoft account.
+Go to <a href="https://portal.azure.com/" target="_blank">https://portal.azure.com/</a> and get successfully sign-in with your Employee or Microsoft account.
 
 Steps:
 
@@ -171,7 +171,7 @@ Steps:
         <img src="resources/images/walkthrough-bot-dotnet-azuredevops-deployment.png" />
     </div>
 
-#### Creating the CD pipeline
+## Creating the CD pipeline
 
 Now, it's time to configure the continuous deployment pipeline. To perform this action click in <b>Pipelines->Releases</b> and then click `New pipeline`.
     <div style="text-align:center">
