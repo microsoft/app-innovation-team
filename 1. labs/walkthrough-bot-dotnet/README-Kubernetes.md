@@ -1,18 +1,18 @@
 ## Bot on Kubernetes
 
-#### Installing Azure CLI
+## Installing Azure CLI
 
-Azure CLI will be the hand tool for almost everything in this laboratory, let's download and configure it following the instructions here: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest.
+Azure CLI will be the hand tool for almost everything in this laboratory, let's download and configure it following the instructions here: <a href="https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest" target="_blank">https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest</a>.
 
 Note: In some scenarios we can use the Bash terminal hosted in the Azure Portal, however there are some configurations for Kubernetes that requires a local machine configured with Azure CLI, that's why I decided to installed and configured from the beginning.
 
-#### Installing Docker CE
+## Installing Docker CE
 
-Go to the Docker portal https://www.docker.com/get-started and install Docker in your local machine.
+Go to the Docker portal <a href="https://www.docker.com/get-started" target="_blank">https://www.docker.com/get-started</a> and install Docker in your local machine.
 
 Docker will be used to build the images and push them to the ACR via CLI in the local machine, this is the preamble before start working with Kubernetes.
 
-#### Azure Container Registry configuration
+## Azure Container Registry configuration
 
 Once we have configured the Azure CLI, its time to open a terminal.
 
@@ -70,9 +70,9 @@ Once we have configured the Azure CLI, its time to open a terminal.
     Login Server: wbdacr.azurecr.io
     ```
 
-#### Building Docker image in bot project
+## Building Docker image in bot project
 
-1. Ensure you have Docker running in your local machine, you have the latest version of the GitHub repo and you have successfully accomplished the [bot  programming laboratory](README-BotBuilderV4.md).
+1. Ensure you have Docker running in your local machine, you have the latest version of the GitHub repo and you have successfully accomplished the <a href="README-BotBuilderV4.md" target="_blank">bot  programming laboratory</a>.
 
 2. Let's backup the appsettings.json content in a notepad and then we are going to delete any settings. We are going to use the settings later.
 
@@ -381,7 +381,7 @@ Once we have configured the Azure CLI, its time to open a terminal.
         <img src="resources/images/walkthrough-bot-dotnet-acr.png" />
     </div>
 
-#### Creating Kubernetes cluster using Kubernetes Service
+## Creating Kubernetes cluster using Kubernetes Service
 
 1. Let's create the resource group that we are going to use to allocate the Kubernetes cluster.
 
@@ -509,7 +509,7 @@ Once we have configured the Azure CLI, its time to open a terminal.
     }
     ```
 
-    MicrosoftAppId and MicrosoftAppPassword are required and can be obtain from the Web App Bot, if you don't know how to create a Web App Bot review the laboratory: [Adding CI/CD pipelines to the Bot using Azure DevOps](README-AzDevOps.md).
+    MicrosoftAppId and MicrosoftAppPassword are required and can be obtain from the Web App Bot, if you don't know how to create a Web App Bot review the laboratory: <a href="README-AzDevOps.md" target="_blank">Adding CI/CD pipelines to the Bot using Azure DevOps</a>.
 
 10. Open a terminal in the folder `akswbddev` and create the secret.
 
@@ -571,11 +571,11 @@ Once we have configured the Azure CLI, its time to open a terminal.
 
     <b>Note:</b> Remember, the Azure Web App Bot is pointing to the HTTPS endpoint exposed by the App Service, our goal is replicate the HTTPS endpoint with a external and secure load balancer in Kubernetes to allow Web App Bot reach the logic of the bot.
 
-14. It's time to secure the http binding, to perform this task we need to create an HTTPS ingress controller using HELM, it's important to mention that I had some issues using HELM 2.12.0, I suggest force the HELM installation to use the version: 2.11.0, the issue is already documented here: https://github.com/MicrosoftDocs/azure-docs/issues/21067.
+14. It's time to secure the http binding, to perform this task we need to create an HTTPS ingress controller using HELM, it's important to mention that I had some issues using HELM 2.12.0, I suggest force the HELM installation to use the version: 2.11.0, the issue is already documented here: <a href="https://github.com/MicrosoftDocs/azure-docs/issues/21067" target="_blank">https://github.com/MicrosoftDocs/azure-docs/issues/21067</a>.
 
     Installing HELM: 
 
-    - For Windows: https://github.com/helm/helm/releases/tag/v2.11.0
+    - For Windows: <a href="https://github.com/helm/helm/releases/tag/v2.11.0" target="_blank">https://github.com/helm/helm/releases/tag/v2.11.0</a>
     - For mac: 
 
         If it's the first time you install it:
@@ -592,7 +592,7 @@ Once we have configured the Azure CLI, its time to open a terminal.
         brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/ee94af74778e48ae103a9fb080e26a6a2f62d32c/Formula/kubernetes-helm.rb
         ```
 
-    If you have doubts, take a look here: https://docs.helm.sh/using_helm/#installing-helm.
+    If you have doubts, take a look here: <a href="https://docs.helm.sh/using_helm/#installing-helm" target="_blank">https://docs.helm.sh/using_helm/#installing-helm</a>.
 
 15. Initialize Helm and Tiller.
 
