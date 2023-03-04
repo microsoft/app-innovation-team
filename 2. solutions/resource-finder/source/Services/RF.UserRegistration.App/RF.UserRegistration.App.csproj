@@ -33,7 +33,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.1" />
-    <PackageReference Include="MongoDB.Driver" Version="2.8.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.19.0" />
     <PackageReference Include="Nethereum.HdWallet" Version="3.1.2" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
     <PackageReference Include="Sendgrid" Version="9.10.0" />
